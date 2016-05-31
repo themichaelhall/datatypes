@@ -32,4 +32,14 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame('www.bar.org', (new Hostname('www.bar.org.'))->__toString());
     }
+
+    /**
+     * Test that empty hostname is invalid.
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Hostname "" is empty
+     */
+    public function testEmptyHostnameIsInvalid()
+    {
+        new Hostname('');
+    }
 }

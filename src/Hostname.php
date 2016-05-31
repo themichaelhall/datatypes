@@ -33,6 +33,11 @@ class Hostname
      */
     private function _parse($hostname)
     {
+        // Empty hostname is invalid.
+        if ($hostname === '') {
+            throw new \InvalidArgumentException('Hostname "" is empty');
+        }
+
         // Remove trailing dot if present in hostname.
         if (substr($hostname, -1) == '.') {
             $hostname = substr($hostname, 0, -1);
