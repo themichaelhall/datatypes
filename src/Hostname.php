@@ -14,7 +14,7 @@ class Hostname
      */
     public function __construct($hostname)
     {
-        $this->_hostname = $hostname;
+        $this->_parse($hostname);
     }
 
     /**
@@ -23,6 +23,15 @@ class Hostname
     public function __toString()
     {
         return $this->_hostname;
+    }
+
+    /**
+     * Parses a hostname.
+     * @param string $hostname The hostname as a string.
+     */
+    private function _parse($hostname)
+    {
+        $this->_hostname = $hostname;
     }
 
     /**
