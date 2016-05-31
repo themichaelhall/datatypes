@@ -35,6 +35,8 @@ class Hostname
      */
     private function _parse($hostname)
     {
+        assert(is_string($hostname), '$hostname is not a string');
+
         // Empty hostname is invalid.
         if ($hostname === '') {
             throw new \InvalidArgumentException('Hostname "' . $hostname . '" is empty.');
@@ -61,6 +63,9 @@ class Hostname
      */
     private static function _normalizeAndValidatePart($part, $hostname)
     {
+        assert(is_string($part), '$part is not a string');
+        assert(is_string($hostname), '$hostname is not a string');
+
         $part = strtolower($part);
 
         // Part can not be empty.
