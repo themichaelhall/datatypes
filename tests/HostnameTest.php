@@ -42,4 +42,24 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     {
         new Hostname('');
     }
+
+    /**
+     * Test that hostname with only a dot is invalid.
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Hostname "." is invalid. Part of hostname "" is empty.
+     */
+    public function testHostnameWithOnlyADotIsInvalid()
+    {
+        new Hostname('.');
+    }
+
+    /**
+     * Test that hostname with empty part is invalid.
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Hostname "foo..com" is invalid. Part of hostname "" is empty.
+     */
+    public function testHostnameWithEmptyPartIsInvalid()
+    {
+        new Hostname('foo..com');
+    }
 }

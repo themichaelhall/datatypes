@@ -35,17 +35,16 @@ class Hostname
     {
         // Empty hostname is invalid.
         if ($hostname === '') {
-            throw new \InvalidArgumentException('Hostname "" is empty');
-        }
-
-        // Remove trailing dot if present in hostname.
-        if (substr($hostname, -1) == '.') {
-            $hostname = substr($hostname, 0, -1);
+            throw new \InvalidArgumentException('Hostname "' . $hostname . '" is empty');
         }
 
         // Split hostname and validate individual parts.
         $this->_parts = [];
-        $parts = explode('.', $hostname);
+        $parts = explode(
+            '.',
+            substr($hostname, -1) === '.' ? substr($hostname, 0, -1) : $hostname // Remove trailing "." from hostname if present.
+        );
+
         foreach ($parts as $part) {
             $this->_parts[] = static::_normalizeAndValidatePart($part, $hostname);
         }
@@ -60,7 +59,12 @@ class Hostname
     private static function _normalizeAndValidatePart($part, $hostname)
     {
         $part = strtolower($part);
-        // fixme: validate part
+
+        // Part can not be empty.
+        if ($part === '') {
+            throw new \InvalidArgumentException('Hostname "' . $hostname . '" is invalid. Part of hostname "' . $part . '" is empty.');
+        }
+
         return $part;
     }
 
