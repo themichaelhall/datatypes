@@ -1,6 +1,7 @@
 {
   "name": "michaelhall/datatypes",
   "description": "Data types classes for PHP",
+  "homepage": "https://github.com/themichaelhall/datatypes",
   "license": "MIT",
   "keywords": [
     "Data",
