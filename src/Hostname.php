@@ -11,6 +11,7 @@ class Hostname
     /**
      * Constructs a hostname.
      * @param string $hostname The hostname as a string.
+     * @throws \InvalidArgumentException If the $hostname parameter is not a valid hostname.
      */
     public function __construct($hostname)
     {
@@ -30,12 +31,13 @@ class Hostname
     /**
      * Parses a hostname.
      * @param string $hostname The hostname as a string.
+     * @throws \InvalidArgumentException If the $hostname parameter is not a valid hostname.
      */
     private function _parse($hostname)
     {
         // Empty hostname is invalid.
         if ($hostname === '') {
-            throw new \InvalidArgumentException('Hostname "' . $hostname . '" is empty');
+            throw new \InvalidArgumentException('Hostname "' . $hostname . '" is empty.');
         }
 
         // Split hostname and validate individual parts.
@@ -55,6 +57,7 @@ class Hostname
      * @param string $part The part of the hostname.
      * @param string $hostname The hostname.
      * @return string The normalized part.
+     * @throws \InvalidArgumentException If the $part parameter is not a valid hostname part.
      */
     private static function _normalizeAndValidatePart($part, $hostname)
     {
