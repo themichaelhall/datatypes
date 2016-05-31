@@ -1,0 +1,26 @@
+{
+  "name": "michaelhall/datatypes",
+  "description": "Data types classes for PHP",
+  "license": "MIT",
+  "keywords": [
+    "Data",
+    "Type"
+  ],
+  "authors": [
+    {
+      "name": "Michael Hall",
+      "email": "hall@michaelhall.se",
+      "homepage": "https://michaelhall.se/"
+    }
+  ],
+  "require": {
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.8.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "MichaelHall\\DataTypes\\": "src"
+    }
+  }
+}
