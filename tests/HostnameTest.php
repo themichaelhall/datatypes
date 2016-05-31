@@ -24,4 +24,12 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame('www.bar.org', (new Hostname('WWW.BAR.ORG'))->__toString());
     }
+
+    /**
+     * Test that trailing dot in hostname is removed.
+     */
+    public function testTrailingDotInHostnameIsRemoved()
+    {
+        $this->assertSame('www.bar.org', (new Hostname('www.bar.org.'))->__toString());
+    }
 }

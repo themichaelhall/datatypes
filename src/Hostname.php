@@ -33,6 +33,12 @@ class Hostname
      */
     private function _parse($hostname)
     {
+        // Remove trailing dot if present in hostname.
+        if (substr($hostname, -1) == '.') {
+            $hostname = substr($hostname, 0, -1);
+        }
+
+        // Split hostname and validate individual parts.
         $this->_parts = [];
         $parts = explode('.', $hostname);
         foreach ($parts as $part) {
