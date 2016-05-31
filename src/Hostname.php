@@ -22,7 +22,7 @@ class Hostname
      */
     public function __toString()
     {
-        return $this->_hostname;
+        return implode('.', $this->_parts);
     }
 
     /**
@@ -31,11 +31,11 @@ class Hostname
      */
     private function _parse($hostname)
     {
-        $this->_hostname = $hostname;
+        $this->_parts = explode('.', $hostname);
     }
 
     /**
-     * @var string My hostname as a string.
+     * @var string[] My hostname parts.
      */
-    private $_hostname;
+    private $_parts;
 }
