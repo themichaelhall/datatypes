@@ -33,7 +33,24 @@ class Hostname
      */
     private function _parse($hostname)
     {
-        $this->_parts = explode('.', $hostname);
+        $this->_parts = [];
+        $parts = explode('.', $hostname);
+        foreach ($parts as $part) {
+            $this->_parts[] = static::_normalizeAndValidatePart($part, $hostname);
+        }
+    }
+
+    /**
+     * Normalizes and validates a part of the hostname.
+     * @param string $part The part of the hostname.
+     * @param string $hostname The hostname.
+     * @return string The normalized part.
+     */
+    private static function _normalizeAndValidatePart($part, $hostname)
+    {
+        // fixme: normalize part
+        // fixme: validate part
+        return $part;
     }
 
     /**
