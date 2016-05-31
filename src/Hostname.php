@@ -48,7 +48,7 @@ class Hostname
      */
     private static function _normalizeAndValidatePart($part, $hostname)
     {
-        // fixme: normalize part
+        $part = strtolower($part);
         // fixme: validate part
         return $part;
     }
