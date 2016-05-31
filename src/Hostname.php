@@ -14,6 +14,8 @@ class Hostname
      */
     public function __construct($hostname)
     {
+        assert(is_string($hostname), '$hostname is not a string');
+
         $this->_parse($hostname);
     }
 
