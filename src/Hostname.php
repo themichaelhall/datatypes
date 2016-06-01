@@ -35,6 +35,7 @@ class Hostname implements HostnameInterface
      * Checks if a hostname is valid.
      *
      * @param string $hostname The hostname.
+     *
      * @return bool True if hostname is valid, false otherwise.
      */
     public static function isValid($hostname)
@@ -42,10 +43,11 @@ class Hostname implements HostnameInterface
         assert(is_string($hostname), '$hostname is not a string');
 
         try {
-            new Hostname($hostname);
+            new self($hostname);
         } catch (\InvalidArgumentException $e) {
             return false;
         }
+
         return true;
     }
 
@@ -80,7 +82,7 @@ class Hostname implements HostnameInterface
     /**
      * Normalizes and validates a part of the hostname.
      *
-     * @param string $part The part of the hostname.
+     * @param string $part     The part of the hostname.
      * @param string $hostname The hostname.
      *
      * @throws \InvalidArgumentException If the $part parameter is not a valid hostname part.
