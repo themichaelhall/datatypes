@@ -2,12 +2,12 @@
 
 namespace MichaelHall\DataTypes;
 
-use MichaelHall\DataTypes\Interfaces\DataTypeInterface;
+use MichaelHall\DataTypes\Interfaces\HostnameInterface;
 
 /**
  * Class representing a hostname.
  */
-class Hostname implements DataTypeInterface
+class Hostname implements HostnameInterface
 {
     /**
      * Constructs a hostname.
