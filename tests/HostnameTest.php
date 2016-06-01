@@ -65,4 +65,13 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     {
         new Hostname('foo..com');
     }
+
+    /**
+     * Test isValid method.
+     */
+    public function testIsValid()
+    {
+        $this->assertTrue(Hostname::isValid('foo.bar.com.'));
+        $this->assertFalse(Hostname::isValid('foo..org'));
+    }
 }
