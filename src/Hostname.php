@@ -42,7 +42,7 @@ class Hostname
 
         // Empty hostname is invalid.
         if ($hostname === '') {
-            throw new \InvalidArgumentException('Hostname "'.$hostname.'" is empty.');
+            throw new \InvalidArgumentException('Hostname "' . $hostname . '" is empty.');
         }
 
         // Split hostname and validate individual parts.
@@ -76,7 +76,7 @@ class Hostname
 
         // Part can not be empty.
         if ($part === '') {
-            throw new \InvalidArgumentException('Hostname "'.$hostname.'" is invalid. Part of hostname "'.$part.'" is empty.');
+            throw new \InvalidArgumentException('Hostname "' . $hostname . '" is invalid. Part of hostname "' . $part . '" is empty.');
         }
 
         return $part;
