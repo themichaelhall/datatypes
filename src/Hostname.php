@@ -4,13 +4,14 @@ namespace MichaelHall\DataTypes;
 
 /**
  * Class representing a hostname.
- * @package MichaelHall\DataTypes
  */
 class Hostname
 {
     /**
      * Constructs a hostname.
+     *
      * @param string $hostname The hostname as a string.
+     *
      * @throws \InvalidArgumentException If the $hostname parameter is not a valid hostname.
      */
     public function __construct($hostname)
@@ -30,7 +31,9 @@ class Hostname
 
     /**
      * Parses a hostname.
+     *
      * @param string $hostname The hostname as a string.
+     *
      * @throws \InvalidArgumentException If the $hostname parameter is not a valid hostname.
      */
     private function _parse($hostname)
@@ -39,7 +42,7 @@ class Hostname
 
         // Empty hostname is invalid.
         if ($hostname === '') {
-            throw new \InvalidArgumentException('Hostname "' . $hostname . '" is empty.');
+            throw new \InvalidArgumentException('Hostname "'.$hostname.'" is empty.');
         }
 
         // Split hostname and validate individual parts.
@@ -56,10 +59,13 @@ class Hostname
 
     /**
      * Normalizes and validates a part of the hostname.
-     * @param string $part The part of the hostname.
+     *
+     * @param string $part     The part of the hostname.
      * @param string $hostname The hostname.
-     * @return string The normalized part.
+     *
      * @throws \InvalidArgumentException If the $part parameter is not a valid hostname part.
+     *
+     * @return string The normalized part.
      */
     private static function _normalizeAndValidatePart($part, $hostname)
     {
@@ -70,7 +76,7 @@ class Hostname
 
         // Part can not be empty.
         if ($part === '') {
-            throw new \InvalidArgumentException('Hostname "' . $hostname . '" is invalid. Part of hostname "' . $part . '" is empty.');
+            throw new \InvalidArgumentException('Hostname "'.$hostname.'" is invalid. Part of hostname "'.$part.'" is empty.');
         }
 
         return $part;
