@@ -1,8 +1,8 @@
 preset: recommended
 
 disabled:
-   concat_without_spaces
-   simplified_null_return
+   - concat_without_spaces
+   - simplified_null_return
 
 enabled:
-   concat_with_spaces
+   - concat_with_spaces
