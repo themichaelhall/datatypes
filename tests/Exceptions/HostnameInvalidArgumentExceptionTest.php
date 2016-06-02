@@ -3,9 +3,9 @@
 use DataTypes\Exceptions\HostnameInvalidArgumentException;
 
 /**
- * Test exceptions.
+ * Test HostnameInvalidArgumentException class.
  */
-class ExceptionTest extends PHPUnit_Framework_TestCase
+class HostnameInvalidArgumentExceptionTest extends PHPUnit_Framework_TestCase
 {
     /**
      * Test that HostnameInvalidArgumentException is subclass of InvalidArgumentException.
