@@ -1,8 +1,8 @@
 <?php
 
-namespace MichaelHall\DataTypes;
+namespace DataTypes;
 
-use MichaelHall\DataTypes\Interfaces\HostnameInterface;
+use DataTypes\Interfaces\HostnameInterface;
 
 /**
  * Class representing a hostname.

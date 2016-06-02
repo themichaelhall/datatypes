@@ -1,6 +1,6 @@
 <?php
 
-use MichaelHall\DataTypes\Hostname;
+use DataTypes\Hostname;
 
 /**
  * Test Hostname class.

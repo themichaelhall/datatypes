@@ -1,6 +1,6 @@
 <?php
 
-namespace MichaelHall\DataTypes\Interfaces;
+namespace DataTypes\Interfaces;
 
 /**
  * Main interface for all data types.
