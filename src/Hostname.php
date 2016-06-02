@@ -2,6 +2,7 @@
 
 namespace DataTypes;
 
+use DataTypes\Exceptions\HostnameInvalidArgumentException;
 use DataTypes\Interfaces\HostnameInterface;
 
 /**
@@ -14,7 +15,7 @@ class Hostname implements HostnameInterface
      *
      * @param string $hostname The hostname as a string.
      *
-     * @throws \InvalidArgumentException If the $hostname parameter is not a valid hostname.
+     * @throws HostnameInvalidArgumentException If the $hostname parameter is not a valid hostname.
      */
     public function __construct($hostname)
     {
@@ -44,7 +45,7 @@ class Hostname implements HostnameInterface
 
         try {
             new self($hostname);
-        } catch (\InvalidArgumentException $e) {
+        } catch (HostnameInvalidArgumentException $e) {
             return false;
         }
 
@@ -56,7 +57,7 @@ class Hostname implements HostnameInterface
      *
      * @param string $hostname The hostname as a string.
      *
-     * @throws \InvalidArgumentException If the $hostname parameter is not a valid hostname.
+     * @throws HostnameInvalidArgumentException If the $hostname parameter is not a valid hostname.
      */
     private function _parse($hostname)
     {
@@ -64,7 +65,7 @@ class Hostname implements HostnameInterface
 
         // Empty hostname is invalid.
         if ($hostname === '') {
-            throw new \InvalidArgumentException('Hostname "' . $hostname . '" is empty.');
+            throw new HostnameInvalidArgumentException('Hostname "' . $hostname . '" is empty.');
         }
 
         // Split hostname and validate individual parts.
@@ -85,7 +86,7 @@ class Hostname implements HostnameInterface
      * @param string $part     The part of the hostname.
      * @param string $hostname The hostname.
      *
-     * @throws \InvalidArgumentException If the $part parameter is not a valid hostname part.
+     * @throws HostnameInvalidArgumentException If the $part parameter is not a valid hostname part.
      *
      * @return string The normalized part.
      */
@@ -98,7 +99,7 @@ class Hostname implements HostnameInterface
 
         // Part can not be empty.
         if ($part === '') {
-            throw new \InvalidArgumentException('Hostname "' . $hostname . '" is invalid. Part of hostname "' . $part . '" is empty.');
+            throw new HostnameInvalidArgumentException('Hostname "' . $hostname . '" is invalid: Part of hostname "' . $part . '" is empty.');
         }
 
         return $part;

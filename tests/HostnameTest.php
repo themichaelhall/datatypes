@@ -36,8 +36,8 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that empty hostname is invalid.
      *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Hostname "" is empty
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Hostname "" is empty.
      */
     public function testEmptyHostnameIsInvalid()
     {
@@ -47,8 +47,8 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that hostname with only a dot is invalid.
      *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Hostname "." is invalid. Part of hostname "" is empty.
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Hostname "." is invalid: Part of hostname "" is empty.
      */
     public function testHostnameWithOnlyADotIsInvalid()
     {
@@ -58,8 +58,8 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that hostname with empty part is invalid.
      *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Hostname "foo..com" is invalid. Part of hostname "" is empty.
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Hostname "foo..com" is invalid: Part of hostname "" is empty.
      */
     public function testHostnameWithEmptyPartIsInvalid()
     {
