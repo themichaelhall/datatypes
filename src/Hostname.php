@@ -37,7 +37,7 @@ class Hostname implements HostnameInterface
      *
      * @param string $hostname The hostname.
      *
-     * @return bool True if hostname is valid, false otherwise.
+     * @return bool True if the $hostname parameter is a valid hostname, false otherwise.
      */
     public static function isValid($hostname)
     {
@@ -50,6 +50,26 @@ class Hostname implements HostnameInterface
         }
 
         return true;
+    }
+
+    /**
+     * Parses a hostname and returns a Hostname instance.
+     *
+     * @param string $hostname The hostname as a string.
+     *
+     * @return Hostname|null The Hostname instance if the $hostname parameter is a valid hostname, null otherwise.
+     */
+    public static function tryParse($hostname)
+    {
+        assert(is_string($hostname), '$hostname is not a string');
+
+        try {
+            $result = new self($hostname);
+            return $result;
+        } catch (HostnameInvalidArgumentException $e) {
+        }
+
+        return null;
     }
 
     /**
