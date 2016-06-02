@@ -65,6 +65,7 @@ class Hostname implements HostnameInterface
 
         try {
             $result = new self($hostname);
+
             return $result;
         } catch (HostnameInvalidArgumentException $e) {
         }
