@@ -15,6 +15,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
         $this->assertSame('foo', (new Hostname('foo'))->__toString());
         $this->assertSame('foo.com', (new Hostname('foo.com'))->__toString());
         $this->assertSame('www.foo.com', (new Hostname('www.foo.com'))->__toString());
+        $this->assertSame('www.foo.bar.com', (new Hostname('www.foo.bar.com'))->__toString());
     }
 
     /**

@@ -21,13 +21,13 @@ class Hostname implements HostnameInterface
     {
         assert(is_string($hostname), '$hostname is not a string');
 
-        if (!static::_parse($hostname, $tld, $domain, $result, $error)) {
+        if (!static::_parse($hostname, false, $subdomains, $domain, $tld, $error)) {
             throw new HostnameInvalidArgumentException($error);
         }
 
         $this->_tld = $tld;
         $this->_domain = $domain;
-        $this->_parts = $result;
+        $this->_subdomains = $subdomains;
     }
 
     /**
@@ -55,7 +55,11 @@ class Hostname implements HostnameInterface
      */
     public function __toString()
     {
-        return implode('.', $this->_parts);
+        if (count($this->_subdomains) > 0) {
+            return implode('.', $this->_subdomains) . '.' . $this->getDomain();
+        }
+
+        return $this->getDomain();
     }
 
     /**
@@ -69,7 +73,7 @@ class Hostname implements HostnameInterface
     {
         assert(is_string($hostname), '$hostname is not a string');
 
-        return static::_parse($hostname);
+        return static::_parse($hostname, true);
     }
 
     /**
@@ -96,15 +100,16 @@ class Hostname implements HostnameInterface
     /**
      * Tries to parse a hostname and returns the result or error text.
      *
-     * @param string      $hostname The hostname as a string.
-     * @param string|null $tld      The top-level domain if parsing was successful, null otherwise.
-     * @param string|null $domain   The domain without top-level domain if parsing was successful, null otherwise.
-     * @param array|null  $result   The result if parsing was successful, null otherwise.
-     * @param string|null $error    The error text if parsing was successful, null otherwise.
+     * @param string        $hostname     The hostname as a string.
+     * @param bool          $validateOnly If true only validation is performed, if false parse results are returned.
+     * @param string[]|null $subdomains   The subdomains if parsing was successful, false otherwise.
+     * @param string|null   $domain       The domain without top-level domain if parsing was successful, null otherwise.
+     * @param string|null   $tld          The top-level domain if parsing was successful, null otherwise.
+     * @param string|null   $error        The error text if parsing was successful, null otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function _parse($hostname, &$tld = null, &$domain = null, array &$result = null, &$error = null)
+    private static function _parse($hostname, $validateOnly, array &$subdomains = null, &$domain = null, &$tld = null, &$error = null)
     {
         assert(is_string($hostname), '$hostname is not a string');
 
@@ -136,30 +141,36 @@ class Hostname implements HostnameInterface
             }
         }
 
-        // Copy the parts into the result.
-        if (count($result) == 1) {
-            $domain = $result[0];
-            $tld = null;
-        } else {
-            $domain = $result[count($result) - 2];
-            $tld = $result[count($result) - 1];
+        if (!$validateOnly) {
+            $resultCount = count($result);
+
+            // Copy the parts into the result.
+            if ($resultCount == 1) {
+                $subdomains = [];
+                $domain = $result[0];
+                $tld = null;
+            } else {
+                $subdomains = array_slice($result, 0, $resultCount - 2);
+                $domain = $result[$resultCount - 2];
+                $tld = $result[$resultCount - 1];
+            }
         }
 
         return true;
     }
 
     /**
-     * @var string[] My hostname parts.
+     * @var string[] My subdomains.
      */
-    private $_parts; // fixme: remove this
-
-    /**
-     * @var string|null My top-level domain if this hostname has a top-level domain, null otherwise.
-     */
-    private $_tld;
+    private $_subdomains;
 
     /**
      * @var string My domain name, without top-level domain.
      */
     private $_domain;
+
+    /**
+     * @var string|null My top-level domain if this hostname has a top-level domain, null otherwise.
+     */
+    private $_tld;
 }
