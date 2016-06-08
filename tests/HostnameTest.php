@@ -71,6 +71,9 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testIsValid()
     {
+        $this->assertFalse(Hostname::isValid(''));
+        $this->assertFalse(Hostname::isValid('.'));
+        $this->assertFalse(Hostname::isValid('bar..com'));
         $this->assertTrue(Hostname::isValid('foo.bar.com.'));
         $this->assertTrue(Hostname::isValid('FOO.BAR.COM.'));
         $this->assertFalse(Hostname::isValid('foo..org'));
@@ -81,6 +84,9 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testTryParse()
     {
+        $this->assertNull(Hostname::tryParse(''));
+        $this->assertNull(Hostname::tryParse('.'));
+        $this->assertNull(Hostname::tryParse('bar..com'));
         $this->assertSame('foo.bar.com', Hostname::tryParse('foo.bar.com.')->__toString());
         $this->assertSame('foo.bar.com', Hostname::tryParse('FOO.BAR.COM.')->__toString());
         $this->assertNull(Hostname::tryParse('foo..org'));

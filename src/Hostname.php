@@ -21,7 +21,11 @@ class Hostname implements HostnameInterface
     {
         assert(is_string($hostname), '$hostname is not a string');
 
-        $this->_parse($hostname);
+        if (!static::_parse($hostname, $result, $error)) {
+            throw new HostnameInvalidArgumentException($error);
+        }
+
+        $this->_parts = $result;
     }
 
     /**
@@ -43,13 +47,7 @@ class Hostname implements HostnameInterface
     {
         assert(is_string($hostname), '$hostname is not a string');
 
-        try {
-            new self($hostname);
-        } catch (HostnameInvalidArgumentException $e) {
-            return false;
-        }
-
-        return true;
+        return static::_parse($hostname);
     }
 
     /**
@@ -74,56 +72,46 @@ class Hostname implements HostnameInterface
     }
 
     /**
-     * Parses a hostname.
+     * Tries to parse a hostname and returns the result or error text.
      *
-     * @param string $hostname The hostname as a string.
+     * @param string      $hostname The hostname as a string.
+     * @param array|null  $result   The result if parsing was successful, null otherwise.
+     * @param string|null $error    The error text if parsing was successful, null otherwise.
      *
-     * @throws HostnameInvalidArgumentException If the $hostname parameter is not a valid hostname.
+     * @return bool True if parsing was successful, false otherwise.
      */
-    private function _parse($hostname)
+    static private function _parse($hostname, array &$result = null, &$error = null)
     {
         assert(is_string($hostname), '$hostname is not a string');
 
+        $result = null;
+        $error = null;
+
         // Empty hostname is invalid.
         if ($hostname === '') {
-            throw new HostnameInvalidArgumentException('Hostname "' . $hostname . '" is empty.');
+            $error = 'Hostname "' . $hostname . '" is empty.';
+
+            return false;
         }
 
-        // Split hostname and validate individual parts.
-        $this->_parts = [];
+        // Split hostname in parts.
         $parts = explode(
             '.',
             substr($hostname, -1) === '.' ? substr($hostname, 0, -1) : $hostname // Remove trailing "." from hostname if present.
         );
 
+        // Normalize and validate individual parts.
+        $result = [];
         foreach ($parts as $part) {
-            $this->_parts[] = static::_normalizeAndValidatePart($part, $hostname);
-        }
-    }
+            $result[] = strtolower($part);
 
-    /**
-     * Normalizes and validates a part of the hostname.
-     *
-     * @param string $part     The part of the hostname.
-     * @param string $hostname The hostname.
-     *
-     * @throws HostnameInvalidArgumentException If the $part parameter is not a valid hostname part.
-     *
-     * @return string The normalized part.
-     */
-    private static function _normalizeAndValidatePart($part, $hostname)
-    {
-        assert(is_string($part), '$part is not a string');
-        assert(is_string($hostname), '$hostname is not a string');
-
-        $part = strtolower($part);
-
-        // Part can not be empty.
-        if ($part === '') {
-            throw new HostnameInvalidArgumentException('Hostname "' . $hostname . '" is invalid: Part of hostname "' . $part . '" is empty.');
+            if ($part === '') {
+                $error = 'Hostname "' . $hostname . '" is invalid: Part of hostname "' . $part . '" is empty.';
+                return false;
+            }
         }
 
-        return $part;
+        return true;
     }
 
     /**
