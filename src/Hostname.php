@@ -117,6 +117,7 @@ class Hostname implements HostnameInterface
 
             if ($part === '') {
                 $error = 'Hostname "' . $hostname . '" is invalid: Part of hostname "' . $part . '" is empty.';
+                
                 return false;
             }
         }
