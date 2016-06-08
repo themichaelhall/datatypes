@@ -25,9 +25,7 @@ class Hostname implements HostnameInterface
             throw new HostnameInvalidArgumentException($error);
         }
 
-        $this->_tld = $tld;
-        $this->_domain = $domain;
-        $this->_subdomains = $subdomains;
+        $this->_build($subdomains, $domain, $tld);
     }
 
     /**
@@ -98,6 +96,20 @@ class Hostname implements HostnameInterface
     }
 
     /**
+     * Builds this hostname from hostname parts.
+     *
+     * @param array       $subdomains The subdomains.
+     * @param string      $domain     The domain without top-level domain.
+     * @param string|null $tld        The top-level domain if top-level domain is present, null otherwise.
+     */
+    private function _build(array $subdomains, $domain, $tld = null)
+    {
+        $this->_subdomains = $subdomains;
+        $this->_domain = $domain;
+        $this->_tld = $tld;
+    }
+
+    /**
      * Tries to parse a hostname and returns the result or error text.
      *
      * @param string        $hostname     The hostname as a string.
@@ -113,7 +125,6 @@ class Hostname implements HostnameInterface
     {
         assert(is_string($hostname), '$hostname is not a string');
 
-        $result = null;
         $error = null;
 
         // Empty hostname is invalid.
