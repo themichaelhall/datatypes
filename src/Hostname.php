@@ -21,11 +21,20 @@ class Hostname implements HostnameInterface
     {
         assert(is_string($hostname), '$hostname is not a string');
 
-        if (!static::_parse($hostname, $result, $error)) {
+        if (!static::_parse($hostname, $tld, $result, $error)) {
             throw new HostnameInvalidArgumentException($error);
         }
 
+        $this->_tld = $tld;
         $this->_parts = $result;
+    }
+
+    /**
+     * @return string|null The top-level domain of the hostname if hostname has a top-level domain, null otherwise.
+     */
+    public function getTld()
+    {
+        return $this->_tld;
     }
 
     /**
@@ -75,12 +84,13 @@ class Hostname implements HostnameInterface
      * Tries to parse a hostname and returns the result or error text.
      *
      * @param string      $hostname The hostname as a string.
+     * @param string|null $tld      The top-level domain if parsing was successful, null otherwise.
      * @param array|null  $result   The result if parsing was successful, null otherwise.
      * @param string|null $error    The error text if parsing was successful, null otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    static private function _parse($hostname, array &$result = null, &$error = null)
+    private static function _parse($hostname, &$tld = null, array &$result = null, &$error = null)
     {
         assert(is_string($hostname), '$hostname is not a string');
 
@@ -97,7 +107,7 @@ class Hostname implements HostnameInterface
         // Split hostname in parts.
         $parts = explode(
             '.',
-            substr($hostname, -1) === '.' ? substr($hostname, 0, -1) : $hostname // Remove trailing "." from hostname if present.
+            substr($hostname, -1) === '.' ? substr($hostname, 0, -1) : $hostname // Remove trailing "." from hostname.
         );
 
         // Normalize and validate individual parts.
@@ -111,11 +121,23 @@ class Hostname implements HostnameInterface
             }
         }
 
+        // Copy the parts into the result.
+        if (count($result) <= 1) {
+            $tld = null;
+        } else {
+            $tld = $result[count($result) - 1];
+        }
+
         return true;
     }
 
     /**
      * @var string[] My hostname parts.
      */
-    private $_parts;
+    private $_parts; // fixme: remove this
+
+    /**
+     * @var string|null My top-level domain if this hostname has a top-level domain, null otherwise.
+     */
+    private $_tld;
 }

@@ -67,6 +67,16 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test getTld method.
+     */
+    public function testGetTld()
+    {
+        $this->assertNull((new Hostname('foo'))->getTld());
+        $this->assertSame('com', (new Hostname('foo.com'))->getTld());
+        $this->assertSame('org', (new Hostname('foo.bar.org'))->getTld());
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
