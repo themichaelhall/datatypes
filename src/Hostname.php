@@ -21,12 +21,25 @@ class Hostname implements HostnameInterface
     {
         assert(is_string($hostname), '$hostname is not a string');
 
-        if (!static::_parse($hostname, $tld, $result, $error)) {
+        if (!static::_parse($hostname, $tld, $domain, $result, $error)) {
             throw new HostnameInvalidArgumentException($error);
         }
 
         $this->_tld = $tld;
+        $this->_domain = $domain;
         $this->_parts = $result;
+    }
+
+    /**
+     * @return string The domain name including top-level domain.
+     */
+    public function getDomain()
+    {
+        if ($this->_tld === null) {
+            return $this->_domain;
+        }
+
+        return $this->_domain . '.' . $this->_tld;
     }
 
     /**
@@ -85,12 +98,13 @@ class Hostname implements HostnameInterface
      *
      * @param string      $hostname The hostname as a string.
      * @param string|null $tld      The top-level domain if parsing was successful, null otherwise.
+     * @param string|null $domain   The domain without top-level domain if parsing was successful, null otherwise.
      * @param array|null  $result   The result if parsing was successful, null otherwise.
      * @param string|null $error    The error text if parsing was successful, null otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function _parse($hostname, &$tld = null, array &$result = null, &$error = null)
+    private static function _parse($hostname, &$tld = null, &$domain = null, array &$result = null, &$error = null)
     {
         assert(is_string($hostname), '$hostname is not a string');
 
@@ -117,15 +131,17 @@ class Hostname implements HostnameInterface
 
             if ($part === '') {
                 $error = 'Hostname "' . $hostname . '" is invalid: Part of hostname "' . $part . '" is empty.';
-                
+
                 return false;
             }
         }
 
         // Copy the parts into the result.
-        if (count($result) <= 1) {
+        if (count($result) == 1) {
+            $domain = $result[0];
             $tld = null;
         } else {
+            $domain = $result[count($result) - 2];
             $tld = $result[count($result) - 1];
         }
 
@@ -141,4 +157,9 @@ class Hostname implements HostnameInterface
      * @var string|null My top-level domain if this hostname has a top-level domain, null otherwise.
      */
     private $_tld;
+
+    /**
+     * @var string My domain name, without top-level domain.
+     */
+    private $_domain;
 }

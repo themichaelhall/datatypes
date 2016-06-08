@@ -77,6 +77,16 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test getDomain method.
+     */
+    public function testGetDomain()
+    {
+        $this->assertSame('foo', (new Hostname('foo'))->getDomain());
+        $this->assertSame('foo.com', (new Hostname('foo.com'))->getDomain());
+        $this->assertSame('bar.org', (new Hostname('foo.bar.org'))->getDomain());
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
