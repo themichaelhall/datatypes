@@ -21,11 +21,11 @@ class Hostname implements HostnameInterface
     {
         assert(is_string($hostname), '$hostname is not a string');
 
-        if (!static::_parse($hostname, false, $subdomains, $domain, $tld, $error)) {
+        if (!static::_parse($hostname, false, $domainParts, $tld, $error)) {
             throw new HostnameInvalidArgumentException($error);
         }
 
-        $this->_build($subdomains, $domain, $tld);
+        $this->_build($domainParts, $tld);
     }
 
     /**
@@ -33,11 +33,7 @@ class Hostname implements HostnameInterface
      */
     public function getDomain()
     {
-        if ($this->_tld === null) {
-            return $this->_domain;
-        }
-
-        return $this->_domain . '.' . $this->_tld;
+        return $this->_domainParts[count($this->_domainParts) - 1] . ($this->_tld !== null ? '.' . $this->_tld : '');
     }
 
     /**
@@ -53,11 +49,7 @@ class Hostname implements HostnameInterface
      */
     public function __toString()
     {
-        if (count($this->_subdomains) > 0) {
-            return implode('.', $this->_subdomains) . '.' . $this->getDomain();
-        }
-
-        return $this->getDomain();
+        return implode('.', $this->_domainParts) . ($this->_tld !== null ? '.' . $this->_tld : '');
     }
 
     /**
@@ -98,14 +90,12 @@ class Hostname implements HostnameInterface
     /**
      * Builds this hostname from hostname parts.
      *
-     * @param string[]    $subdomains The subdomains.
-     * @param string      $domain     The domain without top-level domain.
-     * @param string|null $tld        The top-level domain if top-level domain is present, null otherwise.
+     * @param string[]    $domainParts The domain parts.
+     * @param string|null $tld         The top-level domain if top-level domain is present, null otherwise.
      */
-    private function _build(array $subdomains, $domain, $tld = null)
+    private function _build(array $domainParts, $tld = null)
     {
-        $this->_subdomains = $subdomains;
-        $this->_domain = $domain;
+        $this->_domainParts = $domainParts;
         $this->_tld = $tld;
     }
 
@@ -114,14 +104,13 @@ class Hostname implements HostnameInterface
      *
      * @param string        $hostname     The hostname.
      * @param bool          $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param string[]|null $subdomains   The subdomains if parsing was successful, undefined otherwise.
-     * @param string|null   $domain       The domain without top-level domain if parsing was successful, undefined otherwise.
+     * @param string[]|null $domainParts  The domain parts if parsing was successful, undefined otherwise.
      * @param string|null   $tld          The top-level domain if parsing was successful, undefined otherwise.
      * @param string|null   $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function _parse($hostname, $validateOnly, array &$subdomains = null, &$domain = null, &$tld = null, &$error = null)
+    private static function _parse($hostname, $validateOnly, array &$domainParts = null, &$tld = null, &$error = null)
     {
         // Pre-validate hostname.
         if (!static::_preValidate($hostname, $error)) {
@@ -129,13 +118,13 @@ class Hostname implements HostnameInterface
         }
 
         // Split hostname in parts.
-        $parts = explode(
+        $domainParts = explode(
             '.',
             substr($hostname, -1) === '.' ? substr($hostname, 0, -1) : $hostname // Remove trailing "." from hostname.
         );
 
         // Is there a top-level domain?
-        $tld = count($parts) > 1 ? array_pop($parts) : null;
+        $tld = count($domainParts) > 1 ? array_pop($domainParts) : null;
 
         if ($tld !== null) {
             if (!static::_validateTld($tld, $error)) {
@@ -145,9 +134,9 @@ class Hostname implements HostnameInterface
             }
         }
 
-        // Validate the rest.
-        foreach ($parts as $part) {
-            if (!static::_validatePart($part, $error)) {
+        // Validate the domain parts.
+        foreach ($domainParts as $part) {
+            if (!static::_validateDomainPart($part, $error)) {
                 $error = 'Hostname "' . $hostname . '" is invalid: ' . $error;
 
                 return false;
@@ -155,21 +144,9 @@ class Hostname implements HostnameInterface
         }
 
         if (!$validateOnly) {
-            $partsCount = count($parts);
-
-            // Copy the parts into the result.
-            if ($partsCount == 1) {
-                $subdomains = [];
-                $domain = $parts[0];
-            } else {
-                $subdomains = array_slice($parts, 0, $partsCount - 1);
-                $domain = $parts[$partsCount - 1];
-            }
-
             // Normalize result.
             $tld = $tld !== null ? strtolower($tld) : null;
-            $domain = strtolower($domain);
-            array_walk($subdomains, function (&$p) {
+            array_walk($domainParts, function (&$p) {
                 $p = strtolower($p);
             });
         }
@@ -239,46 +216,46 @@ class Hostname implements HostnameInterface
     }
 
     /**
-     * Validates a hostname part.
+     * Validates a domain part.
      *
-     * @param string $part  The hostname part.
-     * @param string $error The error text if validation was not successful, undefined otherwise.
+     * @param string $domainPart The domain part.
+     * @param string $error      The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function _validatePart($part, &$error)
+    private static function _validateDomainPart($domainPart, &$error)
     {
         // Empty hostname part is invalid.
-        if ($part === '') {
-            $error = 'Part of hostname "' . $part . '" is empty.';
+        if ($domainPart === '') {
+            $error = 'Part of hostname "' . $domainPart . '" is empty.';
 
             return false;
         }
 
         // Too long hostname part is invalid.
-        if (strlen($part) > 63) {
-            $error = 'Part of hostname "' . $part . '" is too long: Maximum allowed length is 63 characters.';
+        if (strlen($domainPart) > 63) {
+            $error = 'Part of hostname "' . $domainPart . '" is too long: Maximum allowed length is 63 characters.';
 
             return false;
         }
 
         // Hostname part containing invalid character is invalid.
-        if (preg_match('/[^a-zA-Z0-9-]/', $part, $matches)) {
-            $error = 'Part of hostname "' . $part . '" contains invalid character "' . $matches[0] . '".';
+        if (preg_match('/[^a-zA-Z0-9-]/', $domainPart, $matches)) {
+            $error = 'Part of hostname "' . $domainPart . '" contains invalid character "' . $matches[0] . '".';
 
             return false;
         }
 
         // Hostname part can not begin with a dash.
-        if (substr($part, 0, 1) === '-') {
-            $error = 'Part of hostname "' . $part . '" begins with "-".';
+        if (substr($domainPart, 0, 1) === '-') {
+            $error = 'Part of hostname "' . $domainPart . '" begins with "-".';
 
             return false;
         }
 
         // Hostname part can not end with a dash.
-        if (substr($part, -1) === '-') {
-            $error = 'Part of hostname "' . $part . '" ends with "-".';
+        if (substr($domainPart, -1) === '-') {
+            $error = 'Part of hostname "' . $domainPart . '" ends with "-".';
 
             return false;
         }
@@ -287,14 +264,9 @@ class Hostname implements HostnameInterface
     }
 
     /**
-     * @var string[] My subdomains.
+     * @var string[] My domain parts.
      */
-    private $_subdomains;
-
-    /**
-     * @var string My domain name, without top-level domain.
-     */
-    private $_domain;
+    private $_domainParts;
 
     /**
      * @var string|null My top-level domain if this hostname has a top-level domain, null otherwise.
