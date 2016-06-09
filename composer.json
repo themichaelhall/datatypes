@@ -1,6 +1,6 @@
 {
   "name": "michaelhall/datatypes",
-  "description": "Data types classes for PHP",
+  "description": "Data type classes for PHP",
   "homepage": "https://github.com/themichaelhall/datatypes",
   "license": "MIT",
   "keywords": [
@@ -15,9 +15,10 @@
     }
   ],
   "require": {
+    "php": ">=5.6"
   },
   "require-dev": {
-    "phpunit/phpunit": "4.8.*"
+    "phpunit/phpunit": "5.4.*"
   },
   "autoload": {
     "psr-4": {
