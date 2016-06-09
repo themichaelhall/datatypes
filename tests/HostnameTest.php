@@ -16,6 +16,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
         $this->assertSame('foo.com', (new Hostname('foo.com'))->__toString());
         $this->assertSame('www.foo.com', (new Hostname('www.foo.com'))->__toString());
         $this->assertSame('www.foo.bar.com', (new Hostname('www.foo.bar.com'))->__toString());
+        $this->assertSame('www.foo-bar.com', (new Hostname('www.foo-bar.com'))->__toString());
     }
 
     /**
@@ -57,6 +58,34 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test that too long hostname is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Hostname "xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxx" is too long: Maximum allowed length is 255 characters.
+     */
+    public function testTooLongHostnameIsInvalid()
+    {
+        new Hostname(
+            'xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.' .
+            'xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.' .
+            'xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.' .
+            'xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.' .
+            'xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.' .
+            'xxxxxx');
+    }
+
+    /**
+     * Test that hostname with invalid character is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Hostname "foo.ba+r.com" is invalid: Part of hostname "ba+r" contains invalid character "+".
+     */
+    public function testHostnameWithInvalidCharacterIsInvalid()
+    {
+        new Hostname('foo.ba+r.com');
+    }
+
+    /**
      * Test that hostname with empty part is invalid.
      *
      * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
@@ -65,6 +94,72 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     public function testHostnameWithEmptyPartIsInvalid()
     {
         new Hostname('foo..com');
+    }
+
+    /**
+     * Test that hostname with too long part is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Hostname "foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.com" is invalid: Part of hostname "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is too long: Maximum allowed length is 63 characters.
+     */
+    public function testHostNameWithTooLongPartIsInvalid()
+    {
+        new Hostname('foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.com');
+    }
+
+    /**
+     * Test that hostname with part beginning with dash is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Hostname "-foo.bar.com" is invalid: Part of hostname "-foo" begins with "-".
+     */
+    public function testHostnameWithPartBeginningWithDashIsInvalid()
+    {
+        new Hostname('-foo.bar.com');
+    }
+
+    /**
+     * Test that hostname with part ending with dash is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Hostname "foo.bar-.com" is invalid: Part of hostname "bar-" ends with "-".
+     */
+    public function testHostnameWithPartEndingWithDashIsInvalid()
+    {
+        new Hostname('foo.bar-.com');
+    }
+
+    /**
+     * Test that hostname with empty top-level domain is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Hostname "bar.." is invalid: Top-level domain "" is empty.
+     */
+    public function testHostnameWithEmptyTopLevelDomainIsInvalid()
+    {
+        new Hostname('bar..');
+    }
+
+    /**
+     * Test that hostname with too long top-level domain is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Hostname "foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is invalid: Top-level domain "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is too long: Maximum allowed length is 63 characters.
+     */
+    public function testHostNameWithTooLongTopLevelDomainIsInvalid()
+    {
+        new Hostname('foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+    }
+
+    /**
+     * Test that hostname with invalid character in top level domain is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Hostname "foo.bar.co2" is invalid: Top-level domain "co2" contains invalid character "2".
+     */
+    public function testHostnameWithInvalidCharacterInTopLevelDomainIsInvalid()
+    {
+        new Hostname('foo.bar.co2');
     }
 
     /**
@@ -98,6 +193,10 @@ class HostnameTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(Hostname::isValid('foo.bar.com.'));
         $this->assertTrue(Hostname::isValid('FOO.BAR.COM.'));
         $this->assertFalse(Hostname::isValid('foo..org'));
+        $this->assertFalse(Hostname::isValid('*.org'));
+        $this->assertFalse(Hostname::isValid('foo.[bar].org'));
+        $this->assertFalse(Hostname::isValid('[foo].bar.org'));
+        $this->assertFalse(Hostname::isValid('foo.bar..'));
     }
 
     /**
@@ -111,5 +210,9 @@ class HostnameTest extends PHPUnit_Framework_TestCase
         $this->assertSame('foo.bar.com', Hostname::tryParse('foo.bar.com.')->__toString());
         $this->assertSame('foo.bar.com', Hostname::tryParse('FOO.BAR.COM.')->__toString());
         $this->assertNull(Hostname::tryParse('foo..org'));
+        $this->assertNull(Hostname::tryParse('*.org'));
+        $this->assertNull(Hostname::tryParse('foo.[bar].org'));
+        $this->assertNull(Hostname::tryParse('[foo].bar.org'));
+        $this->assertNull(Hostname::tryParse('foo.bar..'));
     }
 }

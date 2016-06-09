@@ -13,7 +13,7 @@ class Hostname implements HostnameInterface
     /**
      * Constructs a hostname.
      *
-     * @param string $hostname The hostname as a string.
+     * @param string $hostname The hostname..
      *
      * @throws HostnameInvalidArgumentException If the $hostname parameter is not a valid hostname.
      */
@@ -77,7 +77,7 @@ class Hostname implements HostnameInterface
     /**
      * Parses a hostname and returns a Hostname instance.
      *
-     * @param string $hostname The hostname as a string.
+     * @param string $hostname The hostname.
      *
      * @return Hostname|null The Hostname instance if the $hostname parameter is a valid hostname, null otherwise.
      */
@@ -98,7 +98,7 @@ class Hostname implements HostnameInterface
     /**
      * Builds this hostname from hostname parts.
      *
-     * @param array       $subdomains The subdomains.
+     * @param string[]    $subdomains The subdomains.
      * @param string      $domain     The domain without top-level domain.
      * @param string|null $tld        The top-level domain if top-level domain is present, null otherwise.
      */
@@ -112,25 +112,19 @@ class Hostname implements HostnameInterface
     /**
      * Tries to parse a hostname and returns the result or error text.
      *
-     * @param string        $hostname     The hostname as a string.
+     * @param string        $hostname     The hostname.
      * @param bool          $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param string[]|null $subdomains   The subdomains if parsing was successful, false otherwise.
-     * @param string|null   $domain       The domain without top-level domain if parsing was successful, null otherwise.
-     * @param string|null   $tld          The top-level domain if parsing was successful, null otherwise.
-     * @param string|null   $error        The error text if parsing was successful, null otherwise.
+     * @param string[]|null $subdomains   The subdomains if parsing was successful, undefined otherwise.
+     * @param string|null   $domain       The domain without top-level domain if parsing was successful, undefined otherwise.
+     * @param string|null   $tld          The top-level domain if parsing was successful, undefined otherwise.
+     * @param string|null   $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
     private static function _parse($hostname, $validateOnly, array &$subdomains = null, &$domain = null, &$tld = null, &$error = null)
     {
-        assert(is_string($hostname), '$hostname is not a string');
-
-        $error = null;
-
-        // Empty hostname is invalid.
-        if ($hostname === '') {
-            $error = 'Hostname "' . $hostname . '" is empty.';
-
+        // Pre-validate hostname.
+        if (!static::_preValidate($hostname, $error)) {
             return false;
         }
 
@@ -140,31 +134,153 @@ class Hostname implements HostnameInterface
             substr($hostname, -1) === '.' ? substr($hostname, 0, -1) : $hostname // Remove trailing "." from hostname.
         );
 
-        // Normalize and validate individual parts.
-        $result = [];
-        foreach ($parts as $part) {
-            $result[] = strtolower($part);
+        // Is there a top-level domain?
+        $tld = count($parts) > 1 ? array_pop($parts) : null;
 
-            if ($part === '') {
-                $error = 'Hostname "' . $hostname . '" is invalid: Part of hostname "' . $part . '" is empty.';
+        if ($tld !== null) {
+            if (!static::_validateTld($tld, $error)) {
+                $error = 'Hostname "' . $hostname . '" is invalid: ' . $error;
+
+                return false;
+            }
+        }
+
+        // Validate the rest.
+        foreach ($parts as $part) {
+            if (!static::_validatePart($part, $error)) {
+                $error = 'Hostname "' . $hostname . '" is invalid: ' . $error;
 
                 return false;
             }
         }
 
         if (!$validateOnly) {
-            $resultCount = count($result);
+            $partsCount = count($parts);
 
             // Copy the parts into the result.
-            if ($resultCount == 1) {
+            if ($partsCount == 1) {
                 $subdomains = [];
-                $domain = $result[0];
-                $tld = null;
+                $domain = $parts[0];
             } else {
-                $subdomains = array_slice($result, 0, $resultCount - 2);
-                $domain = $result[$resultCount - 2];
-                $tld = $result[$resultCount - 1];
+                $subdomains = array_slice($parts, 0, $partsCount - 1);
+                $domain = $parts[$partsCount - 1];
             }
+
+            // Normalize result.
+            $tld = $tld !== null ? strtolower($tld) : null;
+            $domain = strtolower($domain);
+            array_walk($subdomains, function (&$p) {
+                $p = strtolower($p);
+            });
+        }
+
+        return true;
+    }
+
+    /**
+     * Pre-validates a hostname.
+     *
+     * @param string $hostname The hostname.
+     * @param string $error    The error text if pre-validation was not successful, undefined otherwise.
+     *
+     * @return bool True if pre-validation was successful, false otherwise.
+     */
+    private static function _preValidate($hostname, &$error)
+    {
+        // Empty hostname is invalid.
+        if ($hostname === '') {
+            $error = 'Hostname "' . $hostname . '" is empty.';
+
+            return false;
+        }
+
+        // Hostname longer than maximum length is invalid.
+        if (strlen($hostname) > 255) {
+            $error = 'Hostname "' . $hostname . '" is too long: Maximum allowed length is 255 characters."';
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates a top-level domain.
+     *
+     * @param string $tld   The top-level domain.
+     * @param string $error The The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    private static function _validateTld($tld, &$error)
+    {
+        // Empty top-level domain is invalid.
+        if ($tld === '') {
+            $error = 'Top-level domain "' . $tld . '" is empty.';
+
+            return false;
+        }
+
+        // Too long top level domain is invalid.
+        if (strlen($tld) > 63) {
+            $error = 'Top-level domain "' . $tld . '" is too long: Maximum allowed length is 63 characters.';
+
+            return false;
+        }
+
+        // Top-level domain containing invalid character is invalid.
+        if (preg_match('/[^a-zA-Z]/', $tld, $matches)) {
+            $error = 'Top-level domain "' . $tld . '" contains invalid character "' . $matches[0] . '".';
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates a hostname part.
+     *
+     * @param string $part  The hostname part.
+     * @param string $error The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    private static function _validatePart($part, &$error)
+    {
+        // Empty hostname part is invalid.
+        if ($part === '') {
+            $error = 'Part of hostname "' . $part . '" is empty.';
+
+            return false;
+        }
+
+        // Too long hostname part is invalid.
+        if (strlen($part) > 63) {
+            $error = 'Part of hostname "' . $part . '" is too long: Maximum allowed length is 63 characters.';
+
+            return false;
+        }
+
+        // Hostname part containing invalid character is invalid.
+        if (preg_match('/[^a-zA-Z0-9-]/', $part, $matches)) {
+            $error = 'Part of hostname "' . $part . '" contains invalid character "' . $matches[0] . '".';
+
+            return false;
+        }
+
+        // Hostname part can not begin with a dash.
+        if (substr($part, 0, 1) === '-') {
+            $error = 'Part of hostname "' . $part . '" begins with "-".';
+
+            return false;
+        }
+
+        // Hostname part can not end with a dash.
+        if (substr($part, -1) === '-') {
+            $error = 'Part of hostname "' . $part . '" ends with "-".';
+
+            return false;
         }
 
         return true;
