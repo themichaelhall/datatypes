@@ -71,7 +71,7 @@ class Hostname implements HostnameInterface
      *
      * @param string $hostname The hostname.
      *
-     * @return Hostname|null The Hostname instance if the $hostname parameter is a valid hostname, null otherwise.
+     * @return HostnameInterface|null The Hostname instance if the $hostname parameter is a valid hostname, null otherwise.
      */
     public static function tryParse($hostname)
     {
