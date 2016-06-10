@@ -100,7 +100,7 @@ class IPAddress implements IPAddressInterface
     }
 
     /**
-     * Validates an IP address part
+     * Validates an IP address part.
      *
      * @param string $ipAddressPart The IP address part.
      * @param int    $octet         The resulting octet.

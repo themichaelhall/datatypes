@@ -40,6 +40,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
 
     /**
      * Test that IP address with empty octet is invalid.
+     *
      * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
      * @expectedExceptionMessage IP address "192.168..1" is invalid: Octet "" is empty.
      */
@@ -50,6 +51,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
 
     /**
      * Test that IP address with invalid character in octet is invalid.
+     *
      * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
      * @expectedExceptionMessage IP address "127.0.0X.1" is invalid: Octet "0X" contains invalid character "X".
      */
@@ -60,6 +62,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
 
     /**
      * Test that IP address with octet out of range is invalid.
+     *
      * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
      * @expectedExceptionMessage IP address "255.255.256.255" is invalid: Octet "256" is out of range: Maximum value for octet is 255.
      */
