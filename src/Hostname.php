@@ -45,6 +45,27 @@ class Hostname implements HostnameInterface
     }
 
     /**
+     * Returns a copy of the Hostname instance with the specified top-level domain.
+     *
+     * @param string $tld The top-level domain.
+     *
+     * @return HostnameInterface The Hostname instance.
+     */
+    public function withTld($tld)
+    {
+        assert(is_string($tld), '$tld is not a string');
+
+        if (!static::_validateTld($tld, $error)) {
+            throw new HostnameInvalidArgumentException($error);
+        }
+
+        $result = clone $this;
+        $result->_tld = $tld;
+
+        return $result;
+    }
+
+    /**
      * @return string The hostname as a string.
      */
     public function __toString()

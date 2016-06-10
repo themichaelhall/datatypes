@@ -215,4 +215,25 @@ class HostnameTest extends PHPUnit_Framework_TestCase
         $this->assertNull(Hostname::tryParse('[foo].bar.org'));
         $this->assertNull(Hostname::tryParse('foo.bar..'));
     }
+
+    /**
+     * Test withTld method.
+     */
+    public function testWithTld()
+    {
+        $this->assertSame('foo.com', Hostname::tryParse('foo')->withTld('com')->__toString());
+        $this->assertSame('foo.org', Hostname::tryParse('foo.com')->withTld('org')->__toString());
+        $this->assertSame('foo.bar.org', Hostname::tryParse('foo.bar.com')->withTld('org')->__toString());
+    }
+
+    /**
+     * Test that a call to withTld method with an invalid top-level domain is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Top-level domain "123" contains invalid character "1".
+     */
+    public function testWithTldWithInvalidTopDomainLevelIsInvalid()
+    {
+        Hostname::tryParse('domain.com')->withTld('123');
+    }
 }
