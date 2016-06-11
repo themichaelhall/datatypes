@@ -49,6 +49,27 @@ class IPAddress implements IPAddressInterface
     }
 
     /**
+     * Parses an IP address and returns a IPAddress instance.
+     *
+     * @param string $ipAddress The IP address.
+     *
+     * @return IPAddressInterface|null The IPAddress instance if the $ipAddress parameter is a valid IP address, null otherwise.
+     */
+    public static function tryParse($ipAddress)
+    {
+        assert(is_string($ipAddress), '$ipAddress is not a string');
+
+        try {
+            $result = new self($ipAddress);
+
+            return $result;
+        } catch (IPAddressInvalidArgumentException $e) {
+        }
+
+        return null;
+    }
+
+    /**
      * Tries to parse an IP address and returns the result or error text.
      *
      * @param string      $ipAddress    The IP address.

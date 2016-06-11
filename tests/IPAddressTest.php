@@ -84,4 +84,18 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(IPAddress::isValid('0.0.0.0'));
         $this->assertTrue(IPAddress::isValid('255.255.255.255'));
     }
+
+    /**
+     * Test tryParse method.
+     */
+    public function testTryParse()
+    {
+        $this->assertNull(IPAddress::tryParse(''));
+        $this->assertNull(IPAddress::tryParse('1.2.3'));
+        $this->assertNull(IPAddress::tryParse('1.2.3.'));
+        $this->assertNull(IPAddress::tryParse('256.1.1.1'));
+        $this->assertNull(IPAddress::tryParse('yyy.123.234.1'));
+        $this->assertSame('0.0.0.0', IPAddress::tryParse('0.0.0.0')->__toString());
+        $this->assertSame('255.255.255.255', IPAddress::tryParse('255.255.255.255')->__toString());
+    }
 }
