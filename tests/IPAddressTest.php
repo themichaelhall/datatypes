@@ -70,4 +70,18 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
     {
         new IPAddress('255.255.256.255');
     }
+
+    /**
+     * Test isValid method.
+     */
+    public function testIsValid()
+    {
+        $this->assertFalse(IPAddress::isValid(''));
+        $this->assertFalse(IPAddress::isValid('1.2.3'));
+        $this->assertFalse(IPAddress::isValid('1.2.3.'));
+        $this->assertFalse(IPAddress::isValid('256.1.1.1'));
+        $this->assertFalse(IPAddress::isValid('yyy.123.234.1'));
+        $this->assertTrue(IPAddress::isValid('0.0.0.0'));
+        $this->assertTrue(IPAddress::isValid('255.255.255.255'));
+    }
 }

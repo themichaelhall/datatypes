@@ -35,6 +35,20 @@ class IPAddress implements IPAddressInterface
     }
 
     /**
+     * Checks if an IP address is valid.
+     *
+     * @param string $ipAddress The IP address.
+     *
+     * @return bool True if the $ipAddress parameter is a valid IP address, false otherwise.
+     */
+    public static function isValid($ipAddress)
+    {
+        assert(is_string($ipAddress), '$ipAddress is not a string');
+
+        return static::_parse($ipAddress, true);
+    }
+
+    /**
      * Tries to parse an IP address and returns the result or error text.
      *
      * @param string      $ipAddress    The IP address.
