@@ -2,6 +2,7 @@
 
 namespace DataTypes;
 
+use DataTypes\Exceptions\UrlInvalidArgumentException;
 use DataTypes\Interfaces\UrlInterface;
 
 /**
@@ -18,7 +19,10 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        // fixme: Validation
+        if (!static::_parse($url, $error)) {
+            throw new UrlInvalidArgumentException($error);
+        }
+
         // fixme: Scheme
         // fixme: User
         // fixme: Password
@@ -37,6 +41,44 @@ class Url implements UrlInterface
     public function __toString()
     {
         return $this->_value;
+    }
+
+    /**
+     * Tries to parse a Url and returns the result or error text.
+     *
+     * @param string      $url   The Url.
+     * @param string|null $error The error text if parsing was not successful, undefined otherwise.
+     *
+     * @return bool True if parsing was successful, false otherwise.
+     */
+    private static function _parse($url, &$error)
+    {
+        // Pre-validate Url.
+        if (!static::_preValidate($url, $error)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Pre-validates a Url.
+     *
+     * @param string $url   The Url.
+     * @param string $error The error text if pre-validation was not successful, undefined otherwise.
+     *
+     * @return bool True if pre-validation was successful, false otherwise.
+     */
+    private static function _preValidate($url, &$error)
+    {
+        // Empty Url is invalid.
+        if ($url === '') {
+            $error = 'Url "' . $url . '" is empty.';
+
+            return false;
+        }
+
+        return true;
     }
 
     /**

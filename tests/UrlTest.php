@@ -14,4 +14,15 @@ class UrlTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame('http://www.domain.com/', (new Url('http://www.domain.com/'))->__toString());
     }
+
+    /**
+     * Test that empty Url is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "" is empty.
+     */
+    public function testEmptyUrlIsInvalid()
+    {
+        new Url('');
+    }
 }
