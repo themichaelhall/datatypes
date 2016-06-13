@@ -44,6 +44,20 @@ class Url implements UrlInterface
     }
 
     /**
+     * Checks if a url is valid.
+     *
+     * @param string $url The url.
+     *
+     * @return bool True if the $url parameter is a valid url, false otherwise.
+     */
+    public static function isValid($url)
+    {
+        assert(is_string($url), '$url is not a string');
+
+        return static::_parse($url);
+    }
+
+    /**
      * Tries to parse a Url and returns the result or error text.
      *
      * @param string      $url   The Url.
@@ -51,7 +65,7 @@ class Url implements UrlInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function _parse($url, &$error)
+    private static function _parse($url, &$error = null)
     {
         // Pre-validate Url.
         if (!static::_preValidate($url, $error)) {

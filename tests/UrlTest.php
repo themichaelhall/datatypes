@@ -25,4 +25,14 @@ class UrlTest extends PHPUnit_Framework_TestCase
     {
         new Url('');
     }
+
+    /**
+     * Test isValid method.
+     */
+    public function testIsValid()
+    {
+        $this->assertFalse(Url::isValid(''));
+        $this->assertTrue(Url::isValid('http://domain.com/'));
+        // fixme: More tests
+    }
 }
