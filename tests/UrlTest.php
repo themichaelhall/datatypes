@@ -35,4 +35,14 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(Url::isValid('http://domain.com/'));
         // fixme: More tests
     }
+
+    /**
+     * Test tryParse method.
+     */
+    public function testTryParse()
+    {
+        $this->assertNull(Url::tryParse(''));
+        $this->assertSame('http://domain.com/', Url::tryParse('http://domain.com/')->__toString());
+        // fixme: more tests
+    }
 }

@@ -58,6 +58,27 @@ class Url implements UrlInterface
     }
 
     /**
+     * Parses a url and returns a Url instance.
+     *
+     * @param string $url The url.
+     *
+     * @return UrlInterface|null The Url instance if the $url parameter is a valid url, null otherwise.
+     */
+    public static function tryParse($url)
+    {
+        assert(is_string($url), '$url is not a string');
+
+        try {
+            $result = new self($url);
+
+            return $result;
+        } catch (UrlInvalidArgumentException $e) {
+        }
+
+        return null;
+    }
+
+    /**
      * Tries to parse a Url and returns the result or error text.
      *
      * @param string      $url   The Url.
