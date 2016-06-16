@@ -78,4 +78,13 @@ class SchemeTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame('http', (new Scheme('HTTP'))->__toString());
     }
+
+    /**
+     * Test getDefaultPort method.
+     */
+    public function testGetDefaultPort()
+    {
+        $this->assertSame(80, Scheme::tryParse('http')->getDefaultPort());
+        $this->assertSame(443, Scheme::tryParse('https')->getDefaultPort());
+    }
 }

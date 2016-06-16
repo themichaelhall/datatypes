@@ -29,11 +29,19 @@ class Scheme implements SchemeInterface
     {
         assert(is_string($scheme), '$scheme is not a string');
 
-        if (!static::_parse($scheme, false, $result, $type, $error)) {
+        if (!static::_parse($scheme, false, $result, $type, $defaultPort, $error)) {
             throw new SchemeInvalidArgumentException($error);
         }
 
-        $this->_build($result, $type);
+        $this->_build($result, $type, $defaultPort);
+    }
+
+    /**
+     * @return int The default port of the scheme.
+     */
+    public function getDefaultPort()
+    {
+        return $this->_defaultPort;
     }
 
     /**
@@ -90,13 +98,15 @@ class Scheme implements SchemeInterface
     /**
      * Builds this scheme from scheme parts.
      *
-     * @param string $scheme The scheme.
-     * @param int    $type   The type.
+     * @param string $scheme      The scheme.
+     * @param int    $type        The type.
+     * @param int    $defaultPort The default port.
      */
-    private function _build($scheme, $type)
+    private function _build($scheme, $type, $defaultPort)
     {
         $this->_scheme = $scheme;
         $this->_type = $type;
+        $this->_defaultPort = $defaultPort;
     }
 
     /**
@@ -106,11 +116,12 @@ class Scheme implements SchemeInterface
      * @param bool        $validateOnly If true only validation is performed, if false parse results are returned.
      * @param string|null $result       The result if parsing was successful, undefined otherwise.
      * @param int|null    $type         The type if parsing was successful, undefined otherwise.
+     * @param int|null    $defaultPort  The default port if parsing was successful, undefined otherwise.
      * @param string|null $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function _parse($scheme, $validateOnly, &$result = null, &$type = null, &$error = null)
+    private static function _parse($scheme, $validateOnly, &$result = null, &$type = null, &$defaultPort = null, &$error = null)
     {
         // Pre-validate scheme.
         if (!static::_preValidate($scheme, $error)) {
@@ -130,6 +141,7 @@ class Scheme implements SchemeInterface
         if (!$validateOnly) {
             $schemeInfo = static::$_schemes[$result];
             $type = $schemeInfo[0];
+            $defaultPort = $schemeInfo[1];
         }
 
         return true;
@@ -156,6 +168,11 @@ class Scheme implements SchemeInterface
     }
 
     /**
+     * @var int My default port.
+     */
+    private $_defaultPort;
+
+    /**
      * @var string My scheme.
      */
     private $_scheme;
@@ -169,7 +186,7 @@ class Scheme implements SchemeInterface
      * @var array The valid schemes.
      */
     private static $_schemes = [
-        'http'  => [self::TYPE_HTTP],
-        'https' => [self::TYPE_HTTPS],
+        'http'  => [self::TYPE_HTTP, 80],
+        'https' => [self::TYPE_HTTPS, 443],
     ];
 }
