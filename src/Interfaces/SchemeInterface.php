@@ -16,4 +16,9 @@ interface SchemeInterface extends DataTypeInterface
      * @return int The type of the scheme.
      */
     public function getType();
+
+    /**
+     * @return bool True if the scheme is http, false otherwise.
+     */
+    public function isHttp();
 }
