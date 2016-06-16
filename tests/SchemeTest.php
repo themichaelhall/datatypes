@@ -37,4 +37,15 @@ class SchemeTest extends PHPUnit_Framework_TestCase
     {
         new Scheme('foobar');
     }
+
+    /**
+     * Test isValid method.
+     */
+    public function testIsValid()
+    {
+        $this->assertFalse(Scheme::isValid(''));
+        $this->assertFalse(Scheme::isValid('foo'));
+        $this->assertTrue(Scheme::isValid('http'));
+        $this->assertTrue(Scheme::isValid('https'));
+    }
 }

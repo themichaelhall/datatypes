@@ -35,6 +35,20 @@ class Scheme implements SchemeInterface
     }
 
     /**
+     * Checks if a scheme is valid.
+     *
+     * @param string $scheme The scheme.
+     *
+     * @return bool True if the $scheme parameter is a valid scheme, false otherwise.
+     */
+    public static function isValid($scheme)
+    {
+        assert(is_string($scheme), '$scheme is not a string');
+
+        return static::_parse($scheme);
+    }
+
+    /**
      * Tries to parse a scheme and returns the result or error text.
      *
      * @param string      $scheme The scheme.
@@ -42,7 +56,7 @@ class Scheme implements SchemeInterface
      *
      * @return bool
      */
-    private function _parse($scheme, &$error = null)
+    private static function _parse($scheme, &$error = null)
     {
         // Pre-validate scheme.
         if (!static::_preValidate($scheme, $error)) {
@@ -67,7 +81,7 @@ class Scheme implements SchemeInterface
      *
      * @return bool True if pre-validation was successful, false otherwise.
      */
-    private function _preValidate($scheme, &$error = null)
+    private static function _preValidate($scheme, &$error = null)
     {
         // Empty scheme is invalid.
         if ($scheme === '') {
