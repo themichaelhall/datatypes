@@ -61,6 +61,14 @@ class Scheme implements SchemeInterface
     }
 
     /**
+     * @return bool True if the scheme is https, false otherwise.
+     */
+    public function isHttps()
+    {
+        return $this->_type === self::TYPE_HTTPS;
+    }
+
+    /**
      * @return string The scheme as a string.
      */
     public function __toString()

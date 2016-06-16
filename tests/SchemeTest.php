@@ -96,4 +96,13 @@ class SchemeTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(Scheme::tryParse('http')->isHttp());
         $this->assertFalse(Scheme::tryParse('https')->isHttp());
     }
+
+    /**
+     * Test isHttps method.
+     */
+    public function testIsHttps()
+    {
+        $this->assertFalse(Scheme::tryParse('http')->isHttps());
+        $this->assertTrue(Scheme::tryParse('https')->isHttps());
+    }
 }

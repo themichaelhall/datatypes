@@ -21,4 +21,9 @@ interface SchemeInterface extends DataTypeInterface
      * @return bool True if the scheme is http, false otherwise.
      */
     public function isHttp();
+
+    /**
+     * @return bool True if the scheme is https, false otherwise.
+     */
+    public function isHttps();
 }
