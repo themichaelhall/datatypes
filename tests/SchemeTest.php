@@ -59,4 +59,13 @@ class SchemeTest extends PHPUnit_Framework_TestCase
         $this->assertSame('http', Scheme::tryParse('http')->__toString());
         $this->assertSame('https', Scheme::tryParse('https')->__toString());
     }
+
+    /**
+     * Test getType method.
+     */
+    public function testGetType()
+    {
+        $this->assertSame(Scheme::TYPE_HTTP, Scheme::tryParse('http')->getType());
+        $this->assertSame(Scheme::TYPE_HTTPS, Scheme::tryParse('https')->getType());
+    }
 }
