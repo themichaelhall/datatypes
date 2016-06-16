@@ -47,6 +47,7 @@ class SchemeTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(Scheme::isValid('foo'));
         $this->assertTrue(Scheme::isValid('http'));
         $this->assertTrue(Scheme::isValid('https'));
+        $this->assertTrue(Scheme::isValid('HTTPS'));
     }
 
     /**
@@ -58,6 +59,7 @@ class SchemeTest extends PHPUnit_Framework_TestCase
         $this->assertNull(Scheme::tryParse('foo'));
         $this->assertSame('http', Scheme::tryParse('http')->__toString());
         $this->assertSame('https', Scheme::tryParse('https')->__toString());
+        $this->assertSame('https', Scheme::tryParse('HTTPS')->__toString());
     }
 
     /**
@@ -67,5 +69,13 @@ class SchemeTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame(Scheme::TYPE_HTTP, Scheme::tryParse('http')->getType());
         $this->assertSame(Scheme::TYPE_HTTPS, Scheme::tryParse('https')->getType());
+    }
+
+    /**
+     * Test that scheme is converted to lower case.
+     */
+    public function testSchemeIsLowerCase()
+    {
+        $this->assertSame('http', (new Scheme('HTTP'))->__toString());
     }
 }

@@ -117,7 +117,7 @@ class Scheme implements SchemeInterface
             return false;
         }
 
-        $result = $scheme;
+        $result = strtolower($scheme);
 
         // Not existing scheme is invalid.
         if (!isset(static::$_schemes[$result])) {
