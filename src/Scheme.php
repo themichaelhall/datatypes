@@ -49,6 +49,27 @@ class Scheme implements SchemeInterface
     }
 
     /**
+     * Parses a scheme and returns a Scheme instance.
+     *
+     * @param string $scheme The scheme.
+     *
+     * @return SchemeInterface|null The Scheme instance if the $scheme parameter is a valid scheme, null otherwise.
+     */
+    public static function tryParse($scheme)
+    {
+        assert(is_string($scheme), '$scheme is not a string');
+
+        try {
+            $result = new self($scheme);
+
+            return $result;
+        } catch (SchemeInvalidArgumentException $e) {
+        }
+
+        return null;
+    }
+
+    /**
      * Tries to parse a scheme and returns the result or error text.
      *
      * @param string      $scheme The scheme.

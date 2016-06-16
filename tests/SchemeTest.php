@@ -48,4 +48,15 @@ class SchemeTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(Scheme::isValid('http'));
         $this->assertTrue(Scheme::isValid('https'));
     }
+
+    /**
+     * Test tryParse method.
+     */
+    public function testTryParse()
+    {
+        $this->assertNull(Scheme::tryParse(''));
+        $this->assertNull(Scheme::tryParse('foo'));
+        $this->assertSame('http', Scheme::tryParse('http')->__toString());
+        $this->assertSame('https', Scheme::tryParse('https')->__toString());
+    }
 }
