@@ -169,7 +169,7 @@ class Scheme implements SchemeInterface
      * @var array The valid schemes.
      */
     private static $_schemes = [
-        'http' => [self::TYPE_HTTP],
+        'http'  => [self::TYPE_HTTP],
         'https' => [self::TYPE_HTTPS]
     ];
 }
