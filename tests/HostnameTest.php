@@ -12,11 +12,11 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testToString()
     {
-        $this->assertSame('foo', (new Hostname('foo'))->__toString());
-        $this->assertSame('foo.com', (new Hostname('foo.com'))->__toString());
-        $this->assertSame('www.foo.com', (new Hostname('www.foo.com'))->__toString());
-        $this->assertSame('www.foo.bar.com', (new Hostname('www.foo.bar.com'))->__toString());
-        $this->assertSame('www.foo-bar.com', (new Hostname('www.foo-bar.com'))->__toString());
+        $this->assertSame('foo', Hostname::parse('foo')->__toString());
+        $this->assertSame('foo.com', Hostname::parse('foo.com')->__toString());
+        $this->assertSame('www.foo.com', Hostname::parse('www.foo.com')->__toString());
+        $this->assertSame('www.foo.bar.com', Hostname::parse('www.foo.bar.com')->__toString());
+        $this->assertSame('www.foo-bar.com', Hostname::parse('www.foo-bar.com')->__toString());
     }
 
     /**
@@ -24,7 +24,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testHostnameIsLowerCase()
     {
-        $this->assertSame('www.bar.org', (new Hostname('WWW.BAR.ORG'))->__toString());
+        $this->assertSame('www.bar.org', Hostname::parse('WWW.BAR.ORG')->__toString());
     }
 
     /**
@@ -32,7 +32,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testTrailingDotInHostnameIsRemoved()
     {
-        $this->assertSame('www.bar.org', (new Hostname('www.bar.org.'))->__toString());
+        $this->assertSame('www.bar.org', Hostname::parse('www.bar.org.')->__toString());
     }
 
     /**
@@ -43,7 +43,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testEmptyHostnameIsInvalid()
     {
-        new Hostname('');
+        Hostname::parse('');
     }
 
     /**
@@ -54,7 +54,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testHostnameWithOnlyADotIsInvalid()
     {
-        new Hostname('.');
+        Hostname::parse('.');
     }
 
     /**
@@ -65,7 +65,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testTooLongHostnameIsInvalid()
     {
-        new Hostname(
+        Hostname::parse(
             'xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.' .
             'xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.' .
             'xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.' .
@@ -82,7 +82,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testHostnameWithInvalidCharacterIsInvalid()
     {
-        new Hostname('foo.ba+r.com');
+        Hostname::parse('foo.ba+r.com');
     }
 
     /**
@@ -93,7 +93,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testHostnameWithEmptyPartIsInvalid()
     {
-        new Hostname('foo..com');
+        Hostname::parse('foo..com');
     }
 
     /**
@@ -104,7 +104,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testHostNameWithTooLongPartIsInvalid()
     {
-        new Hostname('foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.com');
+        Hostname::parse('foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.com');
     }
 
     /**
@@ -115,7 +115,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testHostnameWithPartBeginningWithDashIsInvalid()
     {
-        new Hostname('-foo.bar.com');
+        Hostname::parse('-foo.bar.com');
     }
 
     /**
@@ -126,7 +126,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testHostnameWithPartEndingWithDashIsInvalid()
     {
-        new Hostname('foo.bar-.com');
+        Hostname::parse('foo.bar-.com');
     }
 
     /**
@@ -137,7 +137,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testHostnameWithEmptyTopLevelDomainIsInvalid()
     {
-        new Hostname('bar..');
+        Hostname::parse('bar..');
     }
 
     /**
@@ -148,7 +148,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testHostNameWithTooLongTopLevelDomainIsInvalid()
     {
-        new Hostname('foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        Hostname::parse('foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
     }
 
     /**
@@ -159,7 +159,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testHostnameWithInvalidCharacterInTopLevelDomainIsInvalid()
     {
-        new Hostname('foo.bar.co2');
+        Hostname::parse('foo.bar.co2');
     }
 
     /**
@@ -167,9 +167,9 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTld()
     {
-        $this->assertNull((new Hostname('foo'))->getTld());
-        $this->assertSame('com', (new Hostname('foo.com'))->getTld());
-        $this->assertSame('org', (new Hostname('foo.bar.org'))->getTld());
+        $this->assertNull(Hostname::parse('foo')->getTld());
+        $this->assertSame('com', Hostname::parse('foo.com')->getTld());
+        $this->assertSame('org', Hostname::parse('foo.bar.org')->getTld());
     }
 
     /**
@@ -177,9 +177,9 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDomain()
     {
-        $this->assertSame('foo', (new Hostname('foo'))->getDomain());
-        $this->assertSame('foo.com', (new Hostname('foo.com'))->getDomain());
-        $this->assertSame('bar.org', (new Hostname('foo.bar.org'))->getDomain());
+        $this->assertSame('foo', Hostname::parse('foo')->getDomain());
+        $this->assertSame('foo.com', Hostname::parse('foo.com')->getDomain());
+        $this->assertSame('bar.org', Hostname::parse('foo.bar.org')->getDomain());
     }
 
     /**
@@ -221,9 +221,10 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testWithTld()
     {
-        $this->assertSame('foo.com', Hostname::tryParse('foo')->withTld('com')->__toString());
-        $this->assertSame('foo.org', Hostname::tryParse('foo.com')->withTld('org')->__toString());
-        $this->assertSame('foo.bar.org', Hostname::tryParse('foo.bar.com')->withTld('org')->__toString());
+        $this->assertSame('foo.com', Hostname::parse('foo')->withTld('com')->__toString());
+        $this->assertSame('foo.org', Hostname::parse('foo.com')->withTld('org')->__toString());
+        $this->assertSame('foo.bar.org', Hostname::parse('foo.bar.com')->withTld('org')->__toString());
+        $this->assertSame('foo.bar.org', Hostname::parse('FOO.BAR.COM')->withTld('ORG')->__toString());
     }
 
     /**
@@ -234,6 +235,6 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testWithTldWithInvalidTopDomainLevelIsInvalid()
     {
-        Hostname::tryParse('domain.com')->withTld('123');
+        Hostname::parse('domain.com')->withTld('123');
     }
 }

@@ -11,24 +11,6 @@ use DataTypes\Interfaces\HostnameInterface;
 class Hostname implements HostnameInterface
 {
     /**
-     * Constructs a hostname.
-     *
-     * @param string $hostname The hostname..
-     *
-     * @throws HostnameInvalidArgumentException If the $hostname parameter is not a valid hostname.
-     */
-    public function __construct($hostname)
-    {
-        assert(is_string($hostname), '$hostname is not a string');
-
-        if (!static::_parse($hostname, false, $domainParts, $tld, $error)) {
-            throw new HostnameInvalidArgumentException($error);
-        }
-
-        $this->_build($domainParts, $tld);
-    }
-
-    /**
      * @return string The domain name including top-level domain.
      */
     public function getDomain()
@@ -50,6 +32,8 @@ class Hostname implements HostnameInterface
      * @param string $tld The top-level domain.
      *
      * @return HostnameInterface The Hostname instance.
+     *
+     * @throws HostnameInvalidArgumentException If the $tld parameter is not a valid top-level domain.
      */
     public function withTld($tld)
     {
@@ -59,10 +43,9 @@ class Hostname implements HostnameInterface
             throw new HostnameInvalidArgumentException($error);
         }
 
-        $result = clone $this;
-        $result->_tld = $tld;
+        $tld = strtolower($tld);
 
-        return $result;
+        return new self($this->_domainParts, $tld);
     }
 
     /**
@@ -88,7 +71,27 @@ class Hostname implements HostnameInterface
     }
 
     /**
-     * Parses a hostname and returns a Hostname instance.
+     * Parses a hostname.
+     *
+     * @param string $hostname The hostname.
+     *
+     * @return HostnameInterface The Hostname instance.
+     *
+     * @throws HostnameInvalidArgumentException If the $hostname parameter is not a valid hostname.
+     */
+    public static function parse($hostname)
+    {
+        assert(is_string($hostname), '$hostname is not a string');
+
+        if (!static::_parse($hostname, false, $domainParts, $tld, $error)) {
+            throw new HostnameInvalidArgumentException($error);
+        }
+
+        return new self($domainParts, $tld);
+    }
+
+    /**
+     * Parses a hostname.
      *
      * @param string $hostname The hostname.
      *
@@ -98,23 +101,20 @@ class Hostname implements HostnameInterface
     {
         assert(is_string($hostname), '$hostname is not a string');
 
-        try {
-            $result = new self($hostname);
-
-            return $result;
-        } catch (HostnameInvalidArgumentException $e) {
+        if (!static::_parse($hostname, false, $domainParts, $tld)) {
+            return null;
         }
 
-        return null;
+        return new self($domainParts, $tld);
     }
 
     /**
-     * Builds this hostname from hostname parts.
+     * Constructs a hostname from hostname parts.
      *
      * @param string[]    $domainParts The domain parts.
      * @param string|null $tld         The top-level domain if top-level domain is present, null otherwise.
      */
-    private function _build(array $domainParts, $tld = null)
+    private function __construct(array $domainParts, $tld = null)
     {
         $this->_domainParts = $domainParts;
         $this->_tld = $tld;
