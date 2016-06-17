@@ -12,7 +12,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
      */
     public function testToString()
     {
-        $this->assertSame('http://www.domain.com/', (new Url('http://www.domain.com/'))->__toString());
+        $this->assertSame('http://www.domain.com/', Url::parse('http://www.domain.com/')->__toString());
     }
 
     /**
@@ -23,7 +23,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
      */
     public function testEmptyUrlIsInvalid()
     {
-        new Url('');
+        Url::parse('');
     }
 
     /**
@@ -43,6 +43,6 @@ class UrlTest extends PHPUnit_Framework_TestCase
     {
         $this->assertNull(Url::tryParse(''));
         $this->assertSame('http://domain.com/', Url::tryParse('http://domain.com/')->__toString());
-        // fixme: more tests
+        // fixme: More tests
     }
 }

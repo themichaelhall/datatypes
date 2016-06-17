@@ -11,31 +11,6 @@ use DataTypes\Interfaces\UrlInterface;
 class Url implements UrlInterface
 {
     /**
-     * Constructs a Url.
-     *
-     * @param string $url The Url.
-     */
-    public function __construct($url)
-    {
-        assert(is_string($url), '$url is not a string');
-
-        if (!static::_parse($url, $error)) {
-            throw new UrlInvalidArgumentException($error);
-        }
-
-        // fixme: Scheme
-        // fixme: User
-        // fixme: Password
-        // fixme: Host
-        // fixme: Port
-        // fixme: Path
-        // fixme: Query
-        // fixme: Fragment
-
-        $this->_value = $url;
-    }
-
-    /**
      * @return string The Url as a string.
      */
     public function __toString()
@@ -58,7 +33,27 @@ class Url implements UrlInterface
     }
 
     /**
-     * Parses a url and returns a Url instance.
+     * Parses a url.
+     *
+     * @param string $url The url.
+     *
+     * @throws UrlInvalidArgumentException If the $url parameter is not a valid url.
+     *
+     * @return UrlInterface The Url instance.
+     */
+    public static function parse($url)
+    {
+        assert(is_string($url), '$url is not a string');
+
+        if (!static::_parse($url, $error)) {
+            throw new UrlInvalidArgumentException($error);
+        }
+
+        return new self($url);
+    }
+
+    /**
+     * Parses a url.
      *
      * @param string $url The url.
      *
@@ -68,14 +63,21 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        try {
-            $result = new self($url);
-
-            return $result;
-        } catch (UrlInvalidArgumentException $e) {
+        if (!static::_parse($url)) {
+            return null;
         }
 
-        return null;
+        return new self($url);
+    }
+
+    /**
+     * Constructs a Url.
+     *
+     * @param string $url The Url.
+     */
+    private function __construct($url)
+    {
+        $this->_value = $url;
     }
 
     /**
@@ -92,6 +94,16 @@ class Url implements UrlInterface
         if (!static::_preValidate($url, $error)) {
             return false;
         }
+
+        // fixme: Scheme
+        // fixme: User
+        // fixme: Password
+        // fixme: Host
+        // fixme: Port
+        // fixme: Path
+        // fixme: Query
+        // fixme: Fragment
+        // fixme: Relative vs. Absolute
 
         return true;
     }
