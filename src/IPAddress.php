@@ -11,22 +11,6 @@ use DataTypes\Interfaces\IPAddressInterface;
 class IPAddress implements IPAddressInterface
 {
     /**
-     * Constructs an IP address.
-     *
-     * @param string $ipAddress The IP address.
-     */
-    public function __construct($ipAddress)
-    {
-        assert(is_string($ipAddress), '$ipAddress is not a string');
-
-        if (!static::_parse($ipAddress, false, $octets, $error)) {
-            throw new IPAddressInvalidArgumentException($error);
-        }
-
-        $this->_octets = $octets;
-    }
-
-    /**
      * @return string The IP address as a string.
      */
     public function __toString()
@@ -49,7 +33,27 @@ class IPAddress implements IPAddressInterface
     }
 
     /**
-     * Parses an IP address and returns a IPAddress instance.
+     * Parses an IP address.
+     *
+     * @param string $ipAddress The IP address.
+     *
+     * @return IPAddressInterface The IPAddress instance.
+     *
+     * @throws IPAddressInvalidArgumentException If the $ipAddress parameter is not a valid IP address.
+     */
+    public static function parse($ipAddress)
+    {
+        assert(is_string($ipAddress), '$ipAddress is not a string');
+
+        if (!static::_parse($ipAddress, false, $octets, $error)) {
+            throw new IPAddressInvalidArgumentException($error);
+        }
+
+        return new self($octets);
+    }
+
+    /**
+     * Parses an IP address.
      *
      * @param string $ipAddress The IP address.
      *
@@ -59,14 +63,21 @@ class IPAddress implements IPAddressInterface
     {
         assert(is_string($ipAddress), '$ipAddress is not a string');
 
-        try {
-            $result = new self($ipAddress);
-
-            return $result;
-        } catch (IPAddressInvalidArgumentException $e) {
+        if (!static::_parse($ipAddress, false, $octets)) {
+            return null;
         }
 
-        return null;
+        return new self($octets);
+    }
+
+    /**
+     * Constructs an IP address from octets.
+     *
+     * @param int[] $octets The octets.
+     */
+    private function __construct(array $octets)
+    {
+        $this->_octets = $octets;
     }
 
     /**

@@ -3,7 +3,7 @@
 use DataTypes\IPAddress;
 
 /**
- * Test IPAdress class.
+ * Test IPAddress class.
  */
 class IPAddressTest extends PHPUnit_Framework_TestCase
 {
@@ -12,8 +12,8 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
      */
     public function testToString()
     {
-        $this->assertSame('127.0.0.1', (new IPAddress('127.0.0.1'))->__toString());
-        $this->assertSame('255.255.255.255', (new IPAddress('255.255.255.255'))->__toString());
+        $this->assertSame('127.0.0.1', IPAddress::parse('127.0.0.1')->__toString());
+        $this->assertSame('255.255.255.255', IPAddress::parse('255.255.255.255')->__toString());
     }
 
     /**
@@ -24,7 +24,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
      */
     public function testEmptyIPAddressIsInvalid()
     {
-        new IPAddress('');
+        IPAddress::parse('');
     }
 
     /**
@@ -35,7 +35,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
      */
     public function testIPAddressWithNotFourOctetsIsInvalid()
     {
-        new IPAddress('1.2.3');
+        IPAddress::parse('1.2.3');
     }
 
     /**
@@ -46,7 +46,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
      */
     public function testIPAddressWithEmptyOctetIsInvalid()
     {
-        new IPAddress('192.168..1');
+        IPAddress::parse('192.168..1');
     }
 
     /**
@@ -57,7 +57,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
      */
     public function testIPAddressWithInvalidCharacterInOctetIsInvalid()
     {
-        new IPAddress('127.0.0X.1');
+        IPAddress::parse('127.0.0X.1');
     }
 
     /**
@@ -68,7 +68,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
      */
     public function testIPAddressWithOctetOutOfRangeIsInvalid()
     {
-        new IPAddress('255.255.256.255');
+        IPAddress::parse('255.255.256.255');
     }
 
     /**
