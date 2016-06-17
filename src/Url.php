@@ -15,7 +15,7 @@ class Url implements UrlInterface
      */
     public function __toString()
     {
-        return $this->_value;
+        return $this->myValue;
     }
 
     /**
@@ -29,7 +29,7 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        return static::_parse($url);
+        return static::myParse($url);
     }
 
     /**
@@ -45,7 +45,7 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        if (!static::_parse($url, $error)) {
+        if (!static::myParse($url, $error)) {
             throw new UrlInvalidArgumentException($error);
         }
 
@@ -63,7 +63,7 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        if (!static::_parse($url)) {
+        if (!static::myParse($url)) {
             return null;
         }
 
@@ -77,7 +77,7 @@ class Url implements UrlInterface
      */
     private function __construct($url)
     {
-        $this->_value = $url;
+        $this->myValue = $url;
     }
 
     /**
@@ -88,10 +88,10 @@ class Url implements UrlInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function _parse($url, &$error = null)
+    private static function myParse($url, &$error = null)
     {
         // Pre-validate Url.
-        if (!static::_preValidate($url, $error)) {
+        if (!static::myPreValidate($url, $error)) {
             return false;
         }
 
@@ -116,7 +116,7 @@ class Url implements UrlInterface
      *
      * @return bool True if pre-validation was successful, false otherwise.
      */
-    private static function _preValidate($url, &$error)
+    private static function myPreValidate($url, &$error)
     {
         // Empty Url is invalid.
         if ($url === '') {
@@ -131,5 +131,5 @@ class Url implements UrlInterface
     /**
      * @var string My value.
      */
-    private $_value;
+    private $myValue;
 }
