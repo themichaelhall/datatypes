@@ -70,6 +70,15 @@ class UrlTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test withScheme method.
+     */
+    public function testWithScheme()
+    {
+        $this->assertSame('http://foo.bar.com/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('http'))->__toString());
+        $this->assertSame('https://foo.bar.com/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('https'))->__toString());
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()

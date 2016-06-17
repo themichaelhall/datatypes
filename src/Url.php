@@ -4,6 +4,7 @@ namespace DataTypes;
 
 use DataTypes\Exceptions\SchemeInvalidArgumentException;
 use DataTypes\Exceptions\UrlInvalidArgumentException;
+use DataTypes\Interfaces\SchemeInterface;
 use DataTypes\Interfaces\UrlInterface;
 
 /**
@@ -17,6 +18,18 @@ class Url implements UrlInterface
     public function getScheme()
     {
         return $this->myScheme;
+    }
+
+    /**
+     * Returns a copy of the Url instance with the specified scheme.
+     *
+     * @param SchemeInterface $scheme The scheme.
+     *
+     * @return UrlInterface The Url instance.
+     */
+    public function withScheme(SchemeInterface $scheme)
+    {
+        return new self($scheme, $this->myRest);
     }
 
     /**
@@ -82,10 +95,10 @@ class Url implements UrlInterface
     /**
      * Constructs a Url.
      *
-     * @param Scheme $scheme  The scheme.
-     * @param string $theRest Temporary variable to use when creating this class.
+     * @param SchemeInterface $scheme  The scheme.
+     * @param string          $theRest Temporary variable to use when creating this class.
      */
-    private function __construct(Scheme $scheme, $theRest)
+    private function __construct(SchemeInterface $scheme, $theRest)
     {
         $this->myScheme = $scheme;
         $this->myRest = $theRest;
