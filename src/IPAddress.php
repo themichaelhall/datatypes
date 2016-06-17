@@ -15,7 +15,7 @@ class IPAddress implements IPAddressInterface
      */
     public function __toString()
     {
-        return implode('.', $this->_octets);
+        return implode('.', $this->myOctets);
     }
 
     /**
@@ -29,7 +29,7 @@ class IPAddress implements IPAddressInterface
     {
         assert(is_string($ipAddress), '$ipAddress is not a string');
 
-        return static::_parse($ipAddress, true);
+        return static::myParse($ipAddress, true);
     }
 
     /**
@@ -45,7 +45,7 @@ class IPAddress implements IPAddressInterface
     {
         assert(is_string($ipAddress), '$ipAddress is not a string');
 
-        if (!static::_parse($ipAddress, false, $octets, $error)) {
+        if (!static::myParse($ipAddress, false, $octets, $error)) {
             throw new IPAddressInvalidArgumentException($error);
         }
 
@@ -63,7 +63,7 @@ class IPAddress implements IPAddressInterface
     {
         assert(is_string($ipAddress), '$ipAddress is not a string');
 
-        if (!static::_parse($ipAddress, false, $octets)) {
+        if (!static::myParse($ipAddress, false, $octets)) {
             return null;
         }
 
@@ -77,7 +77,7 @@ class IPAddress implements IPAddressInterface
      */
     private function __construct(array $octets)
     {
-        $this->_octets = $octets;
+        $this->myOctets = $octets;
     }
 
     /**
@@ -90,10 +90,10 @@ class IPAddress implements IPAddressInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function _parse($ipAddress, $validateOnly, array &$octets = null, &$error = null)
+    private static function myParse($ipAddress, $validateOnly, array &$octets = null, &$error = null)
     {
         // Pre-validate IP address.
-        if (!static::_preValidate($ipAddress, $error)) {
+        if (!static::myPreValidate($ipAddress, $error)) {
             return false;
         }
 
@@ -110,7 +110,7 @@ class IPAddress implements IPAddressInterface
         // Validate the parts.
         $octets = [];
         foreach ($ipAddressParts as $ipAddressPart) {
-            if (!static::_validateIpAddressPart($ipAddressPart, $octet, $error)) {
+            if (!static::myValidateIpAddressPart($ipAddressPart, $octet, $error)) {
                 $error = 'IP address "' . $ipAddress . '" is invalid: ' . $error;
 
                 return false;
@@ -133,7 +133,7 @@ class IPAddress implements IPAddressInterface
      *
      * @return bool True if pre-validation was successful, false otherwise.
      */
-    private static function _preValidate($ipAddress, &$error)
+    private static function myPreValidate($ipAddress, &$error)
     {
         // Empty IP address is invalid.
         if ($ipAddress === '') {
@@ -154,7 +154,7 @@ class IPAddress implements IPAddressInterface
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function _validateIpAddressPart($ipAddressPart, &$octet, &$error)
+    private static function myValidateIpAddressPart($ipAddressPart, &$octet, &$error)
     {
         // Empty octet is invalid.
         if ($ipAddressPart === '') {
@@ -185,5 +185,5 @@ class IPAddress implements IPAddressInterface
     /**
      * @var int[] My octets.
      */
-    private $_octets;
+    private $myOctets;
 }
