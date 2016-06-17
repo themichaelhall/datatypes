@@ -1,5 +1,6 @@
 <?php
 
+use DataTypes\Scheme;
 use DataTypes\Url;
 
 /**
@@ -27,11 +28,54 @@ class UrlTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test getScheme method.
+     */
+    public function testGetScheme()
+    {
+        $this->assertSame(Scheme::TYPE_HTTP, Url::parse('http://foo.bar.com/')->getScheme()->getType());
+        $this->assertSame(Scheme::TYPE_HTTPS, Url::parse('https://foo.bar.com/')->getScheme()->getType());
+    }
+
+    /**
+     * Test that missing scheme is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "foo.bar.com" is invalid: Scheme is missing.
+     */
+    public function testMissingSchemeIsInvalid()
+    {
+        Url::parse('foo.bar.com');
+    }
+
+    /**
+     * Test that empty scheme is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "://foo.bar.com/" is invalid: Scheme "" is empty.
+     */
+    public function testEmptySchemeIsInvalid()
+    {
+        Url::parse('://foo.bar.com/');
+    }
+
+    /**
+     * Test that invalid scheme is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "baz://foo.bar.com/" is invalid: Scheme "baz" is invalid: Scheme must be "http" or "https"
+     */
+    public function testInvalidSchemeIsInvalid()
+    {
+        Url::parse('baz://foo.bar.com/');
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
     {
         $this->assertFalse(Url::isValid(''));
+        $this->assertFalse(Url::isValid('foo://bar.com/'));
         $this->assertTrue(Url::isValid('http://domain.com/'));
         // fixme: More tests
     }
@@ -42,6 +86,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     public function testTryParse()
     {
         $this->assertNull(Url::tryParse(''));
+        $this->assertNull(Url::tryParse('foo://bar.com/'));
         $this->assertSame('http://domain.com/', Url::tryParse('http://domain.com/')->__toString());
         // fixme: More tests
     }

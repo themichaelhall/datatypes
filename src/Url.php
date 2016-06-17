@@ -2,6 +2,7 @@
 
 namespace DataTypes;
 
+use DataTypes\Exceptions\SchemeInvalidArgumentException;
 use DataTypes\Exceptions\UrlInvalidArgumentException;
 use DataTypes\Interfaces\UrlInterface;
 
@@ -11,11 +12,19 @@ use DataTypes\Interfaces\UrlInterface;
 class Url implements UrlInterface
 {
     /**
+     * @return Interfaces\SchemeInterface The scheme of the url.
+     */
+    public function getScheme()
+    {
+        return $this->myScheme;
+    }
+
+    /**
      * @return string The Url as a string.
      */
     public function __toString()
     {
-        return $this->myValue;
+        return $this->myScheme . '://' . $this->myRest;
     }
 
     /**
@@ -29,7 +38,7 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        return static::myParse($url);
+        return static::myParse($url, true);
     }
 
     /**
@@ -45,11 +54,11 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        if (!static::myParse($url, $error)) {
+        if (!static::myParse($url, false, $scheme, $theRest, $error)) {
             throw new UrlInvalidArgumentException($error);
         }
 
-        return new self($url);
+        return new self($scheme, $theRest);
     }
 
     /**
@@ -63,39 +72,52 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        if (!static::myParse($url)) {
+        if (!static::myParse($url, false, $scheme, $theRest)) {
             return null;
         }
 
-        return new self($url);
+        return new self($scheme, $theRest);
     }
 
     /**
      * Constructs a Url.
      *
-     * @param string $url The Url.
+     * @param Scheme $scheme  The scheme.
+     * @param string $theRest Temporary variable to use when creating this class.
      */
-    private function __construct($url)
+    private function __construct(Scheme $scheme, $theRest)
     {
-        $this->myValue = $url;
+        $this->myScheme = $scheme;
+        $this->myRest = $theRest;
     }
 
     /**
      * Tries to parse a Url and returns the result or error text.
      *
-     * @param string      $url   The Url.
-     * @param string|null $error The error text if parsing was not successful, undefined otherwise.
+     * @param string      $url          The Url.
+     * @param bool        $validateOnly If true only validation is performed, if false parse results are returned.
+     * @param Scheme      $scheme       The scheme if parsing was successful, undefined otherwise.
+     * @param string      $theRest      Temporary variable to use when creating this class.
+     * @param string|null $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($url, &$error = null)
+    private static function myParse($url, $validateOnly, Scheme &$scheme = null, &$theRest = null, &$error = null)
     {
         // Pre-validate Url.
         if (!static::myPreValidate($url, $error)) {
             return false;
         }
 
-        // fixme: Scheme
+        $parsedUrl = $url;
+
+        // Parse scheme.
+        if (!static::myParseScheme($parsedUrl, $validateOnly, $scheme, $error)) {
+            $error = 'Url "' . $url . '" is invalid: ' . $error;
+
+            return false;
+        }
+
         // fixme: User
         // fixme: Password
         // fixme: Host
@@ -104,6 +126,44 @@ class Url implements UrlInterface
         // fixme: Query
         // fixme: Fragment
         // fixme: Relative vs. Absolute
+
+        // fixme: Remove this
+        $theRest = $parsedUrl;
+
+        return true;
+    }
+
+    /**
+     * @param string      $parsedUrl    The part of url that is to be parsed.
+     * @param bool        $validateOnly If true only validation is performed, if false parse results are returned.
+     * @param Scheme|null $scheme       The scheme if parsing was successful, undefined otherwise.
+     * @param string|null $error        The error text if parsing was not successful, undefined otherwise.
+     *
+     * @return bool True if parsing was successful, false otherwise.
+     */
+    private static function myParseScheme(&$parsedUrl, $validateOnly, Scheme &$scheme = null, &$error = null)
+    {
+        $parts = explode('://', $parsedUrl, 2);
+        if (count($parts) < 2) {
+            $error = 'Scheme is missing.';
+
+            return false;
+        }
+
+        // Try parse scheme.
+        if (!$validateOnly) {
+            try {
+                $scheme = Scheme::parse($parts[0]);
+            } catch (SchemeInvalidArgumentException $e) {
+                $error = $e->getMessage();
+
+                return false;
+            }
+        } else {
+            return Scheme::isValid($parts[0]);
+        }
+
+        $parsedUrl = $parts[1];
 
         return true;
     }
@@ -129,7 +189,12 @@ class Url implements UrlInterface
     }
 
     /**
-     * @var string My value.
+     * @var string Temporary variable to use when creating this class.
      */
-    private $myValue;
+    private $myRest;
+
+    /**
+     * @var Scheme My scheme.
+     */
+    private $myScheme;
 }

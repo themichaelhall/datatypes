@@ -7,4 +7,8 @@ namespace DataTypes\Interfaces;
  */
 interface UrlInterface extends DataTypeInterface
 {
+    /**
+     * @return SchemeInterface The scheme of the url.
+     */
+    public function getScheme();
 }
