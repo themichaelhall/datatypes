@@ -12,8 +12,8 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testToString()
     {
-        $this->assertSame('http', (new Scheme('http'))->__toString());
-        $this->assertSame('https', (new Scheme('https'))->__toString());
+        $this->assertSame('http', Scheme::parse('http')->__toString());
+        $this->assertSame('https', Scheme::parse('https')->__toString());
     }
 
     /**
@@ -24,7 +24,7 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testEmptySchemeIsInvalid()
     {
-        new Scheme('');
+        Scheme::parse('');
     }
 
     /**
@@ -35,7 +35,7 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testInvalidSchemeIsInvalid()
     {
-        new Scheme('foobar');
+        Scheme::parse('foobar');
     }
 
     /**
@@ -67,8 +67,8 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testGetType()
     {
-        $this->assertSame(Scheme::TYPE_HTTP, Scheme::tryParse('http')->getType());
-        $this->assertSame(Scheme::TYPE_HTTPS, Scheme::tryParse('https')->getType());
+        $this->assertSame(Scheme::TYPE_HTTP, Scheme::parse('http')->getType());
+        $this->assertSame(Scheme::TYPE_HTTPS, Scheme::parse('https')->getType());
     }
 
     /**
@@ -76,7 +76,7 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testSchemeIsLowerCase()
     {
-        $this->assertSame('http', (new Scheme('HTTP'))->__toString());
+        $this->assertSame('http', Scheme::parse('HTTP')->__toString());
     }
 
     /**
@@ -84,8 +84,8 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDefaultPort()
     {
-        $this->assertSame(80, Scheme::tryParse('http')->getDefaultPort());
-        $this->assertSame(443, Scheme::tryParse('https')->getDefaultPort());
+        $this->assertSame(80, Scheme::parse('http')->getDefaultPort());
+        $this->assertSame(443, Scheme::parse('https')->getDefaultPort());
     }
 
     /**
@@ -93,8 +93,8 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testIsHttp()
     {
-        $this->assertTrue(Scheme::tryParse('http')->isHttp());
-        $this->assertFalse(Scheme::tryParse('https')->isHttp());
+        $this->assertTrue(Scheme::parse('http')->isHttp());
+        $this->assertFalse(Scheme::parse('https')->isHttp());
     }
 
     /**
@@ -102,7 +102,7 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testIsHttps()
     {
-        $this->assertFalse(Scheme::tryParse('http')->isHttps());
-        $this->assertTrue(Scheme::tryParse('https')->isHttps());
+        $this->assertFalse(Scheme::parse('http')->isHttps());
+        $this->assertTrue(Scheme::parse('https')->isHttps());
     }
 }

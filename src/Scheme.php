@@ -21,22 +21,6 @@ class Scheme implements SchemeInterface
     const TYPE_HTTPS = 2;
 
     /**
-     * Constructs a scheme.
-     *
-     * @param string $scheme The scheme.
-     */
-    public function __construct($scheme)
-    {
-        assert(is_string($scheme), '$scheme is not a string');
-
-        if (!static::_parse($scheme, false, $result, $type, $defaultPort, $error)) {
-            throw new SchemeInvalidArgumentException($error);
-        }
-
-        $this->_build($result, $type, $defaultPort);
-    }
-
-    /**
      * @return int The default port of the scheme.
      */
     public function getDefaultPort()
@@ -91,7 +75,27 @@ class Scheme implements SchemeInterface
     }
 
     /**
-     * Parses a scheme and returns a Scheme instance.
+     * Parses a scheme.
+     *
+     * @param string $scheme The scheme.
+     *
+     * @return SchemeInterface The Scheme instance.
+     *
+     * @throws SchemeInvalidArgumentException If the $scheme parameter is not a valid scheme.
+     */
+    public static function parse($scheme)
+    {
+        assert(is_string($scheme), '$scheme is not a string');
+
+        if (!static::_parse($scheme, false, $result, $type, $defaultPort, $error)) {
+            throw new SchemeInvalidArgumentException($error);
+        }
+
+        return new self($result, $type, $defaultPort);
+    }
+
+    /**
+     * Parses a scheme.
      *
      * @param string $scheme The scheme.
      *
@@ -101,24 +105,21 @@ class Scheme implements SchemeInterface
     {
         assert(is_string($scheme), '$scheme is not a string');
 
-        try {
-            $result = new self($scheme);
-
-            return $result;
-        } catch (SchemeInvalidArgumentException $e) {
+        if (!static::_parse($scheme, false, $result, $type, $defaultPort)) {
+            return null;
         }
 
-        return null;
+        return new self($result, $type, $defaultPort);
     }
 
     /**
-     * Builds this scheme from scheme parts.
+     * Constructs a scheme from scheme info.
      *
      * @param string $scheme      The scheme.
      * @param int    $type        The type.
      * @param int    $defaultPort The default port.
      */
-    private function _build($scheme, $type, $defaultPort)
+    private function __construct($scheme, $type, $defaultPort)
     {
         $this->_scheme = $scheme;
         $this->_type = $type;
