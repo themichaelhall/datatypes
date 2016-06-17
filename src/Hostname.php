@@ -31,9 +31,9 @@ class Hostname implements HostnameInterface
      *
      * @param string $tld The top-level domain.
      *
-     * @return HostnameInterface The Hostname instance.
-     *
      * @throws HostnameInvalidArgumentException If the $tld parameter is not a valid top-level domain.
+     *
+     * @return HostnameInterface The Hostname instance.
      */
     public function withTld($tld)
     {
@@ -75,9 +75,9 @@ class Hostname implements HostnameInterface
      *
      * @param string $hostname The hostname.
      *
-     * @return HostnameInterface The Hostname instance.
-     *
      * @throws HostnameInvalidArgumentException If the $hostname parameter is not a valid hostname.
+     *
+     * @return HostnameInterface The Hostname instance.
      */
     public static function parse($hostname)
     {

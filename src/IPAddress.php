@@ -37,9 +37,9 @@ class IPAddress implements IPAddressInterface
      *
      * @param string $ipAddress The IP address.
      *
-     * @return IPAddressInterface The IPAddress instance.
-     *
      * @throws IPAddressInvalidArgumentException If the $ipAddress parameter is not a valid IP address.
+     *
+     * @return IPAddressInterface The IPAddress instance.
      */
     public static function parse($ipAddress)
     {

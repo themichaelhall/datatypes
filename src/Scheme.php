@@ -79,9 +79,9 @@ class Scheme implements SchemeInterface
      *
      * @param string $scheme The scheme.
      *
-     * @return SchemeInterface The Scheme instance.
-     *
      * @throws SchemeInvalidArgumentException If the $scheme parameter is not a valid scheme.
+     *
+     * @return SchemeInterface The Scheme instance.
      */
     public static function parse($scheme)
     {
