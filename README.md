@@ -1,4 +1,4 @@
-# PHP Data types
+# PHP Data Types
 
 [![Build Status](https://api.travis-ci.org/themichaelhall/datatypes.svg)](https://travis-ci.org/themichaelhall/datatypes)
 [![codecov.io](https://codecov.io/gh/themichaelhall/datatypes/coverage.svg?branch=master)](https://codecov.io/gh/themichaelhall/datatypes)
