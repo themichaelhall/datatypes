@@ -19,6 +19,20 @@ class Host implements HostInterface
     }
 
     /**
+     * Checks if a host is valid.
+     *
+     * @param string $host The host.
+     *
+     * @return bool True if the $host parameter is a valid host, false otherwise.
+     */
+    public static function isValid($host)
+    {
+        assert(is_string($host), '$host is not a string');
+
+        return static::myParse($host);
+    }
+
+    /**
      * Parses a host.
      *
      * @param string $host The host.
@@ -49,7 +63,7 @@ class Host implements HostInterface
     {
         assert(is_string($host), '$host is not a string');
 
-        if (!static::myParse($host, $error)) {
+        if (!static::myParse($host)) {
             return null;
         }
 

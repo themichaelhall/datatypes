@@ -37,4 +37,14 @@ class HostTest extends PHPUnit_Framework_TestCase
         $this->assertSame('domain.com', Host::tryParse('domain.com')->__toString());
         $this->assertSame('1.2.3.4', Host::tryParse('1.2.3.4')->__toString());
     }
+
+    /**
+     * Test isValid method.
+     */
+    public function testIsValid()
+    {
+        $this->assertFalse(Host::isValid(''));
+        $this->assertTrue(Host::isValid('domain.com'));
+        $this->assertTrue(Host::isValid('1.2.3.4'));
+    }
 }
