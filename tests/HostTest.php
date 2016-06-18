@@ -36,6 +36,7 @@ class HostTest extends PHPUnit_Framework_TestCase
         $this->assertNull(Host::tryParse(''));
         $this->assertSame('domain.com', Host::tryParse('domain.com')->__toString());
         $this->assertSame('1.2.3.4', Host::tryParse('1.2.3.4')->__toString());
+        $this->assertNull(Host::tryParse('*'));
     }
 
     /**
@@ -46,5 +47,18 @@ class HostTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(Host::isValid(''));
         $this->assertTrue(Host::isValid('domain.com'));
         $this->assertTrue(Host::isValid('1.2.3.4'));
+        $this->assertFalse(Host::isValid('*'));
+    }
+
+    /**
+     * Test that invalid hostname or invalid IP address is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\HostInvalidArgumentException
+     * @expectedExceptionMessage Host "foo@bar.com" is invalid: Hostname "foo@bar.com" is invalid: Part of hostname "foo@bar" contains invalid character "@".
+     *
+     */
+    public function testInvalidHostnameOrInvalidIPAddressIsInvalid()
+    {
+        Host::parse('foo@bar.com');
     }
 }

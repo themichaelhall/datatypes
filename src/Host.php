@@ -3,6 +3,7 @@
 namespace DataTypes;
 
 use DataTypes\Exceptions\HostInvalidArgumentException;
+use DataTypes\Exceptions\HostnameInvalidArgumentException;
 use DataTypes\Interfaces\HostInterface;
 
 /**
@@ -18,6 +19,9 @@ class Host implements HostInterface
         return $this->myHost;
     }
 
+    // fixme: fromHostname()
+    // fixme: fromIPAddress()
+
     /**
      * Checks if a host is valid.
      *
@@ -29,7 +33,7 @@ class Host implements HostInterface
     {
         assert(is_string($host), '$host is not a string');
 
-        return static::myParse($host);
+        return static::myParse($host, true);
     }
 
     /**
@@ -45,12 +49,15 @@ class Host implements HostInterface
     {
         assert(is_string($host), '$host is not a string');
 
-        if (!static::myParse($host, $error)) {
+        if (!static::myParse($host, false, $error)) {
             throw new HostInvalidArgumentException($error);
         }
 
         return new self($host);
     }
+
+    // fixme: toHostname()
+    // fixme: toIPAddress()
 
     /**
      * Parses a host.
@@ -63,7 +70,7 @@ class Host implements HostInterface
     {
         assert(is_string($host), '$host is not a string');
 
-        if (!static::myParse($host)) {
+        if (!static::myParse($host, false)) {
             return null;
         }
 
@@ -83,16 +90,31 @@ class Host implements HostInterface
     /**
      * Tries to parse a host and returns the result or error text.
      *
-     * @param string      $host  The host.
-     * @param string|null $error The error text if parsing was not successful, undefined otherwise.
+     * @param string      $host         The host.
+     * @param bool        $validateOnly If true only validation is performed, if false parse results are returned.
+     * @param string|null $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($host, &$error = null)
+    private static function myParse($host, $validateOnly, &$error = null)
     {
         // Pre-validate host.
         if (!static::myPreValidate($host, $error)) {
             return false;
+        }
+
+        // Validate only?
+        if ($validateOnly) {
+            return Hostname::isValid($host) || IPAddress::isValid($host);
+        }
+
+        // Parse host as either a hostname or an IP address.
+        try {
+            Hostname::parse($host);
+        } catch (HostnameInvalidArgumentException $e) {
+            $error = 'Host "' . $host . '" is invalid: ' . $e->getMessage();
+
+            return IPAddress::isValid($host);
         }
 
         return true;
