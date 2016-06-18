@@ -27,4 +27,14 @@ class HostTest extends PHPUnit_Framework_TestCase
     {
         Host::parse('');
     }
+
+    /**
+     * Test tryParse method.
+     */
+    public function testTryParse()
+    {
+        $this->assertNull(Host::tryParse(''));
+        $this->assertSame('domain.com', Host::tryParse('domain.com')->__toString());
+        $this->assertSame('1.2.3.4', Host::tryParse('1.2.3.4')->__toString());
+    }
 }

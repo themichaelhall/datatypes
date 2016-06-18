@@ -39,6 +39,24 @@ class Host implements HostInterface
     }
 
     /**
+     * Parses a host.
+     *
+     * @param string $host The host.
+     *
+     * @return HostInterface The Host instance if the $host parameter is a valid host, null otherwise.
+     */
+    public static function tryParse($host)
+    {
+        assert(is_string($host), '$host is not a string');
+
+        if (!static::myParse($host, $error)) {
+            return null;
+        }
+
+        return new self($host);
+    }
+
+    /**
      * Constructs a host from host.
      *
      * @param string $host The host.
