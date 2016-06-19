@@ -17,6 +17,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertSame('http://www.domain.com/', Url::parse('http://www.domain.com/')->__toString());
         $this->assertSame('http://www.domain.com/', Url::parse('http://www.domain.com')->__toString());
         $this->assertSame('http://www.domain.com/foo/Bar', Url::parse('http://www.domain.com/foo/Bar')->__toString());
+        $this->assertSame('http://www.domain.com/FOO/BAR', Url::parse('HTTP://WWW.DOMAIN.COM/FOO/BAR')->__toString());
     }
 
     /**
