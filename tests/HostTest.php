@@ -1,6 +1,8 @@
 <?php
 
 use DataTypes\Host;
+use DataTypes\Hostname;
+use DataTypes\IPAddress;
 
 /**
  * Test Host class.
@@ -59,5 +61,22 @@ class HostTest extends PHPUnit_Framework_TestCase
     public function testInvalidHostnameOrInvalidIPAddressIsInvalid()
     {
         Host::parse('foo@bar.com');
+    }
+
+    /**
+     * Test fromHostname method.
+     */
+    public function testFromHostname()
+    {
+        $this->assertSame('www.bar.org', Host::fromHostname(Hostname::parse('www.bar.org'))->__toString());
+        $this->assertSame('www.bar.org', Host::fromHostname(Hostname::parse('WWW.BAR.ORG'))->__toString());
+    }
+
+    /**
+     * Test fromIPAddress method.
+     */
+    public function testFromIPAddress()
+    {
+        $this->assertSame('10.20.30.40', Host::fromIPAddress(IPAddress::parse('10.20.30.40'))->__toString());
     }
 }
