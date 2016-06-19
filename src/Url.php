@@ -31,6 +31,18 @@ class Url implements UrlInterface
     }
 
     /**
+     * Returns a copy of the Url instance with the specified host.
+     *
+     * @param HostInterface $host The host.
+     *
+     * @return UrlInterface The Url instance.
+     */
+    public function withHost(HostInterface $host)
+    {
+        return new self($this->myScheme, $host, $this->myRest);
+    }
+
+    /**
      * Returns a copy of the Url instance with the specified scheme.
      *
      * @param SchemeInterface $scheme The scheme.

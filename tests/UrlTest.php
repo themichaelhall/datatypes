@@ -1,5 +1,6 @@
 <?php
 
+use DataTypes\Host;
 use DataTypes\Scheme;
 use DataTypes\Url;
 
@@ -110,6 +111,15 @@ class UrlTest extends PHPUnit_Framework_TestCase
     public function testInvalidHostIsInvalid()
     {
         Url::parse('https://foo@bar');
+    }
+
+    /**
+     * Test withHost method.
+     */
+    public function testWithHost()
+    {
+        $this->assertSame('http://foo.org/path/', Url::parse('http://192.168.0.1/path/')->withHost(Host::parse('foo.org'))->__toString());
+        $this->assertSame('https://foo.bar.com/path/', Url::parse('https://foo.bar.com/path/')->withHost(Host::parse('foo.bar.com'))->__toString());
     }
 
     /**
