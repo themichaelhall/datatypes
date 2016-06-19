@@ -8,6 +8,11 @@ namespace DataTypes\Interfaces;
 interface UrlInterface extends DataTypeInterface
 {
     /**
+     * @return HostInterface The host of the url.
+     */
+    public function getHost();
+
+    /**
      * @return SchemeInterface The scheme of the url.
      */
     public function getScheme();

@@ -14,6 +14,8 @@ class UrlTest extends PHPUnit_Framework_TestCase
     public function testToString()
     {
         $this->assertSame('http://www.domain.com/', Url::parse('http://www.domain.com/')->__toString());
+        $this->assertSame('http://www.domain.com/', Url::parse('http://www.domain.com')->__toString());
+        $this->assertSame('http://www.domain.com/foo/Bar', Url::parse('http://www.domain.com/foo/Bar')->__toString());
     }
 
     /**
@@ -79,6 +81,38 @@ class UrlTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test getHost method.
+     */
+    public function testGetHost()
+    {
+        $this->assertSame('foo.bar.com', Url::parse('http://foo.bar.com/path/')->getHost()->__toString());
+        $this->assertSame('10.10.10.10', Url::parse('http://10.10.10.10/')->getHost()->__toString());
+        $this->assertSame('10.10.10.10', Url::parse('http://10.10.10.10')->getHost()->__toString());
+    }
+
+    /**
+     * Test that empty host is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "https://" is invalid: Host "" is empty.
+     */
+    public function testEmptyHostIsInvalid()
+    {
+        Url::parse('https://');
+    }
+
+    /**
+     * Test that invalid host is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "https://foo@bar" is invalid: Host "foo@bar" is invalid: Hostname "foo@bar" is invalid: Part of hostname "foo@bar" contains invalid character "@".
+     */
+    public function testInvalidHostIsInvalid()
+    {
+        Url::parse('https://foo@bar');
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -86,6 +120,8 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(Url::isValid(''));
         $this->assertFalse(Url::isValid('foo://bar.com/'));
         $this->assertTrue(Url::isValid('http://domain.com/'));
+        $this->assertFalse(Url::isValid('http:///path/'));
+        $this->assertFalse(Url::isValid('http://+++/'));
         // fixme: More tests
     }
 
@@ -97,6 +133,8 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertNull(Url::tryParse(''));
         $this->assertNull(Url::tryParse('foo://bar.com/'));
         $this->assertSame('http://domain.com/', Url::tryParse('http://domain.com/')->__toString());
+        $this->assertNull(Url::tryParse('http:///path/'));
+        $this->assertNull(Url::tryParse('http://+++/'));
         // fixme: More tests
     }
 }
