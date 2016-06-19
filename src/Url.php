@@ -119,16 +119,16 @@ class Url implements UrlInterface
     /**
      * Tries to parse a Url and returns the result or error text.
      *
-     * @param string             $url          The Url.
-     * @param bool               $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param Scheme             $scheme       The scheme if parsing was successful, undefined otherwise.
-     * @param HostInterface|null $host         The host if parsing was successful, undefined otherwise.
-     * @param string             $theRest      Temporary variable to use when creating this class.
-     * @param string|null        $error        The error text if parsing was not successful, undefined otherwise.
+     * @param string               $url          The Url.
+     * @param bool                 $validateOnly If true only validation is performed, if false parse results are returned.
+     * @param SchemeInterface|null $scheme       The scheme if parsing was successful, undefined otherwise.
+     * @param HostInterface|null   $host         The host if parsing was successful, undefined otherwise.
+     * @param string               $theRest      Temporary variable to use when creating this class.
+     * @param string|null          $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($url, $validateOnly, Scheme &$scheme = null, HostInterface &$host = null, &$theRest = null, &$error = null)
+    private static function myParse($url, $validateOnly, SchemeInterface &$scheme = null, HostInterface &$host = null, &$theRest = null, &$error = null)
     {
         // Pre-validate Url.
         if (!static::myPreValidate($url, $error)) {
@@ -168,14 +168,14 @@ class Url implements UrlInterface
     /**
      * Parse scheme.
      *
-     * @param string      $parsedUrl    The part of url that is to be parsed.
-     * @param bool        $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param Scheme|null $scheme       The scheme if parsing was successful, undefined otherwise.
-     * @param string|null $error        The error text if parsing was not successful, undefined otherwise.
+     * @param string               $parsedUrl    The part of url that is to be parsed.
+     * @param bool                 $validateOnly If true only validation is performed, if false parse results are returned.
+     * @param SchemeInterface|null $scheme       The scheme if parsing was successful, undefined otherwise.
+     * @param string|null          $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParseScheme(&$parsedUrl, $validateOnly, Scheme &$scheme = null, &$error = null)
+    private static function myParseScheme(&$parsedUrl, $validateOnly, SchemeInterface &$scheme = null, &$error = null)
     {
         $parts = explode('://', $parsedUrl, 2);
 
@@ -187,17 +187,17 @@ class Url implements UrlInterface
 
         $parsedUrl = $parts[1];
 
-        // Try parse scheme.
-        if (!$validateOnly) {
-            try {
-                $scheme = Scheme::parse($parts[0]);
-            } catch (SchemeInvalidArgumentException $e) {
-                $error = $e->getMessage();
-
-                return false;
-            }
-        } else {
+        // Validate or try parse scheme.
+        if ($validateOnly) {
             return Scheme::isValid($parts[0]);
+        }
+
+        try {
+            $scheme = Scheme::parse($parts[0]);
+        } catch (SchemeInvalidArgumentException $e) {
+            $error = $e->getMessage();
+
+            return false;
         }
 
         return true;
@@ -260,7 +260,7 @@ class Url implements UrlInterface
     private $myRest;
 
     /**
-     * @var Scheme My scheme.
+     * @var SchemeInterface My scheme.
      */
     private $myScheme;
 
