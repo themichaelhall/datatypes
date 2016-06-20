@@ -24,7 +24,7 @@ spl_autoload_register(function ($class) {
             ])
     ) {
         /** @noinspection PhpIncludeInspection */
-        require(__DIR__ . '/' . str_replace('\\', DIRECTORY_SEPARATOR, $classname) . '.php');
+        require __DIR__ . '/' . str_replace('\\', DIRECTORY_SEPARATOR, $classname) . '.php';
         $result = true;
     }
 
