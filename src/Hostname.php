@@ -13,9 +13,17 @@ class Hostname implements HostnameInterface
     /**
      * @return string The domain name including top-level domain.
      */
-    public function getDomain()
+    public function getDomainName()
     {
         return $this->myDomainParts[count($this->myDomainParts) - 1] . ($this->myTld !== null ? '.' . $this->myTld : '');
+    }
+
+    /**
+     * @return string[] The domain parts.
+     */
+    public function getDomainParts()
+    {
+        return $this->myDomainParts;
     }
 
     /**

@@ -173,13 +173,13 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test getDomain method.
+     * Test getDomainName method.
      */
-    public function testGetDomain()
+    public function testGetDomainName()
     {
-        $this->assertSame('foo', Hostname::parse('foo')->getDomain());
-        $this->assertSame('foo.com', Hostname::parse('foo.com')->getDomain());
-        $this->assertSame('bar.org', Hostname::parse('foo.bar.org')->getDomain());
+        $this->assertSame('foo', Hostname::parse('foo')->getDomainName());
+        $this->assertSame('foo.com', Hostname::parse('foo.com')->getDomainName());
+        $this->assertSame('bar.org', Hostname::parse('foo.bar.org')->getDomainName());
     }
 
     /**
@@ -236,5 +236,15 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     public function testWithTldWithInvalidTopDomainLevelIsInvalid()
     {
         Hostname::parse('domain.com')->withTld('123');
+    }
+
+    /**
+     * Test getDomainParts method.
+     */
+    public function testGetDomainParts()
+    {
+        $this->assertSame(['foo'], Hostname::parse('foo')->getDomainParts());
+        $this->assertSame(['foo'], Hostname::parse('foo.com')->getDomainParts());
+        $this->assertSame(['bar', 'foo'], Hostname::parse('bar.foo.com')->getDomainParts());
     }
 }
