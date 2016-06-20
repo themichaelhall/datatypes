@@ -50,7 +50,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      * Test that hostname with only a dot is invalid.
      *
      * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "." is invalid: Part of hostname "" is empty.
+     * @expectedExceptionMessage Hostname "." is invalid: Part of domain "" is empty.
      */
     public function testHostnameWithOnlyADotIsInvalid()
     {
@@ -78,7 +78,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      * Test that hostname with invalid character is invalid.
      *
      * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "foo.ba+r.com" is invalid: Part of hostname "ba+r" contains invalid character "+".
+     * @expectedExceptionMessage Hostname "foo.ba+r.com" is invalid: Part of domain "ba+r" contains invalid character "+".
      */
     public function testHostnameWithInvalidCharacterIsInvalid()
     {
@@ -89,7 +89,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      * Test that hostname with empty part is invalid.
      *
      * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "foo..com" is invalid: Part of hostname "" is empty.
+     * @expectedExceptionMessage Hostname "foo..com" is invalid: Part of domain "" is empty.
      */
     public function testHostnameWithEmptyPartIsInvalid()
     {
@@ -100,7 +100,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      * Test that hostname with too long part is invalid.
      *
      * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.com" is invalid: Part of hostname "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is too long: Maximum allowed length is 63 characters.
+     * @expectedExceptionMessage Hostname "foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.com" is invalid: Part of domain "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is too long: Maximum allowed length is 63 characters.
      */
     public function testHostNameWithTooLongPartIsInvalid()
     {
@@ -111,7 +111,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      * Test that hostname with part beginning with dash is invalid.
      *
      * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "-foo.bar.com" is invalid: Part of hostname "-foo" begins with "-".
+     * @expectedExceptionMessage Hostname "-foo.bar.com" is invalid: Part of domain "-foo" begins with "-".
      */
     public function testHostnameWithPartBeginningWithDashIsInvalid()
     {
@@ -122,7 +122,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      * Test that hostname with part ending with dash is invalid.
      *
      * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "foo.bar-.com" is invalid: Part of hostname "bar-" ends with "-".
+     * @expectedExceptionMessage Hostname "foo.bar-.com" is invalid: Part of domain "bar-" ends with "-".
      */
     public function testHostnameWithPartEndingWithDashIsInvalid()
     {

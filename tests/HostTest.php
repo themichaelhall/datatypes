@@ -56,7 +56,7 @@ class HostTest extends PHPUnit_Framework_TestCase
      * Test that invalid hostname or invalid IP address is invalid.
      *
      * @expectedException DataTypes\Exceptions\HostInvalidArgumentException
-     * @expectedExceptionMessage Host "foo@bar.com" is invalid: Hostname "foo@bar.com" is invalid: Part of hostname "foo@bar" contains invalid character "@".
+     * @expectedExceptionMessage Host "foo@bar.com" is invalid: Hostname "foo@bar.com" is invalid: Part of domain "foo@bar" contains invalid character "@".
      */
     public function testInvalidHostnameOrInvalidIPAddressIsInvalid()
     {

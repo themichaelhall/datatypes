@@ -156,12 +156,10 @@ class Hostname implements HostnameInterface
         }
 
         // Validate the domain parts.
-        foreach ($domainParts as $part) {
-            if (!static::myValidateDomainPart($part, $error)) {
-                $error = 'Hostname "' . $hostname . '" is invalid: ' . $error;
+        if (!static::myValidateDomainParts($domainParts, $error)) {
+            $error = 'Hostname "' . $hostname . '" is invalid: ' . $error;
 
-                return false;
-            }
+            return false;
         }
 
         if (!$validateOnly) {
@@ -237,6 +235,25 @@ class Hostname implements HostnameInterface
     }
 
     /**
+     * Validates domain parts.
+     *
+     * @param string[] $domainParts The domain parts.
+     * @param string   $error       The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    private static function myValidateDomainParts(array $domainParts, &$error)
+    {
+        foreach ($domainParts as $part) {
+            if (!static::myValidateDomainPart($part, $error)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Validates a domain part.
      *
      * @param string $domainPart The domain part.
@@ -246,37 +263,37 @@ class Hostname implements HostnameInterface
      */
     private static function myValidateDomainPart($domainPart, &$error)
     {
-        // Empty hostname part is invalid.
+        // Empty domain part is invalid.
         if ($domainPart === '') {
-            $error = 'Part of hostname "' . $domainPart . '" is empty.';
+            $error = 'Part of domain "' . $domainPart . '" is empty.';
 
             return false;
         }
 
-        // Too long hostname part is invalid.
+        // Too long domain part is invalid.
         if (strlen($domainPart) > 63) {
-            $error = 'Part of hostname "' . $domainPart . '" is too long: Maximum allowed length is 63 characters.';
+            $error = 'Part of domain "' . $domainPart . '" is too long: Maximum allowed length is 63 characters.';
 
             return false;
         }
 
-        // Hostname part containing invalid character is invalid.
+        // Domain part containing invalid character is invalid.
         if (preg_match('/[^a-zA-Z0-9-]/', $domainPart, $matches)) {
-            $error = 'Part of hostname "' . $domainPart . '" contains invalid character "' . $matches[0] . '".';
+            $error = 'Part of domain "' . $domainPart . '" contains invalid character "' . $matches[0] . '".';
 
             return false;
         }
 
-        // Hostname part can not begin with a dash.
+        // Domain part can not begin with a dash.
         if (substr($domainPart, 0, 1) === '-') {
-            $error = 'Part of hostname "' . $domainPart . '" begins with "-".';
+            $error = 'Part of domain "' . $domainPart . '" begins with "-".';
 
             return false;
         }
 
-        // Hostname part can not end with a dash.
+        // Domain part can not end with a dash.
         if (substr($domainPart, -1) === '-') {
-            $error = 'Part of hostname "' . $domainPart . '" ends with "-".';
+            $error = 'Part of domain "' . $domainPart . '" ends with "-".';
 
             return false;
         }
