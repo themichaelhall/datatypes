@@ -107,7 +107,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
      * Test that invalid host is invalid.
      *
      * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "https://foo@bar" is invalid: Host "foo@bar" is invalid: Hostname "foo@bar" is invalid: Part of hostname "foo@bar" contains invalid character "@".
+     * @expectedExceptionMessage Url "https://foo@bar" is invalid: Host "foo@bar" is invalid: Hostname "foo@bar" is invalid: Part of domain "foo@bar" contains invalid character "@".
      */
     public function testInvalidHostIsInvalid()
     {
