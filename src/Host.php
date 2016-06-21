@@ -14,6 +14,27 @@ use DataTypes\Interfaces\IPAddressInterface;
 class Host implements HostInterface
 {
     /**
+     * @return HostnameInterface The hostname of the host.
+     */
+    public function getHostname()
+    {
+        if ($this->myHostname !== null) {
+            return $this->myHostname;
+        }
+
+        // If no hostname is present, create a standard "in-addr.arpa" hostname from IP address.
+        $ipAddressParts = $this->myIpAddress->getParts();
+
+        return Hostname::fromParts([
+            strval($ipAddressParts[3]),
+            strval($ipAddressParts[2]),
+            strval($ipAddressParts[1]),
+            strval($ipAddressParts[0]),
+            'in-addr'
+        ], 'arpa');
+    }
+
+    /**
      * @return IPAddressInterface|null The IP address of the host or null if the host has no IP address.
      */
     public function getIPAddress()
@@ -90,8 +111,6 @@ class Host implements HostInterface
 
         return new self($hostname, $ipAddress);
     }
-
-    // fixme: toHostname()
 
     /**
      * Parses a host.
