@@ -51,7 +51,8 @@ class Hostname implements HostnameInterface
             throw new HostnameInvalidArgumentException($error);
         }
 
-        $tld = strtolower($tld);
+        // Normalize top-level domain.
+        static::myNormalizeTld($tld);
 
         return new self($this->myDomainParts, $tld);
     }
@@ -62,6 +63,42 @@ class Hostname implements HostnameInterface
     public function __toString()
     {
         return implode('.', $this->myDomainParts) . ($this->myTld !== null ? '.' . $this->myTld : '');
+    }
+
+    /**
+     * Creates a hostname from hostname parts.
+     *
+     * @param string[]    $domainParts The domain parts.
+     * @param string|null $tld         The top level domain or null if no top-level domain should be included.
+     *
+     * @throws HostnameInvalidArgumentException If any of the parameters are invalid.
+     *
+     * @return HostnameInterface The hostname instance.
+     */
+    public static function fromParts(array $domainParts, $tld = null)
+    {
+        assert(is_string($tld) || is_null($tld), '$tld is not a string or null');
+
+        // Empty domain parts is invalid.
+        if (count($domainParts) === 0) {
+            throw new HostnameInvalidArgumentException('Domain parts [] is empty.');
+        }
+
+        // Validate the domain parts.
+        if (!static::myValidateDomainParts($domainParts, $error)) {
+            throw new HostnameInvalidArgumentException('Domain parts ["' . implode('", "', $domainParts) . '"] is invalid: ' . $error);
+        }
+
+        // Validate top-level domain.
+        if (!static::myValidateTld($tld, $error)) {
+            throw new HostnameInvalidArgumentException($error);
+        }
+
+        // Normalize parts.
+        static::myNormalizeDomainParts($domainParts);
+        static::myNormalizeTld($tld);
+
+        return new self($domainParts, $tld);
     }
 
     /**
@@ -172,10 +209,8 @@ class Hostname implements HostnameInterface
 
         if (!$validateOnly) {
             // Normalize result.
-            $tld = $tld !== null ? strtolower($tld) : null;
-            array_walk($domainParts, function (&$part) {
-                $part = strtolower($part);
-            });
+            static::myNormalizeDomainParts($domainParts);
+            static::myNormalizeTld($tld);
         }
 
         return true;
@@ -271,6 +306,8 @@ class Hostname implements HostnameInterface
      */
     private static function myValidateDomainPart($domainPart, &$error)
     {
+        assert(is_string($domainPart), '$domainPart is not a string');
+
         // Empty domain part is invalid.
         if ($domainPart === '') {
             $error = 'Part of domain "' . $domainPart . '" is empty.';
@@ -307,6 +344,30 @@ class Hostname implements HostnameInterface
         }
 
         return true;
+    }
+
+    /**
+     * Normalizes a top-level domain.
+     *
+     * @param string|null $tld The top-level domain.
+     */
+    private static function myNormalizeTld(&$tld = null)
+    {
+        if ($tld !== null) {
+            $tld = strtolower($tld);
+        }
+    }
+
+    /**
+     * Normalizes domain parts.
+     *
+     * @param string[] $domainParts The domain parts.
+     */
+    private static function myNormalizeDomainParts(array &$domainParts)
+    {
+        array_walk($domainParts, function (&$part) {
+            $part = strtolower($part);
+        });
     }
 
     /**

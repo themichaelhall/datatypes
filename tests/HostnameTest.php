@@ -247,4 +247,47 @@ class HostnameTest extends PHPUnit_Framework_TestCase
         $this->assertSame(['foo'], Hostname::parse('foo.com')->getDomainParts());
         $this->assertSame(['bar', 'foo'], Hostname::parse('bar.foo.com')->getDomainParts());
     }
+
+    /**
+     * Test fromParts method.
+     */
+    public function testFromParts()
+    {
+        $this->assertSame('foo', Hostname::fromParts(['foo'])->__toString());
+        $this->assertSame('foo.com', Hostname::fromParts(['foo'], 'com')->__toString());
+        $this->assertSame('bar.foo.com', Hostname::fromParts(['bar', 'foo'], 'com')->__toString());
+        $this->assertSame('bar.foo.com', Hostname::fromParts(['BAR', 'FOO'], 'COM')->__toString());
+    }
+
+    /**
+     * Test that a call to fromParts with empty domain parts is invalid.
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Domain parts [] is empty.
+     */
+    public function testFromPartsWithEmptyDomainPartsIsInvalid()
+    {
+        Hostname::fromParts([]);
+    }
+
+    /**
+     * Test that a call to fromParts with invalid domain part is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Domain parts ["foo", "b*r"] is invalid: Part of domain "b*r" contains invalid character "*".
+     */
+    public function testFromPartsWithInvalidDomainPartsIsInvalid()
+    {
+        Hostname::fromParts(['foo', 'b*r']);
+    }
+
+    /**
+     * Test that a call to fromParts with invalid top-level domain is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedExceptionMessage Top-level domain "c*m" contains invalid character "*".
+     */
+    public function testFromPartsWithInvalidTopLevelDomainIsInvalid()
+    {
+        Hostname::fromParts(['foo'], 'c*m');
+    }
 }
