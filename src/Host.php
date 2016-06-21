@@ -14,6 +14,14 @@ use DataTypes\Interfaces\IPAddressInterface;
 class Host implements HostInterface
 {
     /**
+     * @return IPAddressInterface|null The IP address of the host or null if the host has no IP address.
+     */
+    public function getIPAddress()
+    {
+        return $this->myIpAddress;
+    }
+
+    /**
      * @return string The host as a string.
      */
     public function __toString()
@@ -84,7 +92,6 @@ class Host implements HostInterface
     }
 
     // fixme: toHostname()
-    // fixme: toIPAddress()
 
     /**
      * Parses a host.

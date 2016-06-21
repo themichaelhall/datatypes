@@ -79,4 +79,10 @@ class HostTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame('10.20.30.40', Host::fromIPAddress(IPAddress::parse('10.20.30.40'))->__toString());
     }
+
+    public function testGetIPAddress()
+    {
+        $this->assertNull(Host::parse('foo.bar.com')->getIPAddress());
+        $this->assertSame('10.20.30.40', Host::parse('10.20.30.40')->getIPAddress()->__toString());
+    }
 }
