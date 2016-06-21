@@ -13,9 +13,17 @@ class Hostname implements HostnameInterface
     /**
      * @return string The domain name including top-level domain.
      */
-    public function getDomain()
+    public function getDomainName()
     {
         return $this->myDomainParts[count($this->myDomainParts) - 1] . ($this->myTld !== null ? '.' . $this->myTld : '');
+    }
+
+    /**
+     * @return string[] The domain parts.
+     */
+    public function getDomainParts()
+    {
+        return $this->myDomainParts;
     }
 
     /**
@@ -43,7 +51,8 @@ class Hostname implements HostnameInterface
             throw new HostnameInvalidArgumentException($error);
         }
 
-        $tld = strtolower($tld);
+        // Normalize top-level domain.
+        static::myNormalizeTld($tld);
 
         return new self($this->myDomainParts, $tld);
     }
@@ -54,6 +63,42 @@ class Hostname implements HostnameInterface
     public function __toString()
     {
         return implode('.', $this->myDomainParts) . ($this->myTld !== null ? '.' . $this->myTld : '');
+    }
+
+    /**
+     * Creates a hostname from hostname parts.
+     *
+     * @param string[]    $domainParts The domain parts.
+     * @param string|null $tld         The top level domain or null if no top-level domain should be included.
+     *
+     * @throws HostnameInvalidArgumentException If any of the parameters are invalid.
+     *
+     * @return HostnameInterface The hostname instance.
+     */
+    public static function fromParts(array $domainParts, $tld = null)
+    {
+        assert(is_string($tld) || is_null($tld), '$tld is not a string or null');
+
+        // Empty domain parts is invalid.
+        if (count($domainParts) === 0) {
+            throw new HostnameInvalidArgumentException('Domain parts [] is empty.');
+        }
+
+        // Validate the domain parts.
+        if (!static::myValidateDomainParts($domainParts, $error)) {
+            throw new HostnameInvalidArgumentException('Domain parts ["' . implode('", "', $domainParts) . '"] is invalid: ' . $error);
+        }
+
+        // Validate top-level domain.
+        if (!static::myValidateTld($tld, $error)) {
+            throw new HostnameInvalidArgumentException($error);
+        }
+
+        // Normalize parts.
+        static::myNormalizeDomainParts($domainParts);
+        static::myNormalizeTld($tld);
+
+        return new self($domainParts, $tld);
     }
 
     /**
@@ -156,20 +201,16 @@ class Hostname implements HostnameInterface
         }
 
         // Validate the domain parts.
-        foreach ($domainParts as $part) {
-            if (!static::myValidateDomainPart($part, $error)) {
-                $error = 'Hostname "' . $hostname . '" is invalid: ' . $error;
+        if (!static::myValidateDomainParts($domainParts, $error)) {
+            $error = 'Hostname "' . $hostname . '" is invalid: ' . $error;
 
-                return false;
-            }
+            return false;
         }
 
         if (!$validateOnly) {
             // Normalize result.
-            $tld = $tld !== null ? strtolower($tld) : null;
-            array_walk($domainParts, function (&$part) {
-                $part = strtolower($part);
-            });
+            static::myNormalizeDomainParts($domainParts);
+            static::myNormalizeTld($tld);
         }
 
         return true;
@@ -237,6 +278,25 @@ class Hostname implements HostnameInterface
     }
 
     /**
+     * Validates domain parts.
+     *
+     * @param string[] $domainParts The domain parts.
+     * @param string   $error       The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    private static function myValidateDomainParts(array $domainParts, &$error)
+    {
+        foreach ($domainParts as $part) {
+            if (!static::myValidateDomainPart($part, $error)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Validates a domain part.
      *
      * @param string $domainPart The domain part.
@@ -246,42 +306,68 @@ class Hostname implements HostnameInterface
      */
     private static function myValidateDomainPart($domainPart, &$error)
     {
-        // Empty hostname part is invalid.
+        assert(is_string($domainPart), '$domainPart is not a string');
+
+        // Empty domain part is invalid.
         if ($domainPart === '') {
-            $error = 'Part of hostname "' . $domainPart . '" is empty.';
+            $error = 'Part of domain "' . $domainPart . '" is empty.';
 
             return false;
         }
 
-        // Too long hostname part is invalid.
+        // Too long domain part is invalid.
         if (strlen($domainPart) > 63) {
-            $error = 'Part of hostname "' . $domainPart . '" is too long: Maximum allowed length is 63 characters.';
+            $error = 'Part of domain "' . $domainPart . '" is too long: Maximum allowed length is 63 characters.';
 
             return false;
         }
 
-        // Hostname part containing invalid character is invalid.
+        // Domain part containing invalid character is invalid.
         if (preg_match('/[^a-zA-Z0-9-]/', $domainPart, $matches)) {
-            $error = 'Part of hostname "' . $domainPart . '" contains invalid character "' . $matches[0] . '".';
+            $error = 'Part of domain "' . $domainPart . '" contains invalid character "' . $matches[0] . '".';
 
             return false;
         }
 
-        // Hostname part can not begin with a dash.
+        // Domain part can not begin with a dash.
         if (substr($domainPart, 0, 1) === '-') {
-            $error = 'Part of hostname "' . $domainPart . '" begins with "-".';
+            $error = 'Part of domain "' . $domainPart . '" begins with "-".';
 
             return false;
         }
 
-        // Hostname part can not end with a dash.
+        // Domain part can not end with a dash.
         if (substr($domainPart, -1) === '-') {
-            $error = 'Part of hostname "' . $domainPart . '" ends with "-".';
+            $error = 'Part of domain "' . $domainPart . '" ends with "-".';
 
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Normalizes a top-level domain.
+     *
+     * @param string|null $tld The top-level domain.
+     */
+    private static function myNormalizeTld(&$tld = null)
+    {
+        if ($tld !== null) {
+            $tld = strtolower($tld);
+        }
+    }
+
+    /**
+     * Normalizes domain parts.
+     *
+     * @param string[] $domainParts The domain parts.
+     */
+    private static function myNormalizeDomainParts(array &$domainParts)
+    {
+        array_walk($domainParts, function (&$part) {
+            $part = strtolower($part);
+        });
     }
 
     /**

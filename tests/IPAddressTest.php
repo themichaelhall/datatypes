@@ -98,4 +98,12 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
         $this->assertSame('0.0.0.0', IPAddress::tryParse('0.0.0.0')->__toString());
         $this->assertSame('255.255.255.255', IPAddress::tryParse('255.255.255.255')->__toString());
     }
+
+    /**
+     * Test getParts method.
+     */
+    public function testGetParts()
+    {
+        $this->assertSame([192, 168, 0, 1], IPAddress::parse('192.168.0.1')->getParts());
+    }
 }
