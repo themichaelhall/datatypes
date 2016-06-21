@@ -11,6 +11,14 @@ use DataTypes\Interfaces\IPAddressInterface;
 class IPAddress implements IPAddressInterface
 {
     /**
+     * @return int[] The IP address parts.
+     */
+    public function getParts()
+    {
+        return $this->myOctets;
+    }
+
+    /**
      * @return string The IP address as a string.
      */
     public function __toString()

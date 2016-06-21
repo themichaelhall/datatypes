@@ -7,4 +7,8 @@ namespace DataTypes\Interfaces;
  */
 interface IPAddressInterface extends DataTypeInterface
 {
+    /**
+     * @return int[] The IP address parts.
+     */
+    public function getParts();
 }
