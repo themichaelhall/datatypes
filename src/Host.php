@@ -30,7 +30,7 @@ class Host implements HostInterface
             strval($ipAddressParts[2]),
             strval($ipAddressParts[1]),
             strval($ipAddressParts[0]),
-            'in-addr'
+            'in-addr',
         ], 'arpa');
     }
 
