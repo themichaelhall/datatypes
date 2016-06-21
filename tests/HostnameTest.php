@@ -261,6 +261,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
 
     /**
      * Test that a call to fromParts with empty domain parts is invalid.
+     * 
      * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Domain parts [] is empty.
      */
