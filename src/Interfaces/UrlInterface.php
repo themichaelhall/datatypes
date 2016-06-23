@@ -13,6 +13,11 @@ interface UrlInterface extends DataTypeInterface
     public function getHost();
 
     /**
+     * @return int The port of the url.
+     */
+    public function getPort();
+
+    /**
      * @return SchemeInterface The scheme of the url.
      */
     public function getScheme();
@@ -26,12 +31,15 @@ interface UrlInterface extends DataTypeInterface
      */
     public function withHost(HostInterface $host);
 
+    // fixme: withPort()
+
     /**
      * Returns a copy of the Url instance with the specified scheme.
      *
-     * @param SchemeInterface $scheme The scheme.
+     * @param SchemeInterface $scheme          The scheme.
+     * @param bool            $keepDefaultPort If true, port is changed to the schemes default port if port is current schemes default port, if false port is not changed.
      *
      * @return UrlInterface The Url instance.
      */
-    public function withScheme(SchemeInterface $scheme);
+    public function withScheme(SchemeInterface $scheme, $keepDefaultPort = true);
 }

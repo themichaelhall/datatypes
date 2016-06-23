@@ -18,6 +18,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertSame('http://www.domain.com/', Url::parse('http://www.domain.com')->__toString());
         $this->assertSame('http://www.domain.com/foo/Bar', Url::parse('http://www.domain.com/foo/Bar')->__toString());
         $this->assertSame('http://www.domain.com/FOO/BAR', Url::parse('HTTP://WWW.DOMAIN.COM/FOO/BAR')->__toString());
+        $this->assertSame('http://www.domain.com:1234/', Url::parse('http://www.domain.com:1234/')->__toString());
     }
 
     /**
@@ -80,6 +81,12 @@ class UrlTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame('http://foo.bar.com/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('http'))->__toString());
         $this->assertSame('https://foo.bar.com/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('https'))->__toString());
+        $this->assertSame('http://foo.bar.com:443/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('http'), false)->__toString());
+        $this->assertSame('https://foo.bar.com/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('https'), false)->__toString());
+        $this->assertSame('http://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('http'))->__toString());
+        $this->assertSame('https://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('https'))->__toString());
+        $this->assertSame('http://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('http'), false)->__toString());
+        $this->assertSame('https://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('https'), false)->__toString());
     }
 
     /**
@@ -124,6 +131,38 @@ class UrlTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test getPort method.
+     */
+    public function testGetPort()
+    {
+        $this->assertSame(80, Url::parse('http://foo.bar.com/path/')->getPort());
+        $this->assertSame(443, Url::parse('https://foo.bar.com/path/')->getPort());
+        $this->assertSame(1000, Url::parse('https://foo.bar.com:1000/path/')->getPort());
+    }
+
+    /**
+     * Test that url with invalid character in port is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "http://domain.com:12X45" is invalid: Port "12X45" contains invalid character "X".
+     */
+    public function testUrlWithInvalidCharacterInPortIsInvalid()
+    {
+        Url::parse('http://domain.com:12X45');
+    }
+
+    /**
+     * Test that url with port out of range is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "http://domain.com:65536" is invalid: Port "65536" is out of range: Maximum port number is 65535.
+     */
+    public function testUrlWithPortOutOfRangeIsInvalid()
+    {
+        Url::parse('http://domain.com:65536');
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -133,6 +172,8 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(Url::isValid('http://domain.com/'));
         $this->assertFalse(Url::isValid('http:///path/'));
         $this->assertFalse(Url::isValid('http://+++/'));
+        $this->assertFalse(Url::isValid('http://domain.com:XXX/'));
+        $this->assertTrue(Url::isValid('http://domain.com:1234/'));
         // fixme: More tests
     }
 
@@ -146,6 +187,8 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertSame('http://domain.com/', Url::tryParse('http://domain.com/')->__toString());
         $this->assertNull(Url::tryParse('http:///path/'));
         $this->assertNull(Url::tryParse('http://+++/'));
+        $this->assertNull(Url::tryParse('http://domain.com:XXX/'));
+        $this->assertSame('http://domain.com:1234/', Url::tryParse('http://domain.com:1234/')->__toString());
         // fixme: More tests
     }
 }
