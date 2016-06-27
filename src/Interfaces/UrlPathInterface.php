@@ -7,4 +7,8 @@ namespace DataTypes\Interfaces;
  */
 interface UrlPathInterface extends DataTypeInterface
 {
+    /**
+     * @return string[] The directory parts.
+     */
+    public function getDirectoryParts();
 }
