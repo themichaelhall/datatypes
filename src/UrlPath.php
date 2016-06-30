@@ -54,7 +54,6 @@ class UrlPath implements UrlPathInterface
      *
      * @param string[]    $directoryParts The directory parts.
      * @param string|null $filename       The filename.
-     *
      */
     private function __construct(array $directoryParts, $filename = null)
     {
