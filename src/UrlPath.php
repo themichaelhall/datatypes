@@ -26,11 +26,27 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * @return bool True if url path is absolute, false otherwise.
+     */
+    public function isAbsolute()
+    {
+        return $this->myIsAbsolute;
+    }
+
+    /**
+     * @return bool True if url path is relative, false otherwise.
+     */
+    public function isRelative()
+    {
+        return !$this->myIsAbsolute;
+    }
+
+    /**
      * @return string The url path as a string.
      */
     public function __toString()
     {
-        return '/' . implode('/', $this->myDirectoryParts) . (count($this->myDirectoryParts) > 0 ? '/' : '') . ($this->myFilename !== null ? $this->myFilename : '');
+        return ($this->myIsAbsolute ? '/' : '') . implode('/', $this->myDirectoryParts) . (count($this->myDirectoryParts) > 0 ? '/' : '') . ($this->myFilename !== null ? $this->myFilename : '');
     }
 
     /**
@@ -44,19 +60,21 @@ class UrlPath implements UrlPathInterface
     {
         assert(is_string($urlPath), '$urlPath is not a string');
 
-        static::myParse($urlPath, $directoryParts, $filename);
+        static::myParse($urlPath, $isAbsolute, $directoryParts, $filename);
 
-        return new self($directoryParts, $filename);
+        return new self($isAbsolute, $directoryParts, $filename);
     }
 
     /**
      * Constructs a url path from value.
      *
+     * @param bool        $isAbsolute     If true url path is absolute, if false url path is relative.
      * @param string[]    $directoryParts The directory parts.
      * @param string|null $filename       The filename.
      */
-    private function __construct(array $directoryParts, $filename = null)
+    private function __construct($isAbsolute, array $directoryParts, $filename = null)
     {
+        $this->myIsAbsolute = $isAbsolute;
         $this->myDirectoryParts = $directoryParts;
         $this->myFilename = $filename;
     }
@@ -65,21 +83,22 @@ class UrlPath implements UrlPathInterface
      * Tries to parse an url path and returns the result or error text.
      *
      * @param string        $urlPath        The url path.
+     * @param bool          $isAbsolute     Whether the path is absolute or relative is parsing was successful, undefined otherwise.
      * @param string[]|null $directoryParts The directory parts if parsing was successful, undefined otherwise.
      * @param string|null   $filename       The file if parsing was not successful, undefined otherwise.
      * @param string|null   $error          The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($urlPath, array &$directoryParts = null, &$filename = null, &$error = null)
+    private static function myParse($urlPath, &$isAbsolute, array &$directoryParts = null, &$filename = null, &$error = null)
     {
         $parts = explode('/', str_replace('\\', '/', $urlPath));
         $partsCount = count($parts);
 
         $directoryParts = [];
         $filename = null;
+        $isAbsolute = false;
 
-        // fixme: Handle relative path
         // fixme: Handle "." part
         // fixme: Handle ".." part
         // fixme: Validate
@@ -88,7 +107,15 @@ class UrlPath implements UrlPathInterface
         for ($i = 0; $i < $partsCount; ++$i) {
             $part = $parts[$i];
 
-            if ($i === 0 && $part === '') {
+            // If the first part is empty and other parts follow, the path begins with "/" and is therefore absolute.
+            if ($i === 0 && $part === '' && $partsCount > 1) {
+                $isAbsolute = true;
+
+                continue;
+            }
+
+            // If part is empty, the path contains "//" and should be skipped.
+            if ($part === '') {
                 continue;
             }
 
@@ -115,4 +142,9 @@ class UrlPath implements UrlPathInterface
      * @var string|null My filename.
      */
     private $myFilename;
+
+    /**
+     * @var bool True if url path is absolute, false otherwise.
+     */
+    private $myIsAbsolute;
 }
