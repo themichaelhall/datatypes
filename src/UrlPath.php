@@ -18,11 +18,19 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * @return string|null The filename or null if the url path is a directory.
+     */
+    public function getFilename()
+    {
+        return $this->myFilename;
+    }
+
+    /**
      * @return string The url path as a string.
      */
     public function __toString()
     {
-        return '/' . implode('/', $this->myDirectoryParts) . (count($this->myDirectoryParts) > 0 ? '/' : '');
+        return '/' . implode('/', $this->myDirectoryParts) . (count($this->myDirectoryParts) > 0 ? '/' : '') . ($this->myFilename !== null ? $this->myFilename : '');
     }
 
     /**
@@ -36,19 +44,22 @@ class UrlPath implements UrlPathInterface
     {
         assert(is_string($urlPath), '$urlPath is not a string');
 
-        static::myParse($urlPath, $directoryParts);
+        static::myParse($urlPath, $directoryParts, $filename);
 
-        return new self($directoryParts);
+        return new self($directoryParts, $filename);
     }
 
     /**
      * Constructs a url path from value.
      *
-     * @param string[] $directoryParts The directory parts.
+     * @param string[]    $directoryParts The directory parts.
+     * @param string|null $filename       The filename.
+     *
      */
-    private function __construct(array $directoryParts)
+    private function __construct(array $directoryParts, $filename = null)
     {
         $this->myDirectoryParts = $directoryParts;
+        $this->myFilename = $filename;
     }
 
     /**
@@ -56,32 +67,41 @@ class UrlPath implements UrlPathInterface
      *
      * @param string        $urlPath        The url path.
      * @param string[]|null $directoryParts The directory parts if parsing was successful, undefined otherwise.
+     * @param string|null   $filename       The file if parsing was not successful, undefined otherwise.
      * @param string|null   $error          The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($urlPath, array &$directoryParts = null, &$error = null)
+    private static function myParse($urlPath, array &$directoryParts = null, &$filename = null, &$error = null)
     {
         $parts = explode('/', str_replace('\\', '/', $urlPath));
         $partsCount = count($parts);
 
         $directoryParts = [];
+        $filename = null;
 
         // fixme: Handle relative path
-        // fixme: Handle file
         // fixme: Handle "." part
         // fixme: Handle ".." part
         // fixme: Validate
 
         // Parse the directories
-        for ($i = 0; $i < $partsCount - 1; ++$i) {
+        for ($i = 0; $i < $partsCount; ++$i) {
             $part = $parts[$i];
 
             if ($i === 0 && $part === '') {
                 continue;
             }
 
-            $directoryParts[] = $parts[$i];
+            if ($i === $partsCount - 1) {
+                // This is the last part (i.e. the filename part).
+                if ($part !== '') {
+                    $filename = $part;
+                }
+            } else {
+                // This is a directory part.
+                $directoryParts[] = $part;
+            }
         }
 
         return true;
@@ -91,4 +111,9 @@ class UrlPath implements UrlPathInterface
      * @var string My directory parts.
      */
     private $myDirectoryParts;
+
+    /**
+     * @var string|null My filename.
+     */
+    private $myFilename;
 }
