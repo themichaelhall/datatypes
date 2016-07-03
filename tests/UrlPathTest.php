@@ -66,4 +66,15 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(UrlPath::parse('foo/bar/baz')->isRelative());
         $this->assertFalse(UrlPath::parse('/foo/bar/baz')->isRelative());
     }
+
+    /**
+     * Test with current directory parts.
+     */
+    public function testWithCurrentDirectoryParts()
+    {
+        $this->assertSame('/foo/bar/baz/', UrlPath::parse('/foo/bar/./baz/')->__toString());
+        $this->assertSame('foo/bar/', UrlPath::parse('foo/bar/./')->__toString());
+        $this->assertSame('foo/bar/', UrlPath::parse('./foo/bar/')->__toString());
+        $this->assertSame('foo/bar/file', UrlPath::parse('foo/bar/./file')->__toString());
+    }
 }

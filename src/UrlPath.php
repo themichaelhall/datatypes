@@ -99,7 +99,6 @@ class UrlPath implements UrlPathInterface
         $filename = null;
         $isAbsolute = false;
 
-        // fixme: Handle "." part
         // fixme: Handle ".." part
         // fixme: Validate
 
@@ -116,6 +115,11 @@ class UrlPath implements UrlPathInterface
 
             // If part is empty, the path contains "//" and should be skipped.
             if ($part === '') {
+                continue;
+            }
+
+            // Handle "current directory"-part.
+            if ($part === '.') {
                 continue;
             }
 
