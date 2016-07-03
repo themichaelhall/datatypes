@@ -123,6 +123,14 @@ class UrlPath implements UrlPathInterface
                 continue;
             }
 
+            // Handle "parent directory"-part.
+            if ($part === '..') {
+                // fixme: handle empty array
+                array_pop($directoryParts);
+
+                continue;
+            }
+
             if ($i === $partsCount - 1) {
                 // This is the last part (i.e. the filename part).
                 if ($part !== '') {
