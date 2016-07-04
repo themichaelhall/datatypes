@@ -88,4 +88,16 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertSame('foo/bar/', UrlPath::parse('foo/bar/baz/..')->__toString());
         $this->assertSame('foo/bar/file', UrlPath::parse('foo/bar/baz/../file')->__toString());
     }
+
+    /**
+     * Test with parent directory parts that results in a directory above base directory.
+     */
+    public function testWithParentDirectoryPartsAboveBaseDirectory()
+    {
+        $urlPath = UrlPath::parse('foo/bar/../../../../baz/file.html');
+
+        $this->assertSame('../../baz/file.html', $urlPath->__toString());
+        $this->assertTrue($urlPath->isRelative());
+        $this->assertSame(['..', '..', 'baz'], $urlPath->getDirectoryParts());
+    }
 }

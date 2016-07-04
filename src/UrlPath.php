@@ -14,7 +14,7 @@ class UrlPath implements UrlPathInterface
      */
     public function getDirectoryParts()
     {
-        return $this->myDirectoryParts;
+        return $this->myAboveBaseLevel === 0 ? $this->myDirectoryParts : array_merge(array_fill(0, $this->myAboveBaseLevel, '..'), $this->myDirectoryParts);
     }
 
     /**
@@ -46,7 +46,13 @@ class UrlPath implements UrlPathInterface
      */
     public function __toString()
     {
-        return ($this->myIsAbsolute ? '/' : '') . implode('/', $this->myDirectoryParts) . (count($this->myDirectoryParts) > 0 ? '/' : '') . ($this->myFilename !== null ? $this->myFilename : '');
+        return
+            // If above base level (for relative url path), append the required number of "../".
+            ($this->myAboveBaseLevel > 0 ? str_repeat('../', $this->myAboveBaseLevel) : '') .
+            // Directory parts.
+            ($this->myIsAbsolute ? '/' : '') . implode('/', $this->myDirectoryParts) . (count($this->myDirectoryParts) > 0 ? '/' : '') .
+            // File part.
+            ($this->myFilename !== null ? $this->myFilename : '');
     }
 
     /**
@@ -60,21 +66,23 @@ class UrlPath implements UrlPathInterface
     {
         assert(is_string($urlPath), '$urlPath is not a string');
 
-        static::myParse($urlPath, $isAbsolute, $directoryParts, $filename);
+        static::myParse($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
 
-        return new self($isAbsolute, $directoryParts, $filename);
+        return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
     }
 
     /**
      * Constructs a url path from value.
      *
      * @param bool        $isAbsolute     If true url path is absolute, if false url path is relative.
+     * @param int         $aboveBaseLevel The number of directory parts above base level.
      * @param string[]    $directoryParts The directory parts.
      * @param string|null $filename       The filename.
      */
-    private function __construct($isAbsolute, array $directoryParts, $filename = null)
+    private function __construct($isAbsolute, $aboveBaseLevel, array $directoryParts, $filename = null)
     {
         $this->myIsAbsolute = $isAbsolute;
+        $this->myAboveBaseLevel = $aboveBaseLevel;
         $this->myDirectoryParts = $directoryParts;
         $this->myFilename = $filename;
     }
@@ -84,13 +92,14 @@ class UrlPath implements UrlPathInterface
      *
      * @param string        $urlPath        The url path.
      * @param bool          $isAbsolute     Whether the path is absolute or relative is parsing was successful, undefined otherwise.
+     * @param int|null      $aboveBaseLevel The number of directory parts above base level if parsing was successful, undefined otherwise.
      * @param string[]|null $directoryParts The directory parts if parsing was successful, undefined otherwise.
      * @param string|null   $filename       The file if parsing was not successful, undefined otherwise.
      * @param string|null   $error          The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($urlPath, &$isAbsolute, array &$directoryParts = null, &$filename = null, &$error = null)
+    private static function myParse($urlPath, &$isAbsolute, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
     {
         $parts = explode('/', str_replace('\\', '/', $urlPath));
         $partsCount = count($parts);
@@ -98,8 +107,8 @@ class UrlPath implements UrlPathInterface
         $directoryParts = [];
         $filename = null;
         $isAbsolute = false;
+        $aboveBaseLevel = 0;
 
-        // fixme: Handle ".." part
         // fixme: Validate
 
         // Parse the directories
@@ -125,8 +134,11 @@ class UrlPath implements UrlPathInterface
 
             // Handle "parent directory"-part.
             if ($part === '..') {
-                // fixme: handle empty array
-                array_pop($directoryParts);
+                if (count($directoryParts) === 0) {
+                    ++$aboveBaseLevel; // fixme: error on absolute path
+                } else {
+                    array_pop($directoryParts);
+                }
 
                 continue;
             }
@@ -144,6 +156,11 @@ class UrlPath implements UrlPathInterface
 
         return true;
     }
+
+    /**
+     * @var int My number of directory parts above base level.
+     */
+    private $myAboveBaseLevel;
 
     /**
      * @var string My directory parts.
