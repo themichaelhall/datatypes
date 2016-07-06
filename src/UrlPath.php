@@ -2,6 +2,7 @@
 
 namespace DataTypes;
 
+use DataTypes\Exceptions\UrlPathInvalidArgumentException;
 use DataTypes\Interfaces\UrlPathInterface;
 
 /**
@@ -66,7 +67,9 @@ class UrlPath implements UrlPathInterface
     {
         assert(is_string($urlPath), '$urlPath is not a string');
 
-        static::myParse($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+        if (!static::myParse($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+            throw new UrlPathInvalidArgumentException($error);
+        }
 
         return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
     }
@@ -109,7 +112,7 @@ class UrlPath implements UrlPathInterface
         $isAbsolute = false;
         $aboveBaseLevel = 0;
 
-        // fixme: Validate
+        // fixme: Encode/Decode
 
         // Parse the directories
         for ($i = 0; $i < $partsCount; ++$i) {
@@ -146,12 +149,38 @@ class UrlPath implements UrlPathInterface
             if ($i === $partsCount - 1) {
                 // This is the last part (i.e. the filename part).
                 if ($part !== '') {
+                    // fixme: validate file part.
                     $filename = $part;
                 }
             } else {
                 // This is a directory part.
+                if (!static::myValidateDirectoryPart($part, $error)) {
+                    $error = 'Url path "' . $urlPath . '" is invalid: ' . $error;
+
+                    return false;
+                }
+
                 $directoryParts[] = $part;
             }
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates a directory part.
+     *
+     * @param string      $directoryPart The directory part.
+     * @param string|null $error         The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    public static function myValidateDirectoryPart($directoryPart, &$error = null)
+    {
+        if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]-]/', $directoryPart, $matches)) {
+            $error = 'Part of directory "' . $directoryPart . '" contains invalid character "' . $matches[0] . '".';
+
+            return false;
         }
 
         return true;

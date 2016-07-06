@@ -100,4 +100,15 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($urlPath->isRelative());
         $this->assertSame(['..', '..', 'baz'], $urlPath->getDirectoryParts());
     }
+
+    /**
+     * Test that url path with invalid character in directory is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlPathInvalidArgumentException
+     * @expectedExceptionMessage Url path "/foo/{bar}/" is invalid: Part of directory "{bar}" contains invalid character "{".
+     */
+    public function testPathWithInvalidCharacterInDirectoryIsInvalid()
+    {
+        UrlPath::parse('/foo/{bar}/');
+    }
 }
