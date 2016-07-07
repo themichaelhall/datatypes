@@ -149,7 +149,12 @@ class UrlPath implements UrlPathInterface
             if ($i === $partsCount - 1) {
                 // This is the last part (i.e. the filename part).
                 if ($part !== '') {
-                    // fixme: validate file part.
+                    if (!static::myValidateFilename($part, $error)) {
+                        $error = 'Url path "' . $urlPath . '" is invalid: ' . $error;
+
+                        return false;
+                    }
+
                     $filename = $part;
                 }
             } else {
@@ -179,6 +184,25 @@ class UrlPath implements UrlPathInterface
     {
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]-]/', $directoryPart, $matches)) {
             $error = 'Part of directory "' . $directoryPart . '" contains invalid character "' . $matches[0] . '".';
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates a filename.
+     *
+     * @param string      $filename The filename.
+     * @param string|null $error    The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    public static function myValidateFilename($filename, &$error = null)
+    {
+        if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]-]/', $filename, $matches)) {
+            $error = 'Filename "' . $filename . '" contains invalid character "' . $matches[0] . '".';
 
             return false;
         }

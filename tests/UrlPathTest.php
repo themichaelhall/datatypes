@@ -111,4 +111,15 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
     {
         UrlPath::parse('/foo/{bar}/');
     }
+
+    /**
+     * Test that url path with invalid character in filename is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlPathInvalidArgumentException
+     * @expectedExceptionMessage Url path "/foo/bar?html" is invalid: Filename "bar?html" contains invalid character "?".
+     */
+    public function testPathWithInvalidCharacterInFilenameIsInvalid()
+    {
+        UrlPath::parse('/foo/bar?html');
+    }
 }
