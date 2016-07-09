@@ -63,6 +63,8 @@ class UrlPath implements UrlPathInterface
      *
      * @param string $urlPath The url path.
      *
+     * @throws UrlPathInvalidArgumentException If the $urlPath parameter is not a valid url path.
+     *
      * @return UrlPathInterface The url path instance.
      */
     public static function parse($urlPath)
@@ -71,6 +73,24 @@ class UrlPath implements UrlPathInterface
 
         if (!static::myParse($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
             throw new UrlPathInvalidArgumentException($error);
+        }
+
+        return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+    }
+
+    /**
+     * Parses a url path.
+     *
+     * @param string $urlPath The url path.
+     *
+     * @return UrlPathInterface|null The url path instance if the $urlPath parameter is a valid url path, null otherwise.
+     */
+    public static function tryParse($urlPath)
+    {
+        assert(is_string($urlPath), '$urlPath is not a string');
+
+        if (!static::myParse($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+            return null;
         }
 
         return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
@@ -139,7 +159,9 @@ class UrlPath implements UrlPathInterface
             if ($part === '..') {
                 if (count($directoryParts) === 0) {
                     if ($isAbsolute) {
-                        throw new UrlPathInvalidArgumentException('Url path "' . $urlPath . '" is invalid: Absolute path is above root level.');
+                        $error = 'Url path "' . $urlPath . '" is invalid: Absolute path is above root level.';
+
+                        return false;
                     }
 
                     ++$aboveBaseLevel;

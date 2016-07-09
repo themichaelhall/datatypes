@@ -145,4 +145,15 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
     {
         UrlPath::parse('/foo/../../');
     }
+
+    /**
+     * Test tryParse method.
+     */
+    public function testTryParse()
+    {
+        $this->assertSame('', UrlPath::tryParse('')->__toString());
+        $this->assertSame('foo/bar/baz.html', UrlPath::tryParse('foo/bar/baz.html')->__toString());
+        $this->assertNull(UrlPath::tryParse('/foo/{bar}/'));
+        $this->assertNull(UrlPath::tryParse('/foo/../../'));
+    }
 }
