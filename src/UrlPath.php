@@ -138,7 +138,11 @@ class UrlPath implements UrlPathInterface
             // Handle "parent directory"-part.
             if ($part === '..') {
                 if (count($directoryParts) === 0) {
-                    ++$aboveBaseLevel; // fixme: error on absolute path
+                    if ($isAbsolute) {
+                        throw new UrlPathInvalidArgumentException('Url path "' . $urlPath . '" is invalid: Absolute path is above root level.');
+                    }
+
+                    ++$aboveBaseLevel;
                 } else {
                     array_pop($directoryParts);
                 }

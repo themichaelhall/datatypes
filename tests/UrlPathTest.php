@@ -134,4 +134,15 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertSame(['path?!'], $urlPath->getDirectoryParts());
         $this->assertSame('file?!', $urlPath->getFilename());
     }
+
+    /**
+     * Test that absolute url path above root level is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlPathInvalidArgumentException
+     * @expectedExceptionMessage Url path "/foo/../../" is invalid: Absolute path is above root level.
+     */
+    public function testAbsoluteUrlPathAboveRootLevelIsInvalid()
+    {
+        UrlPath::parse('/foo/../../');
+    }
 }
