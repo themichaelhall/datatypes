@@ -156,4 +156,15 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertNull(UrlPath::tryParse('/foo/{bar}/'));
         $this->assertNull(UrlPath::tryParse('/foo/../../'));
     }
+
+    /**
+     * Test isValid method.
+     */
+    public function testIsValid()
+    {
+        $this->assertTrue(UrlPath::isValid(''));
+        $this->assertTrue(UrlPath::isValid('foo/bar/baz.html'));
+        $this->assertFalse(UrlPath::isValid('/foo/{bar}/'));
+        $this->assertFalse(UrlPath::isValid('/foo/../../'));
+    }
 }

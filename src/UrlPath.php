@@ -59,6 +59,20 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * Checks if a url path is valid.
+     *
+     * @param string $urlPath The url path.
+     *
+     * @return bool True if the $urlPath parameter is a valid url path, false otherwise.
+     */
+    public static function isValid($urlPath)
+    {
+        assert(is_string($urlPath), '$urlPath is not a string');
+
+        return static::myParse($urlPath);
+    }
+
+    /**
      * Parses a url path.
      *
      * @param string $urlPath The url path.
@@ -116,7 +130,7 @@ class UrlPath implements UrlPathInterface
      * Tries to parse an url path and returns the result or error text.
      *
      * @param string        $urlPath        The url path.
-     * @param bool          $isAbsolute     Whether the path is absolute or relative is parsing was successful, undefined otherwise.
+     * @param bool|null     $isAbsolute     Whether the path is absolute or relative is parsing was successful, undefined otherwise.
      * @param int|null      $aboveBaseLevel The number of directory parts above base level if parsing was successful, undefined otherwise.
      * @param string[]|null $directoryParts The directory parts if parsing was successful, undefined otherwise.
      * @param string|null   $filename       The file if parsing was not successful, undefined otherwise.
@@ -124,7 +138,7 @@ class UrlPath implements UrlPathInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($urlPath, &$isAbsolute, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
+    private static function myParse($urlPath, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
     {
         $parts = explode('/', str_replace('\\', '/', $urlPath));
         $partsCount = count($parts);
