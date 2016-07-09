@@ -51,9 +51,11 @@ class UrlPath implements UrlPathInterface
             // If above base level (for relative url path), append the required number of "../".
             ($this->myAboveBaseLevel > 0 ? str_repeat('../', $this->myAboveBaseLevel) : '') .
             // Directory parts.
-            ($this->myIsAbsolute ? '/' : '') . implode('/', $this->myDirectoryParts) . (count($this->myDirectoryParts) > 0 ? '/' : '') .
+            ($this->myIsAbsolute ? '/' : '') . implode('/', array_map(function ($directoryPart) {
+                return rawurlencode($directoryPart);
+            }, $this->myDirectoryParts)) . (count($this->myDirectoryParts) > 0 ? '/' : '') .
             // File part.
-            ($this->myFilename !== null ? $this->myFilename : '');
+            ($this->myFilename !== null ? rawurlencode($this->myFilename) : '');
     }
 
     /**
@@ -112,8 +114,6 @@ class UrlPath implements UrlPathInterface
         $isAbsolute = false;
         $aboveBaseLevel = 0;
 
-        // fixme: Encode/Decode
-
         // Parse the directories
         for ($i = 0; $i < $partsCount; ++$i) {
             $part = $parts[$i];
@@ -155,7 +155,7 @@ class UrlPath implements UrlPathInterface
                         return false;
                     }
 
-                    $filename = $part;
+                    $filename = rawurldecode($part);
                 }
             } else {
                 // This is a directory part.
@@ -165,7 +165,7 @@ class UrlPath implements UrlPathInterface
                     return false;
                 }
 
-                $directoryParts[] = $part;
+                $directoryParts[] = rawurldecode($part);
             }
         }
 
@@ -182,7 +182,7 @@ class UrlPath implements UrlPathInterface
      */
     public static function myValidateDirectoryPart($directoryPart, &$error = null)
     {
-        if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]-]/', $directoryPart, $matches)) {
+        if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]%-]/', $directoryPart, $matches)) {
             $error = 'Part of directory "' . $directoryPart . '" contains invalid character "' . $matches[0] . '".';
 
             return false;
@@ -201,7 +201,7 @@ class UrlPath implements UrlPathInterface
      */
     public static function myValidateFilename($filename, &$error = null)
     {
-        if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]-]/', $filename, $matches)) {
+        if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]%-]/', $filename, $matches)) {
             $error = 'Filename "' . $filename . '" contains invalid character "' . $matches[0] . '".';
 
             return false;

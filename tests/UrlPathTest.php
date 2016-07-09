@@ -122,4 +122,16 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
     {
         UrlPath::parse('/foo/bar?html');
     }
+
+    /**
+     * Test that url path is correctly decoded and encoded.
+     */
+    public function testUrlPathIsDecodedAndEncoded()
+    {
+        $urlPath = UrlPath::parse('/path%3f!/file%3f!');
+
+        $this->assertSame('/path%3F%21/file%3F%21', $urlPath->__toString());
+        $this->assertSame(['path?!'], $urlPath->getDirectoryParts());
+        $this->assertSame('file?!', $urlPath->getFilename());
+    }
 }
