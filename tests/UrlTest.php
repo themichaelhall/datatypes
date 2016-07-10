@@ -163,6 +163,26 @@ class UrlTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test getPath method.
+     */
+    public function testGetPath()
+    {
+        $this->assertSame('/', Url::parse('http://foo.com/')->getPath()->__toString());
+        $this->assertSame('/foo/bar', Url::parse('http://domain.com/foo/bar')->getPath()->__toString());
+    }
+
+    /**
+     * Test that url with invalid path is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "https://domain.com:1000/foo/{bar}" is invalid: Url path "/foo/{bar}" is invalid: Filename "{bar}" contains invalid character "{".
+     */
+    public function testUrlWithInvalidPathIsInvalid()
+    {
+        Url::parse('https://domain.com:1000/foo/{bar}');
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -174,6 +194,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(Url::isValid('http://+++/'));
         $this->assertFalse(Url::isValid('http://domain.com:XXX/'));
         $this->assertTrue(Url::isValid('http://domain.com:1234/'));
+        $this->assertFalse(Url::isValid('http://domain.com:1234/{foo}'));
         // fixme: More tests
     }
 
@@ -189,6 +210,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertNull(Url::tryParse('http://+++/'));
         $this->assertNull(Url::tryParse('http://domain.com:XXX/'));
         $this->assertSame('http://domain.com:1234/', Url::tryParse('http://domain.com:1234/')->__toString());
+        $this->assertNull(Url::tryParse('http://domain.com:1234/{foo}'));
         // fixme: More tests
     }
 }

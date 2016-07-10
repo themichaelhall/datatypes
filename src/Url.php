@@ -5,9 +5,11 @@ namespace DataTypes;
 use DataTypes\Exceptions\HostInvalidArgumentException;
 use DataTypes\Exceptions\SchemeInvalidArgumentException;
 use DataTypes\Exceptions\UrlInvalidArgumentException;
+use DataTypes\Exceptions\UrlPathInvalidArgumentException;
 use DataTypes\Interfaces\HostInterface;
 use DataTypes\Interfaces\SchemeInterface;
 use DataTypes\Interfaces\UrlInterface;
+use DataTypes\Interfaces\UrlPathInterface;
 
 /**
  * Class representing a Url.
@@ -15,11 +17,19 @@ use DataTypes\Interfaces\UrlInterface;
 class Url implements UrlInterface
 {
     /**
-     * @return Interfaces\HostInterface The host of the url.
+     * @return HostInterface The host of the url.
      */
     public function getHost()
     {
         return $this->myHost;
+    }
+
+    /**
+     * @return UrlPathInterface The path of the url.
+     */
+    public function getPath()
+    {
+        return $this->myPath;
     }
 
     /**
@@ -31,7 +41,7 @@ class Url implements UrlInterface
     }
 
     /**
-     * @return Interfaces\SchemeInterface The scheme of the url.
+     * @return SchemeInterface The scheme of the url.
      */
     public function getScheme()
     {
@@ -47,7 +57,7 @@ class Url implements UrlInterface
      */
     public function withHost(HostInterface $host)
     {
-        return new self($this->myScheme, $host, $this->myPort, $this->myRest);
+        return new self($this->myScheme, $host, $this->myPort, $this->myPath, $this->myRest);
     }
 
     /**
@@ -60,7 +70,7 @@ class Url implements UrlInterface
      */
     public function withScheme(SchemeInterface $scheme, $keepDefaultPort = true)
     {
-        return new self($scheme, $this->myHost, ($keepDefaultPort && $this->myPort === $this->myScheme->getDefaultPort() ? $scheme->getDefaultPort() : $this->myPort), $this->myRest);
+        return new self($scheme, $this->myHost, ($keepDefaultPort && $this->myPort === $this->myScheme->getDefaultPort() ? $scheme->getDefaultPort() : $this->myPort), $this->myPath, $this->myRest);
     }
 
     /**
@@ -68,7 +78,7 @@ class Url implements UrlInterface
      */
     public function __toString()
     {
-        return $this->myScheme . '://' . $this->myHost . ($this->myPort !== $this->myScheme->getDefaultPort() ? (':' . $this->myPort) : '') . '/' . $this->myRest;
+        return $this->myScheme . '://' . $this->myHost . ($this->myPort !== $this->myScheme->getDefaultPort() ? (':' . $this->myPort) : '') . $this->myPath;
     }
 
     /**
@@ -98,11 +108,11 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        if (!static::myParse($url, false, $scheme, $host, $port, $theRest, $error)) {
+        if (!static::myParse($url, false, $scheme, $host, $port, $path, $theRest, $error)) {
             throw new UrlInvalidArgumentException($error);
         }
 
-        return new self($scheme, $host, $port, $theRest);
+        return new self($scheme, $host, $port, $path, $theRest);
     }
 
     /**
@@ -116,43 +126,46 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        if (!static::myParse($url, false, $scheme, $host, $port, $theRest)) {
+        if (!static::myParse($url, false, $scheme, $host, $port, $path, $theRest)) {
             return null;
         }
 
-        return new self($scheme, $host, $port, $theRest);
+        return new self($scheme, $host, $port, $path, $theRest);
     }
 
     /**
      * Constructs a Url.
      *
-     * @param SchemeInterface $scheme  The scheme.
-     * @param HostInterface   $host    The host.
-     * @param int             $port    The port.
-     * @param string          $theRest Temporary variable to use when creating this class.
+     * @param SchemeInterface  $scheme  The scheme.
+     * @param HostInterface    $host    The host.
+     * @param int              $port    The port.
+     * @param UrlPathInterface $path    The path.
+     * @param string           $theRest Temporary variable to use when creating this class.
      */
-    private function __construct(SchemeInterface $scheme, HostInterface $host, $port, $theRest)
+    private function __construct(SchemeInterface $scheme, HostInterface $host, $port, UrlPathInterface $path, $theRest)
     {
         $this->myScheme = $scheme;
         $this->myHost = $host;
         $this->myPort = $port;
+        $this->myPath = $path;
         $this->myRest = $theRest;
     }
 
     /**
      * Tries to parse a Url and returns the result or error text.
      *
-     * @param string               $url          The Url.
-     * @param bool                 $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param SchemeInterface|null $scheme       The scheme if parsing was successful, undefined otherwise.
-     * @param HostInterface|null   $host         The host if parsing was successful, undefined otherwise.
-     * @param int|null             $port         The port if parsing was successful, undefined otherwise.
-     * @param string               $theRest      Temporary variable to use when creating this class.
-     * @param string|null          $error        The error text if parsing was not successful, undefined otherwise.
+     * @param string                $url          The Url.
+     * @param bool                  $validateOnly If true only validation is performed, if false parse results are returned.
+     * @param SchemeInterface|null  $scheme       The scheme if parsing was successful, undefined otherwise.
+     * @param HostInterface|null    $host         The host if parsing was successful, undefined otherwise.
+     * @param int|null              $port         The port if parsing was successful, undefined otherwise.
+     * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
+     * @param string                $theRest      Temporary variable to use when creating this class.
+     * @param string|null           $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($url, $validateOnly, SchemeInterface &$scheme = null, HostInterface &$host = null, &$port = null, &$theRest = null, &$error = null)
+    private static function myParse($url, $validateOnly, SchemeInterface &$scheme = null, HostInterface &$host = null, &$port = null, UrlPathInterface &$path = null, &$theRest = null, &$error = null)
     {
         // Pre-validate Url.
         if (!static::myPreValidate($url, $error)) {
@@ -182,7 +195,13 @@ class Url implements UrlInterface
 
         // fixme: User
         // fixme: Password
-        // fixme: Path
+
+        if (!static::myParsePath($parsedUrl, $validateOnly, $path, $error)) {
+            $error = 'Url "' . $url . '" is invalid: ' . $error;
+
+            return false;
+        }
+
         // fixme: Query
         // fixme: Fragment
         // fixme: Relative vs. Absolute
@@ -286,6 +305,36 @@ class Url implements UrlInterface
     }
 
     /**
+     * Parse path.
+     *
+     * @param string                $parsedUrl    The part of url that is to be parsed.
+     * @param bool                  $validateOnly If true only validation is performed, if false parse results are returned.
+     * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
+     * @param string|null           $error        The error text if parsing was not successful, undefined otherwise.
+     *
+     * @return bool True if parsing was successful, false otherwise.
+     */
+    private static function myParsePath(&$parsedUrl, $validateOnly, UrlPathInterface &$path = null, &$error = null)
+    {
+        $parts = explode('?', $parsedUrl);
+
+        // Validate or try parse path.
+        if ($validateOnly) {
+            return UrlPath::isValid('/' . $parts[0]);
+        }
+
+        try {
+            $path = UrlPath::parse('/' . $parts[0]);
+        } catch (UrlPathInvalidArgumentException $e) {
+            $error = $e->getMessage();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Pre-validates a Url.
      *
      * @param string $url   The Url.
@@ -324,4 +373,9 @@ class Url implements UrlInterface
      * @var int My port.
      */
     private $myPort;
+
+    /**
+     * @var UrlPathInterface My path.
+     */
+    private $myPath;
 }

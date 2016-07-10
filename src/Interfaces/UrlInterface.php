@@ -13,6 +13,11 @@ interface UrlInterface extends DataTypeInterface
     public function getHost();
 
     /**
+     * @return UrlPathInterface The path of the url.
+     */
+    public function getPath();
+
+    /**
      * @return int The port of the url.
      */
     public function getPort();
@@ -31,6 +36,7 @@ interface UrlInterface extends DataTypeInterface
      */
     public function withHost(HostInterface $host);
 
+    // fixme: withPath()
     // fixme: withPort()
 
     /**
