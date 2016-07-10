@@ -1,11 +1,11 @@
 {
-  "name": "michaelhall/datatypes",
+  "name": "datatypes/datatypes",
   "description": "Data type classes for PHP",
-  "homepage": "https://github.com/themichaelhall/datatypes",
+  "homepage": "https://phpdatatypes.com/",
   "license": "MIT",
   "keywords": [
-    "Data",
-    "Type"
+    "data",
+    "types"
   ],
   "authors": [
     {
