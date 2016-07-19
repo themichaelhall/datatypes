@@ -57,7 +57,7 @@ class Url implements UrlInterface
      */
     public function withHost(HostInterface $host)
     {
-        return new self($this->myScheme, $host, $this->myPort, $this->myPath, $this->myRest);
+        return new self($this->myScheme, $host, $this->myPort, $this->myPath);
     }
 
     /**
@@ -70,7 +70,7 @@ class Url implements UrlInterface
      */
     public function withScheme(SchemeInterface $scheme, $keepDefaultPort = true)
     {
-        return new self($scheme, $this->myHost, ($keepDefaultPort && $this->myPort === $this->myScheme->getDefaultPort() ? $scheme->getDefaultPort() : $this->myPort), $this->myPath, $this->myRest);
+        return new self($scheme, $this->myHost, ($keepDefaultPort && $this->myPort === $this->myScheme->getDefaultPort() ? $scheme->getDefaultPort() : $this->myPort), $this->myPath);
     }
 
     /**
@@ -108,11 +108,11 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        if (!static::myParse($url, false, $scheme, $host, $port, $path, $theRest, $error)) {
+        if (!static::myParse($url, false, $scheme, $host, $port, $path, $error)) {
             throw new UrlInvalidArgumentException($error);
         }
 
-        return new self($scheme, $host, $port, $path, $theRest);
+        return new self($scheme, $host, $port, $path);
     }
 
     /**
@@ -126,29 +126,27 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        if (!static::myParse($url, false, $scheme, $host, $port, $path, $theRest)) {
+        if (!static::myParse($url, false, $scheme, $host, $port, $path)) {
             return null;
         }
 
-        return new self($scheme, $host, $port, $path, $theRest);
+        return new self($scheme, $host, $port, $path);
     }
 
     /**
      * Constructs a Url.
      *
-     * @param SchemeInterface  $scheme  The scheme.
-     * @param HostInterface    $host    The host.
-     * @param int              $port    The port.
-     * @param UrlPathInterface $path    The path.
-     * @param string           $theRest Temporary variable to use when creating this class.
+     * @param SchemeInterface  $scheme The scheme.
+     * @param HostInterface    $host   The host.
+     * @param int              $port   The port.
+     * @param UrlPathInterface $path   The path.
      */
-    private function __construct(SchemeInterface $scheme, HostInterface $host, $port, UrlPathInterface $path, $theRest)
+    private function __construct(SchemeInterface $scheme, HostInterface $host, $port, UrlPathInterface $path)
     {
         $this->myScheme = $scheme;
         $this->myHost = $host;
         $this->myPort = $port;
         $this->myPath = $path;
-        $this->myRest = $theRest;
     }
 
     /**
@@ -160,12 +158,11 @@ class Url implements UrlInterface
      * @param HostInterface|null    $host         The host if parsing was successful, undefined otherwise.
      * @param int|null              $port         The port if parsing was successful, undefined otherwise.
      * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
-     * @param string                $theRest      Temporary variable to use when creating this class.
      * @param string|null           $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($url, $validateOnly, SchemeInterface &$scheme = null, HostInterface &$host = null, &$port = null, UrlPathInterface &$path = null, &$theRest = null, &$error = null)
+    private static function myParse($url, $validateOnly, SchemeInterface &$scheme = null, HostInterface &$host = null, &$port = null, UrlPathInterface &$path = null, &$error = null)
     {
         // Pre-validate Url.
         if (!static::myPreValidate($url, $error)) {
@@ -205,9 +202,6 @@ class Url implements UrlInterface
         // fixme: Query
         // fixme: Fragment
         // fixme: Relative vs. Absolute
-
-        // fixme: Remove this
-        $theRest = $parsedUrl;
 
         return true;
     }
@@ -353,11 +347,6 @@ class Url implements UrlInterface
 
         return true;
     }
-
-    /**
-     * @var string Temporary variable to use when creating this class.
-     */
-    private $myRest;
 
     /**
      * @var SchemeInterface My scheme.
