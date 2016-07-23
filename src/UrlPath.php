@@ -35,6 +35,14 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * @return bool True if url path is a file, false otherwise.
+     */
+    public function isFile()
+    {
+        return $this->myFilename !== null;
+    }
+
+    /**
      * @return bool True if url path is relative, false otherwise.
      */
     public function isRelative()

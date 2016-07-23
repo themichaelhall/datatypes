@@ -23,6 +23,11 @@ interface UrlPathInterface extends DataTypeInterface
     public function isAbsolute();
 
     /**
+     * @return bool True if url path is a file, false otherwise.
+     */
+    public function isFile();
+
+    /**
      * @return bool True if url path is relative, false otherwise.
      */
     public function isRelative();
