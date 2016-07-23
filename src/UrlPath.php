@@ -11,6 +11,14 @@ use DataTypes\Interfaces\UrlPathInterface;
 class UrlPath implements UrlPathInterface
 {
     /**
+     * @return UrlPath The directory of the url path.
+     */
+    public function getDirectory()
+    {
+        return new self($this->myIsAbsolute, $this->myAboveBaseLevel, $this->myDirectoryParts, null);
+    }
+
+    /**
      * @return string[] The directory parts.
      */
     public function getDirectoryParts()

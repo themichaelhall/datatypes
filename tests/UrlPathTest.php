@@ -197,4 +197,22 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(UrlPath::parse('foo/bar')->isDirectory());
         $this->assertFalse(UrlPath::parse('/foo/bar')->isDirectory());
     }
+
+    /**
+     * Test getDirectory method.
+     */
+    public function testGetDirectory()
+    {
+        $this->assertSame('', UrlPath::parse('')->getDirectory()->__toString());
+        $this->assertSame('/', UrlPath::parse('/')->getDirectory()->__toString());
+        $this->assertSame('', UrlPath::parse('foo')->getDirectory()->__toString());
+        $this->assertSame('/', UrlPath::parse('/foo')->getDirectory()->__toString());
+        $this->assertSame('foo/', UrlPath::parse('foo/')->getDirectory()->__toString());
+        $this->assertSame('/foo/', UrlPath::parse('/foo/')->getDirectory()->__toString());
+        $this->assertSame('foo/', UrlPath::parse('foo/bar')->getDirectory()->__toString());
+        $this->assertSame('/foo/', UrlPath::parse('/foo/bar')->getDirectory()->__toString());
+        $this->assertSame('../', UrlPath::parse('../foo')->getDirectory()->__toString());
+        $this->assertSame('../foo/', UrlPath::parse('../foo/')->getDirectory()->__toString());
+        $this->assertSame('../foo/', UrlPath::parse('../foo/bar')->getDirectory()->__toString());
+    }
 }
