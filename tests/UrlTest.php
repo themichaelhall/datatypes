@@ -19,6 +19,9 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertSame('http://www.domain.com/foo/Bar', Url::parse('http://www.domain.com/foo/Bar')->__toString());
         $this->assertSame('http://www.domain.com/FOO/BAR', Url::parse('HTTP://WWW.DOMAIN.COM/FOO/BAR')->__toString());
         $this->assertSame('http://www.domain.com:1234/', Url::parse('http://www.domain.com:1234/')->__toString());
+        $this->assertSame('http://www.domain.com/foo/Bar?', Url::parse('http://www.domain.com/foo/Bar?')->__toString());
+        $this->assertSame('http://www.domain.com/foo/Bar?Baz', Url::parse('http://www.domain.com/foo/Bar?Baz')->__toString());
+        $this->assertSame('http://www.domain.com/foo/Bar?F%7Baz%7D', Url::parse('http://www.domain.com/foo/Bar?F%7Baz%7D')->__toString());
     }
 
     /**
@@ -183,6 +186,17 @@ class UrlTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test getQueryString method.
+     */
+    public function testGetQueryString()
+    {
+        $this->assertNull(Url::parse('http://domain.com/foo')->getQueryString());
+        $this->assertSame('', Url::parse('http://domain.com/foo?')->getQueryString());
+        $this->assertSame('bar=baz', Url::parse('http://domain.com/foo?bar=baz')->getQueryString());
+        $this->assertSame('F%7Baz%7D', Url::parse('http://domain.com/foo?F%7Baz%7D')->getQueryString());
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -195,6 +209,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(Url::isValid('http://domain.com:XXX/'));
         $this->assertTrue(Url::isValid('http://domain.com:1234/'));
         $this->assertFalse(Url::isValid('http://domain.com:1234/{foo}'));
+        $this->assertTrue(Url::isValid('http://domain.com/foo?bar'));
         // fixme: More tests
     }
 
@@ -211,6 +226,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertNull(Url::tryParse('http://domain.com:XXX/'));
         $this->assertSame('http://domain.com:1234/', Url::tryParse('http://domain.com:1234/')->__toString());
         $this->assertNull(Url::tryParse('http://domain.com:1234/{foo}'));
+        $this->assertSame('http://domain.com/foo?bar', Url::tryParse('http://domain.com/foo?bar')->__toString());
         // fixme: More tests
     }
 }

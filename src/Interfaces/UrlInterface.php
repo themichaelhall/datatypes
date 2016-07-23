@@ -23,6 +23,11 @@ interface UrlInterface extends DataTypeInterface
     public function getPort();
 
     /**
+     * @return string|null The query string of the url.
+     */
+    public function getQueryString();
+
+    /**
      * @return SchemeInterface The scheme of the url.
      */
     public function getScheme();
@@ -38,6 +43,7 @@ interface UrlInterface extends DataTypeInterface
 
     // fixme: withPath()
     // fixme: withPort()
+    // fixme: withQueryString()
 
     /**
      * Returns a copy of the Url instance with the specified scheme.

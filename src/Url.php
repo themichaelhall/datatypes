@@ -41,6 +41,14 @@ class Url implements UrlInterface
     }
 
     /**
+     * @return string|null The query string of the url.
+     */
+    public function getQueryString()
+    {
+        return $this->myQueryString;
+    }
+
+    /**
      * @return SchemeInterface The scheme of the url.
      */
     public function getScheme()
@@ -78,7 +86,7 @@ class Url implements UrlInterface
      */
     public function __toString()
     {
-        return $this->myScheme . '://' . $this->myHost . ($this->myPort !== $this->myScheme->getDefaultPort() ? (':' . $this->myPort) : '') . $this->myPath;
+        return $this->myScheme . '://' . $this->myHost . ($this->myPort !== $this->myScheme->getDefaultPort() ? (':' . $this->myPort) : '') . $this->myPath . ($this->myQueryString !== null ? '?' . $this->myQueryString : '');
     }
 
     /**
@@ -108,11 +116,11 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        if (!static::myParse($url, false, $scheme, $host, $port, $path, $error)) {
+        if (!static::myParse($url, false, $scheme, $host, $port, $path, $queryString, $error)) {
             throw new UrlInvalidArgumentException($error);
         }
 
-        return new self($scheme, $host, $port, $path);
+        return new self($scheme, $host, $port, $path, $queryString);
     }
 
     /**
@@ -126,27 +134,29 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        if (!static::myParse($url, false, $scheme, $host, $port, $path)) {
+        if (!static::myParse($url, false, $scheme, $host, $port, $path, $queryString)) {
             return null;
         }
 
-        return new self($scheme, $host, $port, $path);
+        return new self($scheme, $host, $port, $path, $queryString);
     }
 
     /**
      * Constructs a Url.
      *
-     * @param SchemeInterface  $scheme The scheme.
-     * @param HostInterface    $host   The host.
-     * @param int              $port   The port.
-     * @param UrlPathInterface $path   The path.
+     * @param SchemeInterface  $scheme      The scheme.
+     * @param HostInterface    $host        The host.
+     * @param int              $port        The port.
+     * @param UrlPathInterface $path        The path.
+     * @param string|null      $queryString The query string.
      */
-    private function __construct(SchemeInterface $scheme, HostInterface $host, $port, UrlPathInterface $path)
+    private function __construct(SchemeInterface $scheme, HostInterface $host, $port, UrlPathInterface $path, $queryString = null)
     {
         $this->myScheme = $scheme;
         $this->myHost = $host;
         $this->myPort = $port;
         $this->myPath = $path;
+        $this->myQueryString = $queryString;
     }
 
     /**
@@ -158,11 +168,12 @@ class Url implements UrlInterface
      * @param HostInterface|null    $host         The host if parsing was successful, undefined otherwise.
      * @param int|null              $port         The port if parsing was successful, undefined otherwise.
      * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
+     * @param string|null           $queryString  The query string if parsing was successful, undefined otherwise.
      * @param string|null           $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($url, $validateOnly, SchemeInterface &$scheme = null, HostInterface &$host = null, &$port = null, UrlPathInterface &$path = null, &$error = null)
+    private static function myParse($url, $validateOnly, SchemeInterface &$scheme = null, HostInterface &$host = null, &$port = null, UrlPathInterface &$path = null, &$queryString = null, &$error = null)
     {
         // Pre-validate Url.
         if (!static::myPreValidate($url, $error)) {
@@ -193,13 +204,12 @@ class Url implements UrlInterface
         // fixme: User
         // fixme: Password
 
-        if (!static::myParsePath($parsedUrl, $validateOnly, $path, $error)) {
+        if (!static::myParsePath($parsedUrl, $validateOnly, $path, $queryString, $error)) {
             $error = 'Url "' . $url . '" is invalid: ' . $error;
 
             return false;
         }
 
-        // fixme: Query
         // fixme: Fragment
         // fixme: Relative vs. Absolute
 
@@ -304,13 +314,21 @@ class Url implements UrlInterface
      * @param string                $parsedUrl    The part of url that is to be parsed.
      * @param bool                  $validateOnly If true only validation is performed, if false parse results are returned.
      * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
+     * @param string|null           $queryString  The query string if parsing was successful, undefined otherwise.
      * @param string|null           $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParsePath(&$parsedUrl, $validateOnly, UrlPathInterface &$path = null, &$error = null)
+    private static function myParsePath(&$parsedUrl, $validateOnly, UrlPathInterface &$path = null, &$queryString = null, &$error = null)
     {
-        $parts = explode('?', $parsedUrl);
+        $queryString = null;
+
+        // Get the query string if it exists.
+        $parts = explode('?', $parsedUrl, 2);
+        if (count($parts) > 1) {
+            $queryString = $parts[1];
+        }
+        // fixme: Validate query string
 
         // Validate or try parse path.
         if ($validateOnly) {
@@ -367,4 +385,9 @@ class Url implements UrlInterface
      * @var UrlPathInterface My path.
      */
     private $myPath;
+
+    /**
+     * @var string|null My query string.
+     */
+    private $myQueryString;
 }
