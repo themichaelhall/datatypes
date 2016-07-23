@@ -182,4 +182,19 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(UrlPath::parse('foo/bar')->isFile());
         $this->assertTrue(UrlPath::parse('/foo/bar')->isFile());
     }
+
+    /**
+     * Test isDirectory method.
+     */
+    public function testIsDirectory()
+    {
+        $this->assertTrue(UrlPath::parse('')->isDirectory());
+        $this->assertTrue(UrlPath::parse('/')->isDirectory());
+        $this->assertFalse(UrlPath::parse('foo')->isDirectory());
+        $this->assertFalse(UrlPath::parse('/foo')->isDirectory());
+        $this->assertTrue(UrlPath::parse('foo/')->isDirectory());
+        $this->assertTrue(UrlPath::parse('/foo/')->isDirectory());
+        $this->assertFalse(UrlPath::parse('foo/bar')->isDirectory());
+        $this->assertFalse(UrlPath::parse('/foo/bar')->isDirectory());
+    }
 }
