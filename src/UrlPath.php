@@ -84,6 +84,8 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * @throws UrlPathLogicException if the url path could not be made absolute.
+     *
      * @return UrlPath The url path as a absolute path.
      */
     public function toAbsolute()
@@ -93,6 +95,29 @@ class UrlPath implements UrlPathInterface
         }
 
         return new self(true, $this->myAboveBaseLevel, $this->myDirectoryParts, $this->myFilename);
+    }
+
+    /**
+     * Returns a copy of the url path combined with another url path.
+     *
+     * @param UrlPathInterface $urlPath The other url path.
+     *
+     * @throws UrlPathLogicException if the url paths could not be combined.
+     *
+     * @return UrlPath The combined url path.
+     */
+    public function withUrlPath(UrlPathInterface $urlPath)
+    {
+        // If other url path is absolute, current path is overridden.
+        if ($urlPath->isAbsolute()) {
+            return new self(true, 0, $urlPath->getDirectoryParts(), $urlPath->getFilename());
+        }
+
+        $newDirectoryParts = array_merge($this->myDirectoryParts, $urlPath->getDirectoryParts());
+
+        // fixme: Handle above base level.
+
+        return new self($this->myIsAbsolute, 0, $newDirectoryParts, $urlPath->getFilename());
     }
 
     /**

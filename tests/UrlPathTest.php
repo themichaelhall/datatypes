@@ -273,4 +273,29 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
     {
         UrlPath::parse('../')->toAbsolute();
     }
+
+    /**
+     * Test withUrlPath method.
+     */
+    public function testWithUrlPath()
+    {
+        $this->assertSame('/bar', UrlPath::parse('/foo')->withUrlPath(UrlPath::parse('/bar'))->__toString());
+        $this->assertSame('/bar', UrlPath::parse('foo')->withUrlPath(UrlPath::parse('/bar'))->__toString());
+        $this->assertSame('/bar/baz', UrlPath::parse('/foo')->withUrlPath(UrlPath::parse('/bar/baz'))->__toString());
+        $this->assertSame('/bar/baz', UrlPath::parse('foo')->withUrlPath(UrlPath::parse('/bar/baz'))->__toString());
+        $this->assertSame('', UrlPath::parse('')->withUrlPath(UrlPath::parse(''))->__toString());
+        $this->assertSame('/', UrlPath::parse('')->withUrlPath(UrlPath::parse('/'))->__toString());
+        $this->assertSame('/foo/bar', UrlPath::parse('/foo/')->withUrlPath(UrlPath::parse('bar'))->__toString());
+        $this->assertSame('/foo/baz', UrlPath::parse('/foo/bar')->withUrlPath(UrlPath::parse('baz'))->__toString());
+        $this->assertSame('foo/bar', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar'))->__toString());
+        $this->assertSame('foo/baz', UrlPath::parse('foo/bar')->withUrlPath(UrlPath::parse('baz'))->__toString());
+        $this->assertSame('/foo/bar/', UrlPath::parse('/foo/')->withUrlPath(UrlPath::parse('bar/'))->__toString());
+        $this->assertSame('foo/bar/', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar/'))->__toString());
+        $this->assertSame('/foo/bar/', UrlPath::parse('/foo/baz')->withUrlPath(UrlPath::parse('bar/'))->__toString());
+        $this->assertSame('foo/bar/', UrlPath::parse('foo/baz')->withUrlPath(UrlPath::parse('bar/'))->__toString());
+        $this->assertSame('/foo/bar/baz', UrlPath::parse('/foo/')->withUrlPath(UrlPath::parse('bar/baz'))->__toString());
+        $this->assertSame('foo/bar/baz', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar/baz'))->__toString());
+        $this->assertSame('/foo/bar/baz/', UrlPath::parse('/foo/')->withUrlPath(UrlPath::parse('bar/baz/'))->__toString());
+        $this->assertSame('foo/bar/baz/', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar/baz/'))->__toString());
+    }
 }

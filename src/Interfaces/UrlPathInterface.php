@@ -56,4 +56,13 @@ interface UrlPathInterface extends DataTypeInterface
      * @return UrlPathInterface The url path as a relative path.
      */
     public function toRelative();
+
+    /**
+     * Returns a copy of the url path combined with another url path.
+     *
+     * @param UrlPathInterface $urlPath The other url path.
+     *
+     * @return UrlPathInterface The combined url path.
+     */
+    public function withUrlPath(UrlPathInterface $urlPath);
 }
