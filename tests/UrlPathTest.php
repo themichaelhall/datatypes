@@ -249,4 +249,28 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertSame('foo/bar', UrlPath::parse('foo/bar')->toRelative()->__toString());
         $this->assertSame('foo/bar', UrlPath::parse('/foo/bar')->toRelative()->__toString());
     }
+
+    /**
+     * Test toAbsolute method.
+     */
+    public function testToAbsolute()
+    {
+        $this->assertSame('/', UrlPath::parse('')->toAbsolute()->__toString());
+        $this->assertSame('/', UrlPath::parse('/')->toAbsolute()->__toString());
+        $this->assertSame('/foo', UrlPath::parse('foo')->toAbsolute()->__toString());
+        $this->assertSame('/foo', UrlPath::parse('/foo')->toAbsolute()->__toString());
+        $this->assertSame('/foo/bar', UrlPath::parse('foo/bar')->toAbsolute()->__toString());
+        $this->assertSame('/foo/bar', UrlPath::parse('/foo/bar')->toAbsolute()->__toString());
+    }
+
+    /**
+     * Test that attempting to make an absolute path for a url path above root is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlPathLogicException
+     * @expectedExceptionMessage Url path "../" can not be made absolute: Relative path is above base level.
+     */
+    public function testToAbsoluteForUrlPathAboveRootIsInvalid()
+    {
+        UrlPath::parse('../')->toAbsolute();
+    }
 }

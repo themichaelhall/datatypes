@@ -48,6 +48,11 @@ interface UrlPathInterface extends DataTypeInterface
     public function isRelative();
 
     /**
+     * @return UrlPathInterface The url path as a absolute path.
+     */
+    public function toAbsolute();
+
+    /**
      * @return UrlPathInterface The url path as a relative path.
      */
     public function toRelative();

@@ -3,6 +3,7 @@
 namespace DataTypes;
 
 use DataTypes\Exceptions\UrlPathInvalidArgumentException;
+use DataTypes\Exceptions\UrlPathLogicException;
 use DataTypes\Interfaces\UrlPathInterface;
 
 /**
@@ -80,6 +81,18 @@ class UrlPath implements UrlPathInterface
     public function toRelative()
     {
         return new self(false, $this->myAboveBaseLevel, $this->myDirectoryParts, $this->myFilename);
+    }
+
+    /**
+     * @return UrlPath The url path as a absolute path.
+     */
+    public function toAbsolute()
+    {
+        if ($this->myAboveBaseLevel > 0) {
+            throw new UrlPathLogicException('Url path "' . $this->__toString() . '" can not be made absolute: Relative path is above base level.');
+        }
+
+        return new self(true, $this->myAboveBaseLevel, $this->myDirectoryParts, $this->myFilename);
     }
 
     /**
