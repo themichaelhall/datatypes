@@ -215,4 +215,25 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertSame('../foo/', UrlPath::parse('../foo/')->getDirectory()->__toString());
         $this->assertSame('../foo/', UrlPath::parse('../foo/bar')->getDirectory()->__toString());
     }
+
+    /**
+     * Test getDepth method.
+     */
+    public function testGetDepth()
+    {
+        $this->assertSame(0, UrlPath::parse('')->getDepth());
+        $this->assertSame(0, UrlPath::parse('/')->getDepth());
+        $this->assertSame(0, UrlPath::parse('foo')->getDepth());
+        $this->assertSame(0, UrlPath::parse('/foo')->getDepth());
+        $this->assertSame(1, UrlPath::parse('foo/')->getDepth());
+        $this->assertSame(1, UrlPath::parse('/foo/')->getDepth());
+        $this->assertSame(1, UrlPath::parse('foo/bar')->getDepth());
+        $this->assertSame(1, UrlPath::parse('/foo/bar')->getDepth());
+        $this->assertSame(2, UrlPath::parse('foo/bar/')->getDepth());
+        $this->assertSame(2, UrlPath::parse('/foo/bar/')->getDepth());
+        $this->assertSame(-1, UrlPath::parse('../')->getDepth());
+        $this->assertSame(-1, UrlPath::parse('../foo')->getDepth());
+        $this->assertSame(-2, UrlPath::parse('../../foo')->getDepth());
+        $this->assertSame(-1, UrlPath::parse('../../foo/')->getDepth());
+    }
 }

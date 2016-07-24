@@ -11,6 +11,14 @@ use DataTypes\Interfaces\UrlPathInterface;
 class UrlPath implements UrlPathInterface
 {
     /**
+     * @return int The depth of the url path.
+     */
+    public function getDepth()
+    {
+        return count($this->myDirectoryParts) - $this->myAboveBaseLevel;
+    }
+
+    /**
      * @return UrlPath The directory of the url path.
      */
     public function getDirectory()

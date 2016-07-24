@@ -8,6 +8,11 @@ namespace DataTypes\Interfaces;
 interface UrlPathInterface extends DataTypeInterface
 {
     /**
+     * @return int The depth of the url path.
+     */
+    public function getDepth();
+
+    /**
      * @return UrlPathInterface The directory of the url path.
      */
     public function getDirectory();
