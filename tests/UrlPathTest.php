@@ -236,4 +236,17 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertSame(-2, UrlPath::parse('../../foo')->getDepth());
         $this->assertSame(-1, UrlPath::parse('../../foo/')->getDepth());
     }
+
+    /**
+     * Test toRelative method.
+     */
+    public function testToRelative()
+    {
+        $this->assertSame('', UrlPath::parse('')->toRelative()->__toString());
+        $this->assertSame('', UrlPath::parse('/')->toRelative()->__toString());
+        $this->assertSame('foo', UrlPath::parse('foo')->toRelative()->__toString());
+        $this->assertSame('foo', UrlPath::parse('/foo')->toRelative()->__toString());
+        $this->assertSame('foo/bar', UrlPath::parse('foo/bar')->toRelative()->__toString());
+        $this->assertSame('foo/bar', UrlPath::parse('/foo/bar')->toRelative()->__toString());
+    }
 }

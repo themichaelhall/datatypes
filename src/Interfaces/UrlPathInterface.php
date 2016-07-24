@@ -46,4 +46,9 @@ interface UrlPathInterface extends DataTypeInterface
      * @return bool True if url path is relative, false otherwise.
      */
     public function isRelative();
+
+    /**
+     * @return UrlPathInterface The url path as a relative path.
+     */
+    public function toRelative();
 }

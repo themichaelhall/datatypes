@@ -75,6 +75,14 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * @return UrlPath The url path as a relative path.
+     */
+    public function toRelative()
+    {
+        return new self(false, $this->myAboveBaseLevel, $this->myDirectoryParts, $this->myFilename);
+    }
+
+    /**
      * @return string The url path as a string.
      */
     public function __toString()
