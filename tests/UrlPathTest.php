@@ -297,5 +297,24 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertSame('foo/bar/baz', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar/baz'))->__toString());
         $this->assertSame('/foo/bar/baz/', UrlPath::parse('/foo/')->withUrlPath(UrlPath::parse('bar/baz/'))->__toString());
         $this->assertSame('foo/bar/baz/', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar/baz/'))->__toString());
+        $this->assertSame('/foo/baz/file', UrlPath::parse('/foo/bar/')->withUrlPath(UrlPath::parse('../baz/file'))->__toString());
+        $this->assertSame('foo/baz/file', UrlPath::parse('foo/bar/')->withUrlPath(UrlPath::parse('../baz/file'))->__toString());
+        $this->assertSame('../foo/baz/file', UrlPath::parse('../foo/bar/')->withUrlPath(UrlPath::parse('../baz/file'))->__toString());
+        $this->assertSame('/baz/file', UrlPath::parse('/foo/bar/')->withUrlPath(UrlPath::parse('../../baz/file'))->__toString());
+        $this->assertSame('baz/file', UrlPath::parse('foo/bar/')->withUrlPath(UrlPath::parse('../../baz/file'))->__toString());
+        $this->assertSame('../baz/file', UrlPath::parse('../foo/bar/')->withUrlPath(UrlPath::parse('../../baz/file'))->__toString());
+        $this->assertSame('../baz/file', UrlPath::parse('foo/bar/')->withUrlPath(UrlPath::parse('../../../baz/file'))->__toString());
+        $this->assertSame('../../baz/file', UrlPath::parse('../foo/bar/')->withUrlPath(UrlPath::parse('../../../baz/file'))->__toString());
+    }
+
+    /**
+     * Test that combining an absolute url path with an url path that results in a path above root level is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlPathLogicException
+     * @expectedExceptionMessage Url path "/foo/bar/" can not be combined with url path "../../../baz/file": Absolute path is above root level.
+     */
+    public function testAbsoluteUrlPathWithUrlPathAboveRootLevelIsInvalid()
+    {
+        UrlPath::parse('/foo/bar/')->withUrlPath(UrlPath::parse('../../../baz/file'));
     }
 }

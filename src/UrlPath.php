@@ -113,11 +113,26 @@ class UrlPath implements UrlPathInterface
             return new self(true, 0, $urlPath->getDirectoryParts(), $urlPath->getFilename());
         }
 
-        $newDirectoryParts = array_merge($this->myDirectoryParts, $urlPath->getDirectoryParts());
+        $newAboveBaseLevel = $this->myAboveBaseLevel;
+        $newDirectoryParts = $this->myDirectoryParts;
 
-        // fixme: Handle above base level.
+        foreach ($urlPath->getDirectoryParts() as $directoryPart) {
+            if ($directoryPart === '..') {
+                if (count($newDirectoryParts) === 0) {
+                    if ($this->myIsAbsolute) {
+                        throw new UrlPathLogicException('Url path "' . $this->__toString() . '" can not be combined with url path "' . $urlPath->__toString() . '": Absolute path is above root level.');
+                    }
 
-        return new self($this->myIsAbsolute, 0, $newDirectoryParts, $urlPath->getFilename());
+                    ++$newAboveBaseLevel;
+                } else {
+                    array_pop($newDirectoryParts);
+                }
+            } else {
+                $newDirectoryParts[] = $directoryPart;
+            }
+        }
+
+        return new self($this->myIsAbsolute, $newAboveBaseLevel, $newDirectoryParts, $urlPath->getFilename());
     }
 
     /**
