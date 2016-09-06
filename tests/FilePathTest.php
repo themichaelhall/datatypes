@@ -46,4 +46,19 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertSame('foo.html', FilePath::parse('foo.html')->getFilename());
         $this->assertSame('baz', FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz')->getFilename());
     }
+
+    /**
+     * Test isAbsolute method.
+     */
+    public function testIsAbsolute()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertFalse(FilePath::parse('')->isAbsolute());
+        $this->assertTrue(FilePath::parse($DS)->isAbsolute());
+        $this->assertFalse(FilePath::parse('foo')->isAbsolute());
+        $this->assertTrue(FilePath::parse($DS . 'foo')->isAbsolute());
+        $this->assertFalse(FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz')->isAbsolute());
+        $this->assertTrue(FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz')->isAbsolute());
+    }
 }

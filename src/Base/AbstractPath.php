@@ -24,6 +24,14 @@ abstract class AbstractPath
     }
 
     /**
+     * @return bool True if path is absolute, false otherwise.
+     */
+    public function isAbsolute()
+    {
+        return $this->myIsAbsolute;
+    }
+
+    /**
      * Returns the path as a string.
      *
      * @param string $directorySeparator The directory separator.
