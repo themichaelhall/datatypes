@@ -109,6 +109,11 @@ abstract class AbstractPath
                 continue;
             }
 
+            // Handle "current directory"-part.
+            if ($part === '.') {
+                continue;
+            }
+
             if ($i === $partsCount - 1) {
                 // This is the last part (i.e. the filename part).
                 if ($part !== '') {

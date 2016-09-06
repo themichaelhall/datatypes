@@ -76,4 +76,17 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz')->isRelative());
         $this->assertFalse(FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz')->isRelative());
     }
+
+    /**
+     * Test with current directory parts.
+     */
+    public function testWithCurrentDirectoryParts()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . '.' . $DS . 'baz' . $DS)->__toString());
+        $this->assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('foo' . $DS . 'bar' . $DS . '.' . $DS)->__toString());
+        $this->assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('.' . $DS . 'foo' . $DS . 'bar' . $DS)->__toString());
+        $this->assertSame('foo' . $DS . 'bar' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS . '.' . $DS . 'file')->__toString());
+    }
 }
