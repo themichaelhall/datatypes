@@ -16,6 +16,14 @@ abstract class AbstractPath
     }
 
     /**
+     * @return string|null The filename or null if the path is a directory.
+     */
+    public function getFilename()
+    {
+        return $this->myFilename;
+    }
+
+    /**
      * Returns the path as a string.
      *
      * @param string $directorySeparator The directory separator.
@@ -34,7 +42,7 @@ abstract class AbstractPath
     /**
      * Constructs a path from values.
      *
-     * @param bool        $isAbsolute     If true path is absolute, if false file path is relative.
+     * @param bool        $isAbsolute     If true path is absolute, if false path is relative.
      * @param int         $aboveBaseLevel The number of directory parts above base level.
      * @param string[]    $directoryParts The directory parts.
      * @param string|null $filename       The filename.
@@ -51,7 +59,7 @@ abstract class AbstractPath
      * Tries to parse an file path and returns the result or error text.
      *
      * @param string        $directorySeparator The directory separator.
-     * @param string        $filePath           The file path.
+     * @param string        $path               The path.
      * @param bool|null     $isAbsolute         Whether the path is absolute or relative is parsing was successful, undefined otherwise.
      * @param int|null      $aboveBaseLevel     The number of directory parts above base level if parsing was successful, undefined otherwise.
      * @param string[]|null $directoryParts     The directory parts if parsing was successful, undefined otherwise.
@@ -59,9 +67,9 @@ abstract class AbstractPath
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    protected static function myParse($directorySeparator, $filePath, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null)
+    protected static function myParse($directorySeparator, $path, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null)
     {
-        $parts = explode($directorySeparator, $filePath);
+        $parts = explode($directorySeparator, $path);
         $partsCount = count($parts);
 
         $directoryParts = [];
@@ -115,7 +123,7 @@ abstract class AbstractPath
     protected $myFilename;
 
     /**
-     * @var bool True if file path is absolute, false otherwise.
+     * @var bool True if path is absolute, false otherwise.
      */
     protected $myIsAbsolute;
 }

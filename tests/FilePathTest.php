@@ -34,4 +34,16 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertSame(['foo', 'bar'], FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz.html')->getDirectoryParts());
         $this->assertSame(['foo', 'bar'], FilePath::parse('foo' . $DS . 'bar' . $DS . $DS . 'baz.html')->getDirectoryParts());
     }
+
+    /**
+     * Test getFilename method.
+     */
+    public function testGetFilename()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertNull(FilePath::parse($DS)->getFilename());
+        $this->assertSame('foo.html', FilePath::parse('foo.html')->getFilename());
+        $this->assertSame('baz', FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz')->getFilename());
+    }
 }
