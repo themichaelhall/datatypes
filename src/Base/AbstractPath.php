@@ -8,6 +8,14 @@ namespace DataTypes\Base;
 abstract class AbstractPath
 {
     /**
+     * @return string[] The directory parts.
+     */
+    public function getDirectoryParts()
+    {
+        return $this->myAboveBaseLevel === 0 ? $this->myDirectoryParts : array_merge(array_fill(0, $this->myAboveBaseLevel, '..'), $this->myDirectoryParts);
+    }
+
+    /**
      * Returns the path as a string.
      *
      * @param string $directorySeparator The directory separator.
@@ -42,11 +50,12 @@ abstract class AbstractPath
     /**
      * Tries to parse an file path and returns the result or error text.
      *
-     * @param string        $filePath       The file path.
-     * @param bool|null     $isAbsolute     Whether the path is absolute or relative is parsing was successful, undefined otherwise.
-     * @param int|null      $aboveBaseLevel The number of directory parts above base level if parsing was successful, undefined otherwise.
-     * @param string[]|null $directoryParts The directory parts if parsing was successful, undefined otherwise.
-     * @param string|null   $filename       The file if parsing was not successful, undefined otherwise.
+     * @param string        $directorySeparator The directory separator.
+     * @param string        $filePath           The file path.
+     * @param bool|null     $isAbsolute         Whether the path is absolute or relative is parsing was successful, undefined otherwise.
+     * @param int|null      $aboveBaseLevel     The number of directory parts above base level if parsing was successful, undefined otherwise.
+     * @param string[]|null $directoryParts     The directory parts if parsing was successful, undefined otherwise.
+     * @param string|null   $filename           The file if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
@@ -71,7 +80,7 @@ abstract class AbstractPath
                 continue;
             }
 
-            // If part is empty, the path contains continous directory separators and should be skipped.
+            // If part is empty, the path contains continuous directory separators and should be skipped.
             if ($part === '') {
                 continue;
             }
