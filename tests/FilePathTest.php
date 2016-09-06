@@ -61,4 +61,19 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz')->isAbsolute());
         $this->assertTrue(FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz')->isAbsolute());
     }
+
+    /**
+     * Test isRelative method.
+     */
+    public function testIsRelative()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertTrue(FilePath::parse('')->isRelative());
+        $this->assertFalse(FilePath::parse($DS)->isRelative());
+        $this->assertTrue(FilePath::parse('foo')->isRelative());
+        $this->assertFalse(FilePath::parse($DS . 'foo')->isRelative());
+        $this->assertTrue(FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz')->isRelative());
+        $this->assertFalse(FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz')->isRelative());
+    }
 }
