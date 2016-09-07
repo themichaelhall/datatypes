@@ -49,6 +49,8 @@ abstract class AbstractPath
     protected function myToString($directorySeparator)
     {
         return
+            // If above base level (for relative path), append the required number of "../".
+            ($this->myAboveBaseLevel > 0 ? str_repeat('..' . DIRECTORY_SEPARATOR, $this->myAboveBaseLevel) : '') .
             // Directory parts.
             ($this->myIsAbsolute ? $directorySeparator : '') . implode($directorySeparator, $this->myDirectoryParts) . (count($this->myDirectoryParts) > 0 ? $directorySeparator : '') .
             // File part.
@@ -116,7 +118,11 @@ abstract class AbstractPath
 
             // Handle "parent directory"-part.
             if ($part === '..') {
-                array_pop($directoryParts);
+                if (count($directoryParts) === 0) {
+                    ++$aboveBaseLevel;
+                } else {
+                    array_pop($directoryParts);
+                }
 
                 continue;
             }
