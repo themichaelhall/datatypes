@@ -114,6 +114,13 @@ abstract class AbstractPath
                 continue;
             }
 
+            // Handle "parent directory"-part.
+            if ($part === '..') {
+                array_pop($directoryParts);
+
+                continue;
+            }
+
             if ($i === $partsCount - 1) {
                 // This is the last part (i.e. the filename part).
                 if ($part !== '') {

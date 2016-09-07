@@ -89,4 +89,17 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('.' . $DS . 'foo' . $DS . 'bar' . $DS)->__toString());
         $this->assertSame('foo' . $DS . 'bar' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS . '.' . $DS . 'file')->__toString());
     }
+
+    /**
+     * Test with parent directory parts.
+     */
+    public function testWithParentDirectoryParts()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame($DS . 'foo' . $DS . 'baz' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . '..' . $DS . 'baz' . $DS)->__toString());
+        $this->assertSame($DS . 'baz' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS)->__toString());
+        $this->assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz' . $DS . '..')->__toString());
+        $this->assertSame('foo' . $DS . 'bar' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz' . $DS . '..' . $DS . 'file')->__toString());
+    }
 }
