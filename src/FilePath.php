@@ -75,6 +75,12 @@ class FilePath extends AbstractPath implements FilePathInterface
 
                 return false;
             }
+        } else {
+            if (preg_match('/[\0]+/', $part, $matches)) {
+                $error = 'Filename "' . $part . '" contains invalid character "' . $matches[0] . '".';
+
+                return false;
+            }
         }
 
         return true;

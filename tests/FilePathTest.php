@@ -134,4 +134,21 @@ class FilePathTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('File path "' . $DS . 'foo' . $DS . "\0" . 'bar' . $DS . '" is invalid: Part of directory "' . "\0" . 'bar" contains invalid character "' . "\0" . '".', $exceptionMessage);
     }
+
+    /**
+     * Test that file path with invalid character in filename is invalid.
+     */
+    public function testPathWithInvalidCharacterInFilenameIsInvalid()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+        $exceptionMessage = '';
+
+        try {
+            FilePath::parse($DS . 'foo' . $DS . "\0" . 'bar');
+        } catch (FilePathInvalidArgumentException $e) {
+            $exceptionMessage = $e->getMessage();
+        }
+
+        $this->assertSame('File path "' . $DS . 'foo' . $DS . "\0" . 'bar" is invalid: Filename "' . "\0" . 'bar" contains invalid character "' . "\0" . '".', $exceptionMessage);
+    }
 }

@@ -132,6 +132,10 @@ abstract class AbstractPath
             if ($i === $partsCount - 1) {
                 // This is the last part (i.e. the filename part).
                 if ($part !== '') {
+                    if (!$partValidator($part, false, $error)) {
+                        return false;
+                    }
+
                     $filename = $part;
                 }
             } else {
