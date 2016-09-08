@@ -1,5 +1,6 @@
 <?php
 
+use DataTypes\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\FilePath;
 
 /**
@@ -115,5 +116,22 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertSame('..' . $DS . '..' . $DS . 'baz' . $DS . 'file.html', $filePath->__toString());
         $this->assertTrue($filePath->isRelative());
         $this->assertSame(['..', '..', 'baz'], $filePath->getDirectoryParts());
+    }
+
+    /**
+     * Test that file path with invalid character in directory is invalid.
+     */
+    public function testPathWithInvalidCharacterInDirectoryIsInvalid()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+        $exceptionMessage = '';
+
+        try {
+            FilePath::parse($DS . 'foo' . $DS . "\0" . 'bar' . $DS);
+        } catch (FilePathInvalidArgumentException $e) {
+            $exceptionMessage = $e->getMessage();
+        }
+
+        $this->assertSame('File path "' . $DS . 'foo' . $DS . "\0" . 'bar' . $DS . '" is invalid: Part of directory "' . "\0" . 'bar" contains invalid character "' . "\0" . '".', $exceptionMessage);
     }
 }

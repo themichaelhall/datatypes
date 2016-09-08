@@ -3,6 +3,7 @@
 namespace DataTypes;
 
 use DataTypes\Base\AbstractPath;
+use DataTypes\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\Interfaces\FilePathInterface;
 
 /**
@@ -23,12 +24,22 @@ class FilePath extends AbstractPath implements FilePathInterface
      *
      * @param string $filePath The file path.
      *
+     * @throws FilePathInvalidArgumentException If the $filePath parameter is not a valid file path.
+     *
      * @return FilePath The file path instance.
      */
     public static function parse($filePath)
     {
         assert(is_string($filePath), '$filePath is not a string');
-        self::myParse(DIRECTORY_SEPARATOR, $filePath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+
+        $validatePartFunction = function ($p, $d, &$e) {
+            return self::myPartValidator($p, $d, $e);
+        };
+
+        if (!self::myParse(DIRECTORY_SEPARATOR, $filePath, $validatePartFunction, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)
+        ) {
+            throw new FilePathInvalidArgumentException('File path "' . $filePath . '" is invalid: ' . $error);
+        }
 
         return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
     }
@@ -44,5 +55,28 @@ class FilePath extends AbstractPath implements FilePathInterface
     protected function __construct($isAbsolute, $aboveBaseLevel, array $directoryParts, $filename = null)
     {
         parent::__construct($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+    }
+
+    /**
+     * Validates a directory part name or a file name.
+     *
+     * @param string $part        The part to validate.
+     * @param bool   $isDirectory If true part is a directory part name, if false part is a file name.
+     * @param string $error       The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    private static function myPartValidator($part, $isDirectory, &$error)
+    {
+        // fixme: More specific validation depending on the operating system.
+        if ($isDirectory) {
+            if (preg_match('/[\0]+/', $part, $matches)) {
+                $error = 'Part of directory "' . $part . '" contains invalid character "' . $matches[0] . '".';
+
+                return false;
+            }
+        }
+
+        return true;
     }
 }

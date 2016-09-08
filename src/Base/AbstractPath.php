@@ -74,18 +74,20 @@ abstract class AbstractPath
     }
 
     /**
-     * Tries to parse an file path and returns the result or error text.
+     * Tries to parse a path and returns the result or error text.
      *
      * @param string        $directorySeparator The directory separator.
      * @param string        $path               The path.
+     * @param callable      $partValidator      The part validator.
      * @param bool|null     $isAbsolute         Whether the path is absolute or relative is parsing was successful, undefined otherwise.
      * @param int|null      $aboveBaseLevel     The number of directory parts above base level if parsing was successful, undefined otherwise.
      * @param string[]|null $directoryParts     The directory parts if parsing was successful, undefined otherwise.
      * @param string|null   $filename           The file if parsing was not successful, undefined otherwise.
+     * @param string|null   $error              The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    protected static function myParse($directorySeparator, $path, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null)
+    protected static function myParse($directorySeparator, $path, callable $partValidator, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
     {
         $parts = explode($directorySeparator, $path);
         $partsCount = count($parts);
@@ -134,6 +136,10 @@ abstract class AbstractPath
                 }
             } else {
                 // This is a directory part.
+                if (!$partValidator($part, true, $error)) {
+                    return false;
+                }
+
                 $directoryParts[] = $part;
             }
         }
