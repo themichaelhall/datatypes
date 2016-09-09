@@ -32,13 +32,47 @@ class FilePath extends AbstractPath implements FilePathInterface
     {
         assert(is_string($filePath), '$filePath is not a string');
 
-        $validatePartFunction = function ($p, $d, &$e) {
-            return self::myPartValidator($p, $d, $e);
-        };
-
-        if (!self::myParse(DIRECTORY_SEPARATOR, $filePath, $validatePartFunction, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)
+        if (!self::myParse(
+            DIRECTORY_SEPARATOR,
+            $filePath,
+            function ($p, $d, &$e) {
+                return self::myPartValidator($p, $d, $e);
+            },
+            $isAbsolute,
+            $aboveBaseLevel,
+            $directoryParts,
+            $filename,
+            $error)
         ) {
             throw new FilePathInvalidArgumentException('File path "' . $filePath . '" is invalid: ' . $error);
+        }
+
+        return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+    }
+
+    /**
+     * Parses a file path.
+     *
+     * @param string $filePath The file path.
+     *
+     * @return FilePath|null The file path instance if the $filePath parameter is a valid file path, null otherwise.
+     */
+    public static function tryParse($filePath)
+    {
+        assert(is_string($filePath), '$filePath is not a string');
+
+        if (!self::myParse(
+            DIRECTORY_SEPARATOR,
+            $filePath,
+            function ($p, $d, &$e) {
+                return self::myPartValidator($p, $d, $e);
+            },
+            $isAbsolute,
+            $aboveBaseLevel,
+            $directoryParts,
+            $filename)
+        ) {
+            return null;
         }
 
         return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);

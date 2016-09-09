@@ -168,4 +168,17 @@ class FilePathTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('File path "' . $DS . 'foo' . $DS . '..' . $DS . '..' . $DS . '" is invalid: Absolute path is above root level.', $exceptionMessage);
     }
+
+    /**
+     * Test tryParse method.
+     */
+    public function testTryParse()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame('', FilePath::tryParse('')->__toString());
+        $this->assertSame('foo' . $DS . 'bar' . $DS . 'baz.html', FilePath::tryParse('foo' . $DS . 'bar' . $DS . 'baz.html')->__toString());
+        $this->assertNull(FilePath::tryParse($DS . 'foo' . "\0" . 'bar' . $DS));
+        $this->assertNull(FilePath::tryParse($DS . 'foo' . $DS . '..' . $DS . '..' . $DS));
+    }
 }
