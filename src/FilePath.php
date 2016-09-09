@@ -20,6 +20,25 @@ class FilePath extends AbstractPath implements FilePathInterface
     }
 
     /**
+     * Checks if a file path is valid.
+     *
+     * @param string $filePath The file path.
+     *
+     * @return bool True if the $filePath parameter is a valid file path, false otherwise.
+     */
+    public static function isValid($filePath)
+    {
+        assert(is_string($filePath), '$filePath is not a string');
+
+        return self::myParse(
+            DIRECTORY_SEPARATOR,
+            $filePath,
+            function ($p, $d, &$e) {
+                return self::myPartValidator($p, $d, $e);
+            });
+    }
+
+    /**
      * Parses a file path.
      *
      * @param string $filePath The file path.

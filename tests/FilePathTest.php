@@ -181,4 +181,17 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertNull(FilePath::tryParse($DS . 'foo' . "\0" . 'bar' . $DS));
         $this->assertNull(FilePath::tryParse($DS . 'foo' . $DS . '..' . $DS . '..' . $DS));
     }
+
+    /**
+     * Test isValid method.
+     */
+    public function testIsValid()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertTrue(FilePath::isValid(''));
+        $this->assertTrue(FilePath::isValid('foo' . $DS . 'bar' . $DS . 'baz.html'));
+        $this->assertFalse(FilePath::isValid($DS . 'foo' . "\0" . 'bar' . $DS));
+        $this->assertFalse(FilePath::isValid($DS . 'foo' . $DS . '..' . $DS . '..' . $DS));
+    }
 }
