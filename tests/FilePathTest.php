@@ -151,4 +151,21 @@ class FilePathTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('File path "' . $DS . 'foo' . $DS . "\0" . 'bar" is invalid: Filename "' . "\0" . 'bar" contains invalid character "' . "\0" . '".', $exceptionMessage);
     }
+
+    /**
+     * Test that absolute file path above root level is invalid.
+     */
+    public function testAbsoluteUrlPathAboveRootLevelIsInvalid()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+        $exceptionMessage = '';
+
+        try {
+            FilePath::parse($DS . 'foo' . $DS . '..' . $DS . '..' . $DS);
+        } catch (FilePathInvalidArgumentException $e) {
+            $exceptionMessage = $e->getMessage();
+        }
+
+        $this->assertSame('File path "' . $DS . 'foo' . $DS . '..' . $DS . '..' . $DS . '" is invalid: Absolute path is above root level.', $exceptionMessage);
+    }
 }

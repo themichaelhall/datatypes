@@ -121,6 +121,12 @@ abstract class AbstractPath
             // Handle "parent directory"-part.
             if ($part === '..') {
                 if (count($directoryParts) === 0) {
+                    if ($isAbsolute) {
+                        $error = 'Absolute path is above root level.';
+
+                        return false;
+                    }
+
                     ++$aboveBaseLevel;
                 } else {
                     array_pop($directoryParts);
