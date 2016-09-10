@@ -248,4 +248,27 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertSame('..' . $DS . 'foo' . $DS, FilePath::parse('..' . $DS . 'foo' . $DS)->getDirectory()->__toString());
         $this->assertSame('..' . $DS . 'foo' . $DS, FilePath::parse('..' . $DS . 'foo' . $DS . 'bar')->getDirectory()->__toString());
     }
+
+    /**
+     * Test getDepth method.
+     */
+    public function testGetDepth()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame(0, FilePath::parse('')->getDepth());
+        $this->assertSame(0, FilePath::parse($DS)->getDepth());
+        $this->assertSame(0, FilePath::parse('foo')->getDepth());
+        $this->assertSame(0, FilePath::parse($DS . 'foo')->getDepth());
+        $this->assertSame(1, FilePath::parse('foo' . $DS)->getDepth());
+        $this->assertSame(1, FilePath::parse($DS . 'foo' . $DS)->getDepth());
+        $this->assertSame(1, FilePath::parse('foo' . $DS . 'bar')->getDepth());
+        $this->assertSame(1, FilePath::parse($DS . 'foo' . $DS . 'bar')->getDepth());
+        $this->assertSame(2, FilePath::parse('foo' . $DS . 'bar' . $DS)->getDepth());
+        $this->assertSame(2, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->getDepth());
+        $this->assertSame(-1, FilePath::parse('..' . $DS)->getDepth());
+        $this->assertSame(-1, FilePath::parse('..' . $DS . 'foo')->getDepth());
+        $this->assertSame(-2, FilePath::parse('..' . $DS . '..' . $DS . 'foo')->getDepth());
+        $this->assertSame(-1, FilePath::parse('..' . $DS . '..' . $DS . 'foo' . $DS)->getDepth());
+    }
 }

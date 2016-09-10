@@ -8,6 +8,14 @@ namespace DataTypes\Base;
 abstract class AbstractPath
 {
     /**
+     * @return int The depth of the path.
+     */
+    public function getDepth()
+    {
+        return count($this->myDirectoryParts) - $this->myAboveBaseLevel;
+    }
+
+    /**
      * @return string[] The directory parts.
      */
     public function getDirectoryParts()
