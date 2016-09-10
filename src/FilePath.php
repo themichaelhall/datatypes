@@ -12,6 +12,14 @@ use DataTypes\Interfaces\FilePathInterface;
 class FilePath extends AbstractPath implements FilePathInterface
 {
     /**
+     * @return FilePath The directory of the file path.
+     */
+    public function getDirectory()
+    {
+        return new self($this->myIsAbsolute, $this->myAboveBaseLevel, $this->myDirectoryParts, null);
+    }
+
+    /**
      * @return string The file path as a string.
      */
     public function __toString()

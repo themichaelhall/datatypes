@@ -228,4 +228,24 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(FilePath::parse('foo' . $DS . 'bar')->isDirectory());
         $this->assertFalse(FilePath::parse($DS . 'foo' . $DS . 'bar')->isDirectory());
     }
+
+    /**
+     * Test getDirectory method.
+     */
+    public function testGetDirectory()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame('', FilePath::parse('')->getDirectory()->__toString());
+        $this->assertSame($DS, FilePath::parse($DS)->getDirectory()->__toString());
+        $this->assertSame('', FilePath::parse('foo')->getDirectory()->__toString());
+        $this->assertSame($DS, FilePath::parse($DS . 'foo')->getDirectory()->__toString());
+        $this->assertSame('foo' . $DS, FilePath::parse('foo' . $DS)->getDirectory()->__toString());
+        $this->assertSame($DS . 'foo' . $DS, FilePath::parse($DS . 'foo' . $DS)->getDirectory()->__toString());
+        $this->assertSame('foo' . $DS, FilePath::parse('foo' . $DS . 'bar')->getDirectory()->__toString());
+        $this->assertSame($DS . 'foo' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar')->getDirectory()->__toString());
+        $this->assertSame('..' . $DS, FilePath::parse('..' . $DS . 'foo')->getDirectory()->__toString());
+        $this->assertSame('..' . $DS . 'foo' . $DS, FilePath::parse('..' . $DS . 'foo' . $DS)->getDirectory()->__toString());
+        $this->assertSame('..' . $DS . 'foo' . $DS, FilePath::parse('..' . $DS . 'foo' . $DS . 'bar')->getDirectory()->__toString());
+    }
 }
