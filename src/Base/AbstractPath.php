@@ -32,6 +32,14 @@ abstract class AbstractPath
     }
 
     /**
+     * @return bool True if path is a directory, false otherwise.
+     */
+    public function isDirectory()
+    {
+        return $this->myFilename === null;
+    }
+
+    /**
      * @return bool True if path is a file, false otherwise.
      */
     public function isFile()
