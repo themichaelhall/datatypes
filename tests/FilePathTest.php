@@ -271,14 +271,4 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertSame(-2, FilePath::parse('..' . $DS . '..' . $DS . 'foo')->getDepth());
         $this->assertSame(-1, FilePath::parse('..' . $DS . '..' . $DS . 'foo' . $DS)->getDepth());
     }
-
-    /**
-     * test getCurrentDirectory method.
-     */
-    public function testGetCurrentDirectory()
-    {
-        $DS = DIRECTORY_SEPARATOR;
-
-        $this->assertSame(getcwd() . $DS, FilePath::getCurrentDirectory()->__toString());
-    }
 }

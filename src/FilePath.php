@@ -28,14 +28,6 @@ class FilePath extends AbstractPath implements FilePathInterface
     }
 
     /**
-     * @return FilePath The current working directory.
-     */
-    public static function getCurrentDirectory()
-    {
-        return self::parse(getcwd() . DIRECTORY_SEPARATOR);
-    }
-
-    /**
      * Checks if a file path is valid.
      *
      * @param string $filePath The file path.
