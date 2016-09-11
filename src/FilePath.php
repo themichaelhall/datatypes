@@ -4,6 +4,7 @@ namespace DataTypes;
 
 use DataTypes\Base\AbstractPath;
 use DataTypes\Exceptions\FilePathInvalidArgumentException;
+use DataTypes\Exceptions\FilePathLogicException;
 use DataTypes\Interfaces\FilePathInterface;
 
 /**
@@ -25,6 +26,20 @@ class FilePath extends AbstractPath implements FilePathInterface
     public function toRelative()
     {
         return new self(false, $this->myAboveBaseLevel, $this->myDirectoryParts, $this->myFilename);
+    }
+
+    /**
+     * @throws FilePathLogicException if the file path could not be made absolute.
+     *
+     * @return FilePath The file path as a absolute path.
+     */
+    public function toAbsolute()
+    {
+        if ($this->myAboveBaseLevel > 0) {
+            throw new FilePathLogicException('File path "' . $this->__toString() . '" can not be made absolute: Relative path is above base level.');
+        }
+
+        return new self(true, $this->myAboveBaseLevel, $this->myDirectoryParts, $this->myFilename);
     }
 
     /**

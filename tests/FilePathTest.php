@@ -1,6 +1,7 @@
 <?php
 
 use DataTypes\Exceptions\FilePathInvalidArgumentException;
+use DataTypes\Exceptions\FilePathLogicException;
 use DataTypes\FilePath;
 
 /**
@@ -155,7 +156,7 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     /**
      * Test that absolute file path above root level is invalid.
      */
-    public function testAbsoluteUrlPathAboveRootLevelIsInvalid()
+    public function testAbsoluteFilePathAboveRootLevelIsInvalid()
     {
         $DS = DIRECTORY_SEPARATOR;
         $exceptionMessage = '';
@@ -285,5 +286,37 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertSame('foo', FilePath::parse($DS . 'foo')->toRelative()->__toString());
         $this->assertSame('foo' . $DS . 'bar', FilePath::parse('foo' . $DS . 'bar')->toRelative()->__toString());
         $this->assertSame('foo' . $DS . 'bar', FilePath::parse($DS . 'foo' . $DS . 'bar')->toRelative()->__toString());
+    }
+
+    /**
+     * Test toAbsolute method.
+     */
+    public function testToAbsolute()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame($DS, FilePath::parse('')->toAbsolute()->__toString());
+        $this->assertSame($DS, FilePath::parse($DS)->toAbsolute()->__toString());
+        $this->assertSame($DS . 'foo', FilePath::parse('foo')->toAbsolute()->__toString());
+        $this->assertSame($DS . 'foo', FilePath::parse($DS . 'foo')->toAbsolute()->__toString());
+        $this->assertSame($DS . 'foo' . $DS . 'bar', FilePath::parse('foo' . $DS . 'bar')->toAbsolute()->__toString());
+        $this->assertSame($DS . 'foo' . $DS . 'bar', FilePath::parse($DS . 'foo' . $DS . 'bar')->toAbsolute()->__toString());
+    }
+
+    /**
+     * Test that attempting to make an absolute path for a file path above root is invalid.
+     */
+    public function testToAbsoluteForFilePathAboveRootIsInvalid()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+        $exceptionMessage = '';
+
+        try {
+            FilePath::parse('..' . $DS)->toAbsolute();
+        } catch (FilePathLogicException $e) {
+            $exceptionMessage = $e->getMessage();
+        }
+
+        $this->assertSame('File path "..' . $DS . '" can not be made absolute: Relative path is above base level.', $exceptionMessage);
     }
 }
