@@ -271,4 +271,19 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertSame(-2, FilePath::parse('..' . $DS . '..' . $DS . 'foo')->getDepth());
         $this->assertSame(-1, FilePath::parse('..' . $DS . '..' . $DS . 'foo' . $DS)->getDepth());
     }
+
+    /**
+     * Test toRelative method.
+     */
+    public function testToRelative()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame('', FilePath::parse('')->toRelative()->__toString());
+        $this->assertSame('', FilePath::parse($DS)->toRelative()->__toString());
+        $this->assertSame('foo', FilePath::parse('foo')->toRelative()->__toString());
+        $this->assertSame('foo', FilePath::parse($DS . 'foo')->toRelative()->__toString());
+        $this->assertSame('foo' . $DS . 'bar', FilePath::parse('foo' . $DS . 'bar')->toRelative()->__toString());
+        $this->assertSame('foo' . $DS . 'bar', FilePath::parse($DS . 'foo' . $DS . 'bar')->toRelative()->__toString());
+    }
 }

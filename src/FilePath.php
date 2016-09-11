@@ -20,6 +20,14 @@ class FilePath extends AbstractPath implements FilePathInterface
     }
 
     /**
+     * @return FilePath The file path as a relative path.
+     */
+    public function toRelative()
+    {
+        return new self(false, $this->myAboveBaseLevel, $this->myDirectoryParts, $this->myFilename);
+    }
+
+    /**
      * @return string The file path as a string.
      */
     public function __toString()
