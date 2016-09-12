@@ -2,6 +2,8 @@
 
 namespace DataTypes\Base;
 
+use DataTypes\Interfaces\FilePathInterface;
+
 /**
  * Abstract class representing a path.
  */
@@ -95,6 +97,58 @@ abstract class AbstractPath
         $this->myAboveBaseLevel = $aboveBaseLevel;
         $this->myDirectoryParts = $directoryParts;
         $this->myFilename = $filename;
+    }
+
+    /**
+     * Tries to combine this path with another path.
+     *
+     * @version 1.0.0
+     *
+     * @param FilePathInterface $other          The other path.
+     * @param bool|null         $isAbsolute     Whether the path is absolute or relative is combining was successful, undefined otherwise.
+     * @param int|null          $aboveBaseLevel The number of directory parts above base level if combining was successful, undefined otherwise.
+     * @param string[]|null     $directoryParts The directory parts if combining was successful, undefined otherwise.
+     * @param string|null       $filename       The file if combining was not successful, undefined otherwise.
+     * @param string|null       $error          The error text if combining was not successful, undefined otherwise.
+     *
+     * @return bool True if combining was successful, false otherwise.
+     */
+    protected function myCombine(FilePathInterface $other, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
+    {
+        // If other path is absolute, current path is overridden.
+        if ($other->isAbsolute()) {
+            $isAbsolute = $other->isAbsolute();
+            $aboveBaseLevel = 0;
+            $directoryParts = $other->getDirectoryParts();
+            $filename = $other->getFilename();
+
+            return true;
+        }
+
+        $isAbsolute = $this->myIsAbsolute;
+        $aboveBaseLevel = $this->myAboveBaseLevel;
+        $directoryParts = $this->myDirectoryParts;
+        $filename = $other->getFilename();
+
+        foreach ($other->getDirectoryParts() as $otherDirectoryPart) {
+            if ($otherDirectoryPart === '..') {
+                if (count($directoryParts) === 0) {
+                    if ($this->myIsAbsolute) {
+                        $error = 'Absolute path is above root level.';
+
+                        return false;
+                    }
+
+                    ++$aboveBaseLevel;
+                } else {
+                    array_pop($directoryParts);
+                }
+            } else {
+                $directoryParts[] = $otherDirectoryPart;
+            }
+        }
+
+        return true;
     }
 
     /**
