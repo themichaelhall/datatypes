@@ -319,4 +319,56 @@ class FilePathTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('File path "..' . $DS . '" can not be made absolute: Relative path is above base level.', $exceptionMessage);
     }
+
+    /**
+     * Test withFilePath method.
+     */
+    public function testWithFilePath()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame($DS . 'bar', FilePath::parse($DS . 'foo')->withFilePath(FilePath::parse($DS . 'bar'))->__toString());
+        $this->assertSame($DS . 'bar', FilePath::parse('foo')->withFilePath(FilePath::parse($DS . 'bar'))->__toString());
+        $this->assertSame($DS . 'bar' . $DS . 'baz', FilePath::parse($DS . 'foo')->withFilePath(FilePath::parse($DS . 'bar' . $DS . 'baz'))->__toString());
+        $this->assertSame($DS . 'bar' . $DS . 'baz', FilePath::parse('foo')->withFilePath(FilePath::parse($DS . 'bar' . $DS . 'baz'))->__toString());
+        $this->assertSame('', FilePath::parse('')->withFilePath(FilePath::parse(''))->__toString());
+        $this->assertSame($DS, FilePath::parse('')->withFilePath(FilePath::parse($DS))->__toString());
+        $this->assertSame($DS . 'foo' . $DS . 'bar', FilePath::parse($DS . 'foo' . $DS)->withFilePath(FilePath::parse('bar'))->__toString());
+        $this->assertSame($DS . 'foo' . $DS . 'baz', FilePath::parse($DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse('baz'))->__toString());
+        $this->assertSame('foo' . $DS . 'bar', FilePath::parse('foo' . $DS)->withFilePath(FilePath::parse('bar'))->__toString());
+        $this->assertSame('foo' . $DS . 'baz', FilePath::parse('foo' . $DS . 'bar')->withFilePath(FilePath::parse('baz'))->__toString());
+        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS, FilePath::parse($DS . 'foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS))->__toString());
+        $this->assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS))->__toString());
+        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS, FilePath::parse($DS . 'foo' . $DS . 'baz')->withFilePath(FilePath::parse('bar' . $DS))->__toString());
+        $this->assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('foo' . $DS . 'baz')->withFilePath(FilePath::parse('bar' . $DS))->__toString());
+        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz', FilePath::parse($DS . 'foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS . 'baz'))->__toString());
+        $this->assertSame('foo' . $DS . 'bar' . $DS . 'baz', FilePath::parse('foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS . 'baz'))->__toString());
+        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz' . $DS, FilePath::parse($DS . 'foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS . 'baz' . $DS))->__toString());
+        $this->assertSame('foo' . $DS . 'bar' . $DS . 'baz' . $DS, FilePath::parse('foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS . 'baz' . $DS))->__toString());
+        $this->assertSame($DS . 'foo' . $DS . 'baz' . $DS . 'file', FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        $this->assertSame('foo' . $DS . 'baz' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        $this->assertSame('..' . $DS . 'foo' . $DS . 'baz' . $DS . 'file', FilePath::parse('..' . $DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        $this->assertSame($DS . 'baz' . $DS . 'file', FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        $this->assertSame('baz' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        $this->assertSame('..' . $DS . 'baz' . $DS . 'file', FilePath::parse('..' . $DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        $this->assertSame('..' . $DS . 'baz' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        $this->assertSame('..' . $DS . '..' . $DS . 'baz' . $DS . 'file', FilePath::parse('..' . $DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
+    }
+
+    /**
+     * Test that combining an absolute file path with a file path that results in a path above root level is invalid.
+     */
+    public function testAbsoluteFilePathWithFilePathAboveRootLevelIsInvalid()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+        $exceptionMessage = '';
+
+        try {
+            FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS . 'file'));
+        } catch (FilePathLogicException $e) {
+            $exceptionMessage = $e->getMessage();
+        }
+
+        $this->assertSame('File path "' . $DS . 'foo' . $DS . 'bar' . $DS . '" can not be combined with file path "..' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS . 'file": Absolute path is above root level.', $exceptionMessage);
+    }
 }

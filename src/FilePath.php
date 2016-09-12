@@ -43,6 +43,26 @@ class FilePath extends AbstractPath implements FilePathInterface
     }
 
     /**
+     * Returns a copy of the file path combined with another file path.
+     *
+     * @version 1.0.0
+     *
+     * @param FilePathInterface $filePath The other file path.
+     *
+     * @throws FilePathLogicException if the file paths could not be combined.
+     *
+     * @return FilePath The combined file path.
+     */
+    public function withFilePath(FilePathInterface $filePath)
+    {
+        if (!$this->myCombine($filePath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+            throw new FilePathLogicException('File path "' . $this->__toString() . '" can not be combined with file path "' . $filePath->__toString() . '": ' . $error);
+        }
+
+        return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+    }
+
+    /**
      * @return string The file path as a string.
      */
     public function __toString()
