@@ -81,7 +81,7 @@ class FilePath extends AbstractPath implements FilePathInterface
     }
 
     /**
-     * Returns the file path as a string
+     * Returns the file path as a string.
      *
      * @since 1.0.0
      *
