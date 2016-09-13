@@ -4,7 +4,6 @@
  *
  * Read more at https://phpdatatypes.com/
  */
-
 namespace DataTypes\Interfaces\Base;
 
 use DataTypes\Interfaces\DataTypeInterface;
