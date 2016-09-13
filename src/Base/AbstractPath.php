@@ -2,12 +2,13 @@
 
 namespace DataTypes\Base;
 
+use DataTypes\Interfaces\Base\AbstractPathInterface;
 use DataTypes\Interfaces\FilePathInterface;
 
 /**
  * Abstract class representing a path.
  */
-abstract class AbstractPath
+abstract class AbstractPath implements AbstractPathInterface
 {
     /**
      * @return int The depth of the path.
