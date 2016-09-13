@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * This file is a part of the datatypes package.
+ *
+ * Read more at https://phpdatatypes.com/
+ */
 namespace DataTypes\Interfaces;
 
 use DataTypes\Exceptions\FilePathLogicException;
@@ -8,13 +12,15 @@ use DataTypes\Interfaces\Base\AbstractPathInterface;
 
 /**
  * Interface for FilePath class.
+ *
+ * @since 1.0.0
  */
 interface FilePathInterface extends AbstractPathInterface
 {
     /**
      * Returns the directory of the file path.
      *
-     * @version 1.0.0
+     * @since 1.0.0
      *
      * @return FilePath The directory of the file path.
      */
@@ -23,7 +29,7 @@ interface FilePathInterface extends AbstractPathInterface
     /**
      * Returns the file path as a relative path.
      *
-     * @version 1.0.0
+     * @since 1.0.0
      *
      * @return FilePath The file path as a relative path.
      */
@@ -32,7 +38,7 @@ interface FilePathInterface extends AbstractPathInterface
     /**
      * Returns the file path as an absolute path.
      *
-     * @version 1.0.0
+     * @since 1.0.0
      *
      * @throws FilePathLogicException if the file path could not be made absolute.
      *
@@ -43,7 +49,7 @@ interface FilePathInterface extends AbstractPathInterface
     /**
      * Returns a copy of the file path combined with another file path.
      *
-     * @version 1.0.0
+     * @since 1.0.0
      *
      * @param FilePathInterface $filePath The other file path.
      *

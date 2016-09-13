@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * This file is a part of the datatypes package.
+ *
+ * Read more at https://phpdatatypes.com/
+ */
 namespace DataTypes;
 
 use DataTypes\Base\AbstractPath;
@@ -9,10 +13,16 @@ use DataTypes\Interfaces\FilePathInterface;
 
 /**
  * Class representing a file path.
+ *
+ * @since 1.0.0
  */
 class FilePath extends AbstractPath implements FilePathInterface
 {
     /**
+     * Returns the directory of the file path.
+     *
+     * @since 1.0.0
+     *
      * @return FilePath The directory of the file path.
      */
     public function getDirectory()
@@ -21,6 +31,10 @@ class FilePath extends AbstractPath implements FilePathInterface
     }
 
     /**
+     * Returns the file path as a relative path.
+     *
+     * @since 1.0.0
+     *
      * @return FilePath The file path as a relative path.
      */
     public function toRelative()
@@ -29,9 +43,13 @@ class FilePath extends AbstractPath implements FilePathInterface
     }
 
     /**
+     * Returns the file path as an absolute path.
+     *
+     * @since 1.0.0
+     *
      * @throws FilePathLogicException if the file path could not be made absolute.
      *
-     * @return FilePath The file path as a absolute path.
+     * @return FilePath The file path as an absolute path.
      */
     public function toAbsolute()
     {
@@ -45,7 +63,7 @@ class FilePath extends AbstractPath implements FilePathInterface
     /**
      * Returns a copy of the file path combined with another file path.
      *
-     * @version 1.0.0
+     * @since 1.0.0
      *
      * @param FilePathInterface $filePath The other file path.
      *
@@ -63,6 +81,10 @@ class FilePath extends AbstractPath implements FilePathInterface
     }
 
     /**
+     * Returns the file path as a string
+     *
+     * @since 1.0.0
+     *
      * @return string The file path as a string.
      */
     public function __toString()
@@ -72,6 +94,8 @@ class FilePath extends AbstractPath implements FilePathInterface
 
     /**
      * Checks if a file path is valid.
+     *
+     * @since 1.0.0
      *
      * @param string $filePath The file path.
      *
@@ -91,6 +115,8 @@ class FilePath extends AbstractPath implements FilePathInterface
 
     /**
      * Parses a file path.
+     *
+     * @since 1.0.0
      *
      * @param string $filePath The file path.
      *
@@ -123,6 +149,8 @@ class FilePath extends AbstractPath implements FilePathInterface
     /**
      * Parses a file path.
      *
+     * @since 1.0.0
+     *
      * @param string $filePath The file path.
      *
      * @return FilePath|null The file path instance if the $filePath parameter is a valid file path, null otherwise.
@@ -150,6 +178,8 @@ class FilePath extends AbstractPath implements FilePathInterface
 
     /**
      * Constructs a file path from values.
+     *
+     * @since 1.0.0
      *
      * @param bool        $isAbsolute     If true file path is absolute, if false file path is relative.
      * @param int         $aboveBaseLevel The number of directory parts above base level.

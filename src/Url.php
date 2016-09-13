@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * This file is a part of the datatypes package.
+ *
+ * Read more at https://phpdatatypes.com/
+ */
 namespace DataTypes;
 
 use DataTypes\Exceptions\HostInvalidArgumentException;
@@ -13,10 +17,16 @@ use DataTypes\Interfaces\UrlPathInterface;
 
 /**
  * Class representing a Url.
+ *
+ * @since 1.0.0
  */
 class Url implements UrlInterface
 {
     /**
+     * Returns the host of the url.
+     *
+     * @since 1.0.0
+     *
      * @return HostInterface The host of the url.
      */
     public function getHost()
@@ -25,6 +35,10 @@ class Url implements UrlInterface
     }
 
     /**
+     * Returns the path of the url.
+     *
+     * @since 1.0.0
+     *
      * @return UrlPathInterface The path of the url.
      */
     public function getPath()
@@ -33,6 +47,10 @@ class Url implements UrlInterface
     }
 
     /**
+     * Returns the port of the url.
+     *
+     * @since 1.0.0
+     *
      * @return int The port of the url.
      */
     public function getPort()
@@ -41,7 +59,11 @@ class Url implements UrlInterface
     }
 
     /**
-     * @return string|null The query string of the url.
+     * Returns the query string of the url or null if the url has no query string.
+     *
+     * @since 1.0.0
+     *
+     * @return string|null The query string of the url or null if the url has no query string.
      */
     public function getQueryString()
     {
@@ -49,6 +71,10 @@ class Url implements UrlInterface
     }
 
     /**
+     * Returns the scheme of the url.
+     *
+     * @since 1.0.0
+     *
      * @return SchemeInterface The scheme of the url.
      */
     public function getScheme()
@@ -59,9 +85,11 @@ class Url implements UrlInterface
     /**
      * Returns a copy of the Url instance with the specified host.
      *
+     * @since 1.0.0
+     *
      * @param HostInterface $host The host.
      *
-     * @return UrlInterface The Url instance.
+     * @return Url The Url instance.
      */
     public function withHost(HostInterface $host)
     {
@@ -71,10 +99,12 @@ class Url implements UrlInterface
     /**
      * Returns a copy of the Url instance with the specified scheme.
      *
-     * @param SchemeInterface $scheme          The scheme.
-     * @param bool            $keepDefaultPort If true, port is changed to the schemes default port if port is current schemes default port, if false, port is not changed.
+     * @since 1.0.0
      *
-     * @return UrlInterface The Url instance.
+     * @param SchemeInterface $scheme          The scheme.
+     * @param bool            $keepDefaultPort If true, port is changed to the schemes default port if port is current schemes default port, if false port is not changed.
+     *
+     * @return Url The Url instance.
      */
     public function withScheme(SchemeInterface $scheme, $keepDefaultPort = true)
     {
@@ -82,7 +112,11 @@ class Url implements UrlInterface
     }
 
     /**
-     * @return string The Url as a string.
+     * Returns the url as a string.
+     *
+     * @since 1.0.0
+     *
+     * @return string The url as a string.
      */
     public function __toString()
     {
@@ -91,6 +125,8 @@ class Url implements UrlInterface
 
     /**
      * Checks if a url is valid.
+     *
+     * @since 1.0.0
      *
      * @param string $url The url.
      *
@@ -105,6 +141,8 @@ class Url implements UrlInterface
 
     /**
      * Parses a url.
+     *
+     * @since 1.0.0
      *
      * @param string $url The url.
      *
@@ -125,6 +163,8 @@ class Url implements UrlInterface
 
     /**
      * Parses a url.
+     *
+     * @since 1.0.0
      *
      * @param string $url The url.
      *

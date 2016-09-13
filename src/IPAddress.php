@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * This file is a part of the datatypes package.
+ *
+ * Read more at https://phpdatatypes.com/
+ */
 namespace DataTypes;
 
 use DataTypes\Exceptions\IPAddressInvalidArgumentException;
@@ -7,10 +11,16 @@ use DataTypes\Interfaces\IPAddressInterface;
 
 /**
  * Class representing an IP address.
+ *
+ * @since 1.0.0
  */
 class IPAddress implements IPAddressInterface
 {
     /**
+     * Returns the IP address parts.
+     *
+     * @since 1.0.0
+     *
      * @return int[] The IP address parts.
      */
     public function getParts()
@@ -19,6 +29,10 @@ class IPAddress implements IPAddressInterface
     }
 
     /**
+     * Returns the IP address as a string.
+     *
+     * @since 1.0.0
+     *
      * @return string The IP address as a string.
      */
     public function __toString()
@@ -28,6 +42,8 @@ class IPAddress implements IPAddressInterface
 
     /**
      * Checks if an IP address is valid.
+     *
+     * @since 1.0.0
      *
      * @param string $ipAddress The IP address.
      *
@@ -42,6 +58,8 @@ class IPAddress implements IPAddressInterface
 
     /**
      * Parses an IP address.
+     *
+     * @since 1.0.0
      *
      * @param string $ipAddress The IP address.
      *
@@ -62,6 +80,8 @@ class IPAddress implements IPAddressInterface
 
     /**
      * Parses an IP address.
+     *
+     * @since 1.0.0
      *
      * @param string $ipAddress The IP address.
      *

@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * This file is a part of the datatypes package.
+ *
+ * Read more at https://phpdatatypes.com/
+ */
 namespace DataTypes;
 
 use DataTypes\Exceptions\UrlPathInvalidArgumentException;
@@ -8,10 +12,16 @@ use DataTypes\Interfaces\UrlPathInterface;
 
 /**
  * Class representing a url path.
+ *
+ * @since 1.0.0
  */
 class UrlPath implements UrlPathInterface
 {
     /**
+     * Returns the depth of the url path.
+     *
+     * @since 1.0.0
+     *
      * @return int The depth of the url path.
      */
     public function getDepth()
@@ -20,6 +30,10 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * Returns the directory of the url path.
+     *
+     * @since 1.0.0
+     *
      * @return UrlPath The directory of the url path.
      */
     public function getDirectory()
@@ -28,6 +42,10 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * Returns the directory parts of the url path.
+     *
+     * @since 1.0.0
+     *
      * @return string[] The directory parts.
      */
     public function getDirectoryParts()
@@ -36,6 +54,10 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * Returns the filename or null if the url path is a directory.
+     *
+     * @since 1.0.0
+     *
      * @return string|null The filename or null if the url path is a directory.
      */
     public function getFilename()
@@ -44,6 +66,10 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * Returns true if url path is absolute, false otherwise.
+     *
+     * @since 1.0.0
+     *
      * @return bool True if url path is absolute, false otherwise.
      */
     public function isAbsolute()
@@ -52,6 +78,10 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * Returns true if url path is a directory, false otherwise.
+     *
+     * @since 1.0.0
+     *
      * @return bool True if url path is a directory, false otherwise.
      */
     public function isDirectory()
@@ -60,6 +90,10 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * True if url path is a file, false otherwise.
+     *
+     * @since 1.0.0
+     *
      * @return bool True if url path is a file, false otherwise.
      */
     public function isFile()
@@ -68,6 +102,10 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * Returns true if url path is relative, false otherwise.
+     *
+     * @since 1.0.0
+     *
      * @return bool True if url path is relative, false otherwise.
      */
     public function isRelative()
@@ -76,6 +114,10 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * Return the url path as a relative path.
+     *
+     * @since 1.0.0
+     *
      * @return UrlPath The url path as a relative path.
      */
     public function toRelative()
@@ -84,9 +126,13 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * Returns The url path as an absolute path.
+     *
+     * @since 1.0.0
+     *
      * @throws UrlPathLogicException if the url path could not be made absolute.
      *
-     * @return UrlPath The url path as a absolute path.
+     * @return UrlPath The url path as an absolute path.
      */
     public function toAbsolute()
     {
@@ -99,6 +145,8 @@ class UrlPath implements UrlPathInterface
 
     /**
      * Returns a copy of the url path combined with another url path.
+     *
+     * @since 1.0.0
      *
      * @param UrlPathInterface $urlPath The other url path.
      *
@@ -136,6 +184,10 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * Returns the url path as a string.
+     *
+     * @since 1.0.0
+     *
      * @return string The url path as a string.
      */
     public function __toString()
@@ -154,6 +206,8 @@ class UrlPath implements UrlPathInterface
     /**
      * Checks if a url path is valid.
      *
+     * @since 1.0.0
+     *
      * @param string $urlPath The url path.
      *
      * @return bool True if the $urlPath parameter is a valid url path, false otherwise.
@@ -167,6 +221,8 @@ class UrlPath implements UrlPathInterface
 
     /**
      * Parses a url path.
+     *
+     * @since 1.0.0
      *
      * @param string $urlPath The url path.
      *
@@ -187,6 +243,8 @@ class UrlPath implements UrlPathInterface
 
     /**
      * Parses a url path.
+     *
+     * @since 1.0.0
      *
      * @param string $urlPath The url path.
      *
@@ -313,7 +371,7 @@ class UrlPath implements UrlPathInterface
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    public static function myValidateDirectoryPart($directoryPart, &$error = null)
+    private static function myValidateDirectoryPart($directoryPart, &$error = null)
     {
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]%-]/', $directoryPart, $matches)) {
             $error = 'Part of directory "' . $directoryPart . '" contains invalid character "' . $matches[0] . '".';
@@ -332,7 +390,7 @@ class UrlPath implements UrlPathInterface
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    public static function myValidateFilename($filename, &$error = null)
+    private static function myValidateFilename($filename, &$error = null)
     {
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]%-]/', $filename, $matches)) {
             $error = 'Filename "' . $filename . '" contains invalid character "' . $matches[0] . '".';

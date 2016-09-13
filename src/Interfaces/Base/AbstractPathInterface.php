@@ -10,13 +10,15 @@ use DataTypes\Interfaces\DataTypeInterface;
 
 /**
  * Interface for AbstractPath class.
+ *
+ * @since 1.0.0
  */
 interface AbstractPathInterface extends DataTypeInterface
 {
     /**
      * Returns the depth of the path.
      *
-     * @version 1.0.0
+     * @since 1.0.0
      *
      * @return int The depth of the path.
      */
@@ -25,7 +27,7 @@ interface AbstractPathInterface extends DataTypeInterface
     /**
      * Returns the directory parts.
      *
-     * @version 1.0.0
+     * @since 1.0.0
      *
      * @return string[] The directory parts.
      */
@@ -34,7 +36,7 @@ interface AbstractPathInterface extends DataTypeInterface
     /**
      * Returns the filename or null if the path is a directory.
      *
-     * @version 1.0.0
+     * @since 1.0.0
      *
      * @return string|null The filename or null if the path is a directory.
      */
@@ -43,7 +45,7 @@ interface AbstractPathInterface extends DataTypeInterface
     /**
      * Returns true if path is absolute, false otherwise.
      *
-     * @version 1.0.0
+     * @since 1.0.0
      *
      * @return bool True if path is absolute, false otherwise.
      */
@@ -52,7 +54,7 @@ interface AbstractPathInterface extends DataTypeInterface
     /**
      * Returns true if path is a directory, false otherwise.
      *
-     * @version 1.0.0
+     * @since 1.0.0
      *
      * @return bool True if path is a directory, false otherwise.
      */
@@ -61,7 +63,7 @@ interface AbstractPathInterface extends DataTypeInterface
     /**
      * Returns true if path is a file, false otherwise.
      *
-     * @version 1.0.0
+     * @since 1.0.0
      *
      * @return bool True if path is a file, false otherwise.
      */
@@ -70,7 +72,7 @@ interface AbstractPathInterface extends DataTypeInterface
     /**
      * Returns true if path is relative, false otherwise.
      *
-     * @version 1.0.0
+     * @since 1.0.0
      *
      * @return bool True if path is relative, false otherwise.
      */

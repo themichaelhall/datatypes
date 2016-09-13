@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * This file is a part of the datatypes package.
+ *
+ * Read more at https://phpdatatypes.com/
+ */
 namespace DataTypes\Base;
 
 use DataTypes\Interfaces\Base\AbstractPathInterface;
@@ -7,10 +11,16 @@ use DataTypes\Interfaces\FilePathInterface;
 
 /**
  * Abstract class representing a path.
+ *
+ * @since 1.0.0
  */
 abstract class AbstractPath implements AbstractPathInterface
 {
     /**
+     * Returns the depth of the path.
+     *
+     * @since 1.0.0
+     *
      * @return int The depth of the path.
      */
     public function getDepth()
@@ -19,6 +29,10 @@ abstract class AbstractPath implements AbstractPathInterface
     }
 
     /**
+     * Returns the directory parts.
+     *
+     * @since 1.0.0
+     *
      * @return string[] The directory parts.
      */
     public function getDirectoryParts()
@@ -27,6 +41,10 @@ abstract class AbstractPath implements AbstractPathInterface
     }
 
     /**
+     * Returns the filename or null if the path is a directory.
+     *
+     * @since 1.0.0
+     *
      * @return string|null The filename or null if the path is a directory.
      */
     public function getFilename()
@@ -35,6 +53,10 @@ abstract class AbstractPath implements AbstractPathInterface
     }
 
     /**
+     * Returns true if path is absolute, false otherwise.
+     *
+     * @since 1.0.0
+     *
      * @return bool True if path is absolute, false otherwise.
      */
     public function isAbsolute()
@@ -43,6 +65,10 @@ abstract class AbstractPath implements AbstractPathInterface
     }
 
     /**
+     * Returns true if path is a directory, false otherwise.
+     *
+     * @since 1.0.0
+     *
      * @return bool True if path is a directory, false otherwise.
      */
     public function isDirectory()
@@ -51,6 +77,10 @@ abstract class AbstractPath implements AbstractPathInterface
     }
 
     /**
+     * Returns true if path is a file, false otherwise.
+     *
+     * @since 1.0.0
+     *
      * @return bool True if path is a file, false otherwise.
      */
     public function isFile()
@@ -59,6 +89,10 @@ abstract class AbstractPath implements AbstractPathInterface
     }
 
     /**
+     * Returns true if path is relative, false otherwise.
+     *
+     * @since 1.0.0
+     *
      * @return bool True if path is relative, false otherwise.
      */
     public function isRelative()
@@ -68,6 +102,8 @@ abstract class AbstractPath implements AbstractPathInterface
 
     /**
      * Returns the path as a string.
+     *
+     * @since 1.0.0
      *
      * @param string $directorySeparator The directory separator.
      *
@@ -87,6 +123,8 @@ abstract class AbstractPath implements AbstractPathInterface
     /**
      * Constructs a path from values.
      *
+     * @since 1.0.0
+     *
      * @param bool        $isAbsolute     If true path is absolute, if false path is relative.
      * @param int         $aboveBaseLevel The number of directory parts above base level.
      * @param string[]    $directoryParts The directory parts.
@@ -103,7 +141,7 @@ abstract class AbstractPath implements AbstractPathInterface
     /**
      * Tries to combine this path with another path.
      *
-     * @version 1.0.0
+     * @since 1.0.0
      *
      * @param FilePathInterface $other          The other path.
      * @param bool|null         $isAbsolute     Whether the path is absolute or relative is combining was successful, undefined otherwise.
@@ -154,6 +192,8 @@ abstract class AbstractPath implements AbstractPathInterface
 
     /**
      * Tries to parse a path and returns the result or error text.
+     *
+     * @since 1.0.0
      *
      * @param string        $directorySeparator The directory separator.
      * @param string        $path               The path.

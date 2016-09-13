@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * This file is a part of the datatypes package.
+ *
+ * Read more at https://phpdatatypes.com/
+ */
 namespace DataTypes;
 
 use DataTypes\Exceptions\HostInvalidArgumentException;
@@ -10,10 +14,16 @@ use DataTypes\Interfaces\IPAddressInterface;
 
 /**
  * Class representing a host.
+ *
+ * @since 1.0.0
  */
 class Host implements HostInterface
 {
     /**
+     * Returns the hostname of the host.
+     *
+     * @since 1.0.0
+     *
      * @return HostnameInterface The hostname of the host.
      */
     public function getHostname()
@@ -35,6 +45,10 @@ class Host implements HostInterface
     }
 
     /**
+     * Returns The IP address of the host or null if the host has no IP address.
+     *
+     * @since 1.0.0
+     *
      * @return IPAddressInterface|null The IP address of the host or null if the host has no IP address.
      */
     public function getIPAddress()
@@ -43,6 +57,10 @@ class Host implements HostInterface
     }
 
     /**
+     * Returns the host as a string.
+     *
+     * @since 1.0.0
+     *
      * @return string The host as a string.
      */
     public function __toString()
@@ -57,6 +75,8 @@ class Host implements HostInterface
     /**
      * Creates a host from a hostname.
      *
+     * @since 1.0.0
+     *
      * @param HostnameInterface $hostname The hostname.
      *
      * @return HostInterface The host.
@@ -69,6 +89,8 @@ class Host implements HostInterface
     /**
      * Creates a host from an IP address.
      *
+     * @since 1.0.0
+     *
      * @param IPAddressInterface $ipAddress
      *
      * @return HostInterface The host.
@@ -80,6 +102,8 @@ class Host implements HostInterface
 
     /**
      * Checks if a host is valid.
+     *
+     * @since 1.0.0
      *
      * @param string $host The host.
      *
@@ -94,6 +118,8 @@ class Host implements HostInterface
 
     /**
      * Parses a host.
+     *
+     * @since 1.0.0
      *
      * @param string $host The host.
      *
@@ -114,6 +140,8 @@ class Host implements HostInterface
 
     /**
      * Parses a host.
+     *
+     * @since 1.0.0
      *
      * @param string $host The host.
      *

@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * This file is a part of the datatypes package.
+ *
+ * Read more at https://phpdatatypes.com/
+ */
 namespace DataTypes;
 
 use DataTypes\Exceptions\HostnameInvalidArgumentException;
@@ -7,10 +11,16 @@ use DataTypes\Interfaces\HostnameInterface;
 
 /**
  * Class representing a hostname.
+ *
+ * @since 1.0.0
  */
 class Hostname implements HostnameInterface
 {
     /**
+     * Returns the domain name including top-level domain.
+     *
+     * @since 1.0.0
+     *
      * @return string The domain name including top-level domain.
      */
     public function getDomainName()
@@ -19,6 +29,10 @@ class Hostname implements HostnameInterface
     }
 
     /**
+     * Returns the domain parts.
+     *
+     * @since 1.0.0
+     *
      * @return string[] The domain parts.
      */
     public function getDomainParts()
@@ -27,6 +41,10 @@ class Hostname implements HostnameInterface
     }
 
     /**
+     * Returns the top-level domain of the hostname if hostname has a top-level domain, null otherwise.
+     *
+     * @since 1.0.0
+     *
      * @return string|null The top-level domain of the hostname if hostname has a top-level domain, null otherwise.
      */
     public function getTld()
@@ -37,11 +55,11 @@ class Hostname implements HostnameInterface
     /**
      * Returns a copy of the Hostname instance with the specified top-level domain.
      *
+     * @since 1.0.0
+     *
      * @param string $tld The top-level domain.
      *
-     * @throws HostnameInvalidArgumentException If the $tld parameter is not a valid top-level domain.
-     *
-     * @return HostnameInterface The Hostname instance.
+     * @return Hostname The Hostname instance.
      */
     public function withTld($tld)
     {
@@ -58,6 +76,10 @@ class Hostname implements HostnameInterface
     }
 
     /**
+     * Returns the hostname as a string.
+     *
+     * @since 1.0.0
+     *
      * @return string The hostname as a string.
      */
     public function __toString()
@@ -67,6 +89,8 @@ class Hostname implements HostnameInterface
 
     /**
      * Creates a hostname from hostname parts.
+     *
+     * @since 1.0.0
      *
      * @param string[]    $domainParts The domain parts.
      * @param string|null $tld         The top level domain or null if no top-level domain should be included.
@@ -104,6 +128,8 @@ class Hostname implements HostnameInterface
     /**
      * Checks if a hostname is valid.
      *
+     * @since 1.0.0
+     *
      * @param string $hostname The hostname.
      *
      * @return bool True if the $hostname parameter is a valid hostname, false otherwise.
@@ -117,6 +143,8 @@ class Hostname implements HostnameInterface
 
     /**
      * Parses a hostname.
+     *
+     * @since 1.0.0
      *
      * @param string $hostname The hostname.
      *
@@ -137,6 +165,8 @@ class Hostname implements HostnameInterface
 
     /**
      * Parses a hostname.
+     *
+     * @since 1.0.0
      *
      * @param string $hostname The hostname.
      *

@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * This file is a part of the datatypes package.
+ *
+ * Read more at https://phpdatatypes.com/
+ */
 namespace DataTypes;
 
 use DataTypes\Exceptions\SchemeInvalidArgumentException;
@@ -7,20 +11,30 @@ use DataTypes\Interfaces\SchemeInterface;
 
 /**
  * Class representing a scheme.
+ *
+ * @since 1.0.0
  */
 class Scheme implements SchemeInterface
 {
     /**
      * Scheme type http.
+     *
+     * @since 1.0.0
      */
     const TYPE_HTTP = 1;
 
     /**
      * Scheme type https.
+     *
+     * @since 1.0.0
      */
     const TYPE_HTTPS = 2;
 
     /**
+     * Returns the default port of the scheme.
+     *
+     * @since 1.0.0
+     *
      * @return int The default port of the scheme.
      */
     public function getDefaultPort()
@@ -29,6 +43,10 @@ class Scheme implements SchemeInterface
     }
 
     /**
+     * Returns the type of the scheme.
+     *
+     * @since 1.0.0
+     *
      * @return int The type of the scheme.
      */
     public function getType()
@@ -37,6 +55,10 @@ class Scheme implements SchemeInterface
     }
 
     /**
+     * Returns true if the scheme is http, false otherwise.
+     *
+     * @since 1.0.0
+     *
      * @return bool True if the scheme is http, false otherwise.
      */
     public function isHttp()
@@ -45,6 +67,10 @@ class Scheme implements SchemeInterface
     }
 
     /**
+     * Returns true if the scheme is https, false otherwise.
+     *
+     * @since 1.0.0
+     *
      * @return bool True if the scheme is https, false otherwise.
      */
     public function isHttps()
@@ -53,6 +79,10 @@ class Scheme implements SchemeInterface
     }
 
     /**
+     * Returns the scheme as a string.
+     *
+     * @since 1.0.0
+     *
      * @return string The scheme as a string.
      */
     public function __toString()
@@ -62,6 +92,8 @@ class Scheme implements SchemeInterface
 
     /**
      * Checks if a scheme is valid.
+     *
+     * @since 1.0.0
      *
      * @param string $scheme The scheme.
      *
@@ -76,6 +108,8 @@ class Scheme implements SchemeInterface
 
     /**
      * Parses a scheme.
+     *
+     * @since 1.0.0
      *
      * @param string $scheme The scheme.
      *
@@ -96,6 +130,8 @@ class Scheme implements SchemeInterface
 
     /**
      * Parses a scheme.
+     *
+     * @since 1.0.0
      *
      * @param string $scheme The scheme.
      *
