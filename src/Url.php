@@ -124,6 +124,45 @@ class Url implements UrlInterface
     }
 
     /**
+     * Creates a url from url parts.
+     *
+     * @since 1.0.0
+     *
+     * @param SchemeInterface  $scheme      The scheme.
+     * @param HostInterface    $host        The host.
+     * @param int|null         $port        The port or null if default port for the scheme should be used.
+     * @param UrlPathInterface $urlPath     The url path.
+     * @param null             $queryString The query string or null if no query string should be used.
+     *
+     * @throws UrlInvalidArgumentException If any of the parameters are invalid.
+     *
+     * @return Url The url.
+     */
+    public static function fromParts(SchemeInterface $scheme, HostInterface $host, $port = null, UrlPathInterface $urlPath, $queryString = null)
+    {
+        assert(is_int($port) || is_null($port), '$port is not an int or null');
+        assert(is_string($queryString) || is_null($queryString), '$queryString is not a string or null');
+
+        if ($port === null) {
+            $port = $scheme->getDefaultPort();
+        }
+
+        // Validate port.
+        if (!self::myValidatePort($port, $error)) {
+            throw new UrlInvalidArgumentException($error);
+        }
+
+        // Url path can not be relative.
+        if ($urlPath->isRelative()) {
+            throw new UrlInvalidArgumentException('Url path "' . $urlPath . '" is relative.');
+        }
+
+        // fixme: Validate $queryString
+
+        return new self($scheme, $host, $port, $urlPath, $queryString);
+    }
+
+    /**
      * Checks if a url is valid.
      *
      * @since 1.0.0
@@ -325,9 +364,7 @@ class Url implements UrlInterface
             $port = intval($hostAndPort[1]);
 
             // Port out of range is invalid.
-            if ($port > 65535) {
-                $error = 'Port "' . $port . '" is out of range: Maximum port number is 65535.';
-
+            if (!self::myValidatePort($port, $error)) {
                 return false;
             }
         }
@@ -399,6 +436,33 @@ class Url implements UrlInterface
         // Empty Url is invalid.
         if ($url === '') {
             $error = 'Url "' . $url . '" is empty.';
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates a port.
+     *
+     * @param int    $port  The port.
+     * @param string $error The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    private static function myValidatePort($port, &$error)
+    {
+        // Port below 0 is invalid.
+        if ($port < 0) {
+            $error = 'Port ' . $port . ' is out of range: Minimum port number is 0.';
+
+            return false;
+        }
+
+        // Port above 65535 is invalid.
+        if ($port > 65535) {
+            $error = 'Port ' . $port . ' is out of range: Maximum port number is 65535.';
 
             return false;
         }

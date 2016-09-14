@@ -3,6 +3,7 @@
 use DataTypes\Host;
 use DataTypes\Scheme;
 use DataTypes\Url;
+use DataTypes\UrlPath;
 
 /**
  * Test Url class.
@@ -158,7 +159,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
      * Test that url with port out of range is invalid.
      *
      * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "http://domain.com:65536" is invalid: Port "65536" is out of range: Maximum port number is 65535.
+     * @expectedExceptionMessage Url "http://domain.com:65536" is invalid: Port 65536 is out of range: Maximum port number is 65535.
      */
     public function testUrlWithPortOutOfRangeIsInvalid()
     {
@@ -194,6 +195,47 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertSame('', Url::parse('http://domain.com/foo?')->getQueryString());
         $this->assertSame('bar=baz', Url::parse('http://domain.com/foo?bar=baz')->getQueryString());
         $this->assertSame('F%7Baz%7D', Url::parse('http://domain.com/foo?F%7Baz%7D')->getQueryString());
+    }
+
+    /**
+     * Test fromParts method.
+     */
+    public function testFromParts()
+    {
+        $this->assertSame('https://www.domain.com:1000/foo/bar?query', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), 1000, UrlPath::parse('/foo/bar'), 'query')->__toString());
+        $this->assertSame('https://www.domain.com/foo/bar?query', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), null, UrlPath::parse('/foo/bar'), 'query')->__toString());
+        $this->assertSame('https://www.domain.com/foo/bar?', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), null, UrlPath::parse('/foo/bar'), '')->__toString());
+        $this->assertSame('https://www.domain.com/foo/bar', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), null, UrlPath::parse('/foo/bar'))->__toString());
+    }
+
+    /**
+     * Test that using fromParts method with port number below 0 is invalid.
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Port -1 is out of range: Minimum port number is 0.
+     */
+    public function testFromPartsWithPortNumberBelow0IsInvalid()
+    {
+        Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), -1, UrlPath::parse('/'));
+    }
+
+    /**
+     * Test that using fromParts method with port number above 65535 is invalid.
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Port 65536 is out of range: Maximum port number is 65535.
+     */
+    public function testFromPartsWithPortNumberAbove65535IsInvalid()
+    {
+        Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), 65536, UrlPath::parse('/'));
+    }
+
+    /**
+     * Test that using fromParts method with relative url path is invalid.
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url path "foo/" is relative.
+     */
+    public function testFromPartsWithRelativeUrlPathIsInvalid()
+    {
+        Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), null, UrlPath::parse('foo/'));
     }
 
     /**
