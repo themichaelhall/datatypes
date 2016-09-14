@@ -210,6 +210,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
 
     /**
      * Test that using fromParts method with port number below 0 is invalid.
+     *
      * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Port -1 is out of range: Minimum port number is 0.
      */
@@ -220,6 +221,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
 
     /**
      * Test that using fromParts method with port number above 65535 is invalid.
+     *
      * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Port 65536 is out of range: Maximum port number is 65535.
      */
@@ -230,6 +232,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
 
     /**
      * Test that using fromParts method with relative url path is invalid.
+     *
      * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url path "foo/" is relative.
      */

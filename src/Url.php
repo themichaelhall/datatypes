@@ -138,7 +138,7 @@ class Url implements UrlInterface
      *
      * @return Url The url.
      */
-    public static function fromParts(SchemeInterface $scheme, HostInterface $host, $port = null, UrlPathInterface $urlPath, $queryString = null)
+    public static function fromParts(SchemeInterface $scheme, HostInterface $host, $port, UrlPathInterface $urlPath, $queryString = null)
     {
         assert(is_int($port) || is_null($port), '$port is not an int or null');
         assert(is_string($queryString) || is_null($queryString), '$queryString is not a string or null');
