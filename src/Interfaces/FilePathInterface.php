@@ -8,14 +8,14 @@ namespace DataTypes\Interfaces;
 
 use DataTypes\Exceptions\FilePathLogicException;
 use DataTypes\FilePath;
-use DataTypes\Interfaces\Base\AbstractPathInterface;
+use DataTypes\Interfaces\Traits\PathTraitInterface;
 
 /**
  * Interface for FilePath class.
  *
  * @since 1.0.0
  */
-interface FilePathInterface extends AbstractPathInterface
+interface FilePathInterface extends PathTraitInterface
 {
     /**
      * Returns the directory of the file path.

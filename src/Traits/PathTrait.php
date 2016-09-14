@@ -4,17 +4,16 @@
  *
  * Read more at https://phpdatatypes.com/
  */
-namespace DataTypes\Base;
+namespace DataTypes\Traits;
 
-use DataTypes\Interfaces\Base\AbstractPathInterface;
-use DataTypes\Interfaces\FilePathInterface;
+use DataTypes\Interfaces\Traits\PathTraitInterface;
 
 /**
- * Abstract class representing a path.
+ * Trait representing a path.
  *
  * @since 1.0.0
  */
-abstract class AbstractPath implements AbstractPathInterface
+trait PathTrait
 {
     /**
      * Returns the depth of the path.
@@ -103,13 +102,11 @@ abstract class AbstractPath implements AbstractPathInterface
     /**
      * Returns the path as a string.
      *
-     * @since 1.0.0
-     *
      * @param string $directorySeparator The directory separator.
      *
      * @return string The path as a string.
      */
-    protected function myToString($directorySeparator)
+    private function myToString($directorySeparator)
     {
         return
             // If above base level (for relative path), append the required number of "../".
@@ -121,38 +118,18 @@ abstract class AbstractPath implements AbstractPathInterface
     }
 
     /**
-     * Constructs a path from values.
-     *
-     * @since 1.0.0
-     *
-     * @param bool        $isAbsolute     If true path is absolute, if false path is relative.
-     * @param int         $aboveBaseLevel The number of directory parts above base level.
-     * @param string[]    $directoryParts The directory parts.
-     * @param string|null $filename       The filename.
-     */
-    protected function __construct($isAbsolute, $aboveBaseLevel, array $directoryParts, $filename = null)
-    {
-        $this->myIsAbsolute = $isAbsolute;
-        $this->myAboveBaseLevel = $aboveBaseLevel;
-        $this->myDirectoryParts = $directoryParts;
-        $this->myFilename = $filename;
-    }
-
-    /**
      * Tries to combine this path with another path.
      *
-     * @since 1.0.0
-     *
-     * @param FilePathInterface $other          The other path.
-     * @param bool|null         $isAbsolute     Whether the path is absolute or relative is combining was successful, undefined otherwise.
-     * @param int|null          $aboveBaseLevel The number of directory parts above base level if combining was successful, undefined otherwise.
-     * @param string[]|null     $directoryParts The directory parts if combining was successful, undefined otherwise.
-     * @param string|null       $filename       The file if combining was not successful, undefined otherwise.
-     * @param string|null       $error          The error text if combining was not successful, undefined otherwise.
+     * @param PathTraitInterface $other          The other path.
+     * @param bool|null          $isAbsolute     Whether the path is absolute or relative is combining was successful, undefined otherwise.
+     * @param int|null           $aboveBaseLevel The number of directory parts above base level if combining was successful, undefined otherwise.
+     * @param string[]|null      $directoryParts The directory parts if combining was successful, undefined otherwise.
+     * @param string|null        $filename       The file if combining was not successful, undefined otherwise.
+     * @param string|null        $error          The error text if combining was not successful, undefined otherwise.
      *
      * @return bool True if combining was successful, false otherwise.
      */
-    protected function myCombine(FilePathInterface $other, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
+    private function myCombine(PathTraitInterface $other, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
     {
         // If other path is absolute, current path is overridden.
         if ($other->isAbsolute()) {
@@ -193,8 +170,6 @@ abstract class AbstractPath implements AbstractPathInterface
     /**
      * Tries to parse a path and returns the result or error text.
      *
-     * @since 1.0.0
-     *
      * @param string        $directorySeparator The directory separator.
      * @param string        $path               The path.
      * @param callable      $partValidator      The part validator.
@@ -206,7 +181,7 @@ abstract class AbstractPath implements AbstractPathInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    protected static function myParse($directorySeparator, $path, callable $partValidator, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
+    private static function myParse($directorySeparator, $path, callable $partValidator, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
     {
         $parts = explode($directorySeparator, $path);
         $partsCount = count($parts);
@@ -279,20 +254,20 @@ abstract class AbstractPath implements AbstractPathInterface
     /**
      * @var int My number of directory parts above base level.
      */
-    protected $myAboveBaseLevel;
+    private $myAboveBaseLevel;
 
     /**
-     * @var string My directory parts.
+     * @var string[] My directory parts.
      */
-    protected $myDirectoryParts;
+    private $myDirectoryParts;
 
     /**
      * @var string|null My filename.
      */
-    protected $myFilename;
+    private $myFilename;
 
     /**
      * @var bool True if path is absolute, false otherwise.
      */
-    protected $myIsAbsolute;
+    private $myIsAbsolute;
 }

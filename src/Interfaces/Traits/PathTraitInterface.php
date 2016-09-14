@@ -4,16 +4,16 @@
  *
  * Read more at https://phpdatatypes.com/
  */
-namespace DataTypes\Interfaces\Base;
+namespace DataTypes\Interfaces\Traits;
 
 use DataTypes\Interfaces\DataTypeInterface;
 
 /**
- * Interface for AbstractPath class.
+ * Interface for PathTrait.
  *
  * @since 1.0.0
  */
-interface AbstractPathInterface extends DataTypeInterface
+interface PathTraitInterface extends DataTypeInterface
 {
     /**
      * Returns the depth of the path.

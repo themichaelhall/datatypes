@@ -6,18 +6,20 @@
  */
 namespace DataTypes;
 
-use DataTypes\Base\AbstractPath;
 use DataTypes\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\Exceptions\FilePathLogicException;
 use DataTypes\Interfaces\FilePathInterface;
+use DataTypes\Traits\PathTrait;
 
 /**
  * Class representing a file path.
  *
  * @since 1.0.0
  */
-class FilePath extends AbstractPath implements FilePathInterface
+class FilePath implements FilePathInterface
 {
+    use PathTrait;
+
     /**
      * Returns the directory of the file path.
      *
@@ -188,7 +190,10 @@ class FilePath extends AbstractPath implements FilePathInterface
      */
     protected function __construct($isAbsolute, $aboveBaseLevel, array $directoryParts, $filename = null)
     {
-        parent::__construct($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+        $this->myIsAbsolute = $isAbsolute;
+        $this->myAboveBaseLevel = $aboveBaseLevel;
+        $this->myDirectoryParts = $directoryParts;
+        $this->myFilename = $filename;
     }
 
     /**
