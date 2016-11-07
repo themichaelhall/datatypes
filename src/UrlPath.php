@@ -91,16 +91,9 @@ class UrlPath implements UrlPathInterface
      */
     public function __toString()
     {
-        // fixme: Use myToString from PathTrait
-        return
-            // If above base level (for relative url path), append the required number of "../".
-            ($this->myAboveBaseLevel > 0 ? str_repeat('../', $this->myAboveBaseLevel) : '') .
-            // Directory parts.
-            ($this->myIsAbsolute ? '/' : '') . implode('/', array_map(function ($directoryPart) {
-                return rawurlencode($directoryPart);
-            }, $this->myDirectoryParts)) . (count($this->myDirectoryParts) > 0 ? '/' : '') .
-            // File part.
-            ($this->myFilename !== null ? rawurlencode($this->myFilename) : '');
+        return $this->myToString('/', function ($s) {
+            return rawurlencode($s);
+        });
     }
 
     /**

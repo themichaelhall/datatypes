@@ -59,6 +59,8 @@ class Hostname implements HostnameInterface
      *
      * @param string $tld The top-level domain.
      *
+     * @throws HostnameInvalidArgumentException If the top-level domain parameter is not a valid top-level domain.
+     *
      * @return Hostname The Hostname instance.
      */
     public function withTld($tld)

@@ -102,19 +102,33 @@ trait PathTrait
     /**
      * Returns the path as a string.
      *
-     * @param string $directorySeparator The directory separator.
+     * @param string        $directorySeparator The directory separator.
+     * @param callable|null $stringEncoder      A string encoding function or null if parts should not be encoded.
      *
      * @return string The path as a string.
      */
-    private function myToString($directorySeparator)
+    private function myToString($directorySeparator, callable $stringEncoder = null)
     {
-        return
-            // If above base level (for relative path), append the required number of "../".
-            ($this->myAboveBaseLevel > 0 ? str_repeat('..' . DIRECTORY_SEPARATOR, $this->myAboveBaseLevel) : '') .
-            // Directory parts.
-            ($this->myIsAbsolute ? $directorySeparator : '') . implode($directorySeparator, $this->myDirectoryParts) . (count($this->myDirectoryParts) > 0 ? $directorySeparator : '') .
-            // File part.
-            ($this->myFilename !== null ? $this->myFilename : '');
+        // If above base level (for relative path), append the required number of "../".
+        $result = $this->myAboveBaseLevel > 0 ? str_repeat('..' . $directorySeparator, $this->myAboveBaseLevel) : '';
+
+        // Directory parts.
+        $result .= $this->myIsAbsolute ? $directorySeparator : '';
+        if ($stringEncoder !== null) {
+            $result .= implode($directorySeparator, array_map($stringEncoder, $this->myDirectoryParts));
+        } else {
+            $result .= implode($directorySeparator, $this->myDirectoryParts);
+        }
+        $result .= count($this->myDirectoryParts) > 0 ? $directorySeparator : '';
+
+        // File part.
+        if ($stringEncoder !== null) {
+            $result .= ($this->myFilename !== null ? $stringEncoder($this->myFilename) : '');
+        } else {
+            $result .= ($this->myFilename !== null ? $this->myFilename : '');
+        }
+
+        return $result;
     }
 
     /**
