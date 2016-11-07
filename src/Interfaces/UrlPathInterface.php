@@ -6,22 +6,16 @@
  */
 namespace DataTypes\Interfaces;
 
+use DataTypes\Exceptions\UrlPathLogicException;
+use DataTypes\Interfaces\Traits\PathTraitInterface;
+
 /**
  * Interface for UrlPath class.
  *
  * @since 1.0.0
  */
-interface UrlPathInterface extends DataTypeInterface
+interface UrlPathInterface extends PathTraitInterface
 {
-    /**
-     * Returns the depth of the url path.
-     *
-     * @since 1.0.0
-     *
-     * @return int The depth of the url path.
-     */
-    public function getDepth();
-
     /**
      * Returns the directory of the url path.
      *
@@ -30,60 +24,6 @@ interface UrlPathInterface extends DataTypeInterface
      * @return UrlPathInterface The directory of the url path.
      */
     public function getDirectory();
-
-    /**
-     * Returns the directory parts of the url path.
-     *
-     * @since 1.0.0
-     *
-     * @return string[] The directory parts.
-     */
-    public function getDirectoryParts();
-
-    /**
-     * Returns the filename or null if the url path is a directory.
-     *
-     * @since 1.0.0
-     *
-     * @return string|null The filename or null if the url path is a directory.
-     */
-    public function getFilename();
-
-    /**
-     * Returns true if url path is absolute, false otherwise.
-     *
-     * @since 1.0.0
-     *
-     * @return bool True if url path is absolute, false otherwise.
-     */
-    public function isAbsolute();
-
-    /**
-     * Returns true if url path is a directory, false otherwise.
-     *
-     * @since 1.0.0
-     *
-     * @return bool True if url path is a directory, false otherwise.
-     */
-    public function isDirectory();
-
-    /**
-     * Returns true if url path is a file, false otherwise.
-     *
-     * @since 1.0.0
-     *
-     * @return bool True if url path is a file, false otherwise.
-     */
-    public function isFile();
-
-    /**
-     * Return true if url path is relative, false otherwise.
-     *
-     * @since 1.0.0
-     *
-     * @return bool True if url path is relative, false otherwise.
-     */
-    public function isRelative();
 
     /**
      * Returns the url path as a absolute path.
@@ -109,6 +49,8 @@ interface UrlPathInterface extends DataTypeInterface
      * @since 1.0.0
      *
      * @param UrlPathInterface $urlPath The other url path.
+     *
+     * @throws UrlPathLogicException if the url paths could not be combined.
      *
      * @return UrlPathInterface The combined url path.
      */

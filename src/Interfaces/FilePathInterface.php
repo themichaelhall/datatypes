@@ -7,7 +7,6 @@
 namespace DataTypes\Interfaces;
 
 use DataTypes\Exceptions\FilePathLogicException;
-use DataTypes\FilePath;
 use DataTypes\Interfaces\Traits\PathTraitInterface;
 
 /**
@@ -22,18 +21,9 @@ interface FilePathInterface extends PathTraitInterface
      *
      * @since 1.0.0
      *
-     * @return FilePath The directory of the file path.
+     * @return FilePathInterface The directory of the file path.
      */
     public function getDirectory();
-
-    /**
-     * Returns the file path as a relative path.
-     *
-     * @since 1.0.0
-     *
-     * @return FilePath The file path as a relative path.
-     */
-    public function toRelative();
 
     /**
      * Returns the file path as an absolute path.
@@ -42,9 +32,18 @@ interface FilePathInterface extends PathTraitInterface
      *
      * @throws FilePathLogicException if the file path could not be made absolute.
      *
-     * @return FilePath The file path as an absolute path.
+     * @return FilePathInterface The file path as an absolute path.
      */
     public function toAbsolute();
+
+    /**
+     * Returns the file path as a relative path.
+     *
+     * @since 1.0.0
+     *
+     * @return FilePathInterface The file path as a relative path.
+     */
+    public function toRelative();
 
     /**
      * Returns a copy of the file path combined with another file path.
@@ -55,7 +54,7 @@ interface FilePathInterface extends PathTraitInterface
      *
      * @throws FilePathLogicException if the file paths could not be combined.
      *
-     * @return FilePath The combined file path.
+     * @return FilePathInterface The combined file path.
      */
     public function withFilePath(FilePathInterface $filePath);
 }

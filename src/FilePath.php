@@ -33,18 +33,6 @@ class FilePath implements FilePathInterface
     }
 
     /**
-     * Returns the file path as a relative path.
-     *
-     * @since 1.0.0
-     *
-     * @return FilePath The file path as a relative path.
-     */
-    public function toRelative()
-    {
-        return new self(false, $this->myAboveBaseLevel, $this->myDirectoryParts, $this->myFilename);
-    }
-
-    /**
      * Returns the file path as an absolute path.
      *
      * @since 1.0.0
@@ -60,6 +48,18 @@ class FilePath implements FilePathInterface
         }
 
         return new self(true, $this->myAboveBaseLevel, $this->myDirectoryParts, $this->myFilename);
+    }
+
+    /**
+     * Returns the file path as a relative path.
+     *
+     * @since 1.0.0
+     *
+     * @return FilePath The file path as a relative path.
+     */
+    public function toRelative()
+    {
+        return new self(false, $this->myAboveBaseLevel, $this->myDirectoryParts, $this->myFilename);
     }
 
     /**
