@@ -188,7 +188,7 @@ class FilePath implements FilePathInterface
      * @param string[]    $directoryParts The directory parts.
      * @param string|null $filename       The filename.
      */
-    protected function __construct($isAbsolute, $aboveBaseLevel, array $directoryParts, $filename = null)
+    private function __construct($isAbsolute, $aboveBaseLevel, array $directoryParts, $filename = null)
     {
         $this->myIsAbsolute = $isAbsolute;
         $this->myAboveBaseLevel = $aboveBaseLevel;

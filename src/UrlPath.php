@@ -107,10 +107,14 @@ class UrlPath implements UrlPathInterface
      */
     public static function isValid($urlPath)
     {
-        // fixme: use myParse from PathTrait
         assert(is_string($urlPath), '$urlPath is not a string');
 
-        return static::myParse($urlPath);
+        return self::myParse(
+            '/',
+            $urlPath,
+            function ($p, $d, &$e) {
+                return self::myPartValidator($p, $d, $e);
+            });
     }
 
     /**
@@ -129,7 +133,7 @@ class UrlPath implements UrlPathInterface
         // fixme: use myParse from PathTrait
         assert(is_string($urlPath), '$urlPath is not a string');
 
-        if (!static::myParse($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+        if (!static::myParse2($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
             throw new UrlPathInvalidArgumentException($error);
         }
 
@@ -150,7 +154,7 @@ class UrlPath implements UrlPathInterface
         // fixme: use myParse from PathTrait
         assert(is_string($urlPath), '$urlPath is not a string');
 
-        if (!static::myParse($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+        if (!static::myParse2($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
             return null;
         }
 
@@ -185,7 +189,7 @@ class UrlPath implements UrlPathInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($urlPath, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
+    private static function myParse2($urlPath, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
     {
         $parts = explode('/', str_replace('\\', '/', $urlPath));
         $partsCount = count($parts);
@@ -291,6 +295,24 @@ class UrlPath implements UrlPathInterface
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]%-]/', $filename, $matches)) {
             $error = 'Filename "' . $filename . '" contains invalid character "' . $matches[0] . '".';
 
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates a directory part name or a file name.
+     *
+     * @param string $part        The part to validate.
+     * @param bool   $isDirectory If true part is a directory part name, if false part is a file name.
+     * @param string $error       The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    private static function myPartValidator($part, $isDirectory, &$error)
+    {
+        if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]%-]/', $part, $matches)) {
             return false;
         }
 
