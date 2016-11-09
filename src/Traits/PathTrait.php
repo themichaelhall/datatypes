@@ -103,7 +103,7 @@ trait PathTrait
      * Returns the path as a string.
      *
      * @param string        $directorySeparator The directory separator.
-     * @param callable|null $stringEncoder      A string encoding function or null if parts should not be encoded.
+     * @param callable|null $stringEncoder      The string encoding function or null if parts should not be encoded.
      *
      * @return string The path as a string.
      */
@@ -187,6 +187,7 @@ trait PathTrait
      * @param string        $directorySeparator The directory separator.
      * @param string        $path               The path.
      * @param callable      $partValidator      The part validator.
+     * @param callable      $stringDecoder      The string decoding function or null if parts should not be decoded.
      * @param bool|null     $isAbsolute         Whether the path is absolute or relative is parsing was successful, undefined otherwise.
      * @param int|null      $aboveBaseLevel     The number of directory parts above base level if parsing was successful, undefined otherwise.
      * @param string[]|null $directoryParts     The directory parts if parsing was successful, undefined otherwise.
@@ -195,7 +196,7 @@ trait PathTrait
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($directorySeparator, $path, callable $partValidator, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
+    private static function myParse($directorySeparator, $path, callable $partValidator, callable $stringDecoder = null, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
     {
         $parts = explode($directorySeparator, $path);
         $partsCount = count($parts);
@@ -250,12 +251,20 @@ trait PathTrait
                         return false;
                     }
 
+                    if ($stringDecoder !== null) {
+                        $part = $stringDecoder($part);
+                    }
+
                     $filename = $part;
                 }
             } else {
                 // This is a directory part.
                 if (!$partValidator($part, true, $error)) {
                     return false;
+                }
+
+                if ($stringDecoder !== null) {
+                    $part = $stringDecoder($part);
                 }
 
                 $directoryParts[] = $part;

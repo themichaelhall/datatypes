@@ -151,10 +151,22 @@ class UrlPath implements UrlPathInterface
      */
     public static function tryParse($urlPath)
     {
-        // fixme: use myParse from PathTrait
         assert(is_string($urlPath), '$urlPath is not a string');
 
-        if (!static::myParse2($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+        if (!self::myParse(
+            '/',
+            $urlPath,
+            function ($p, $d, &$e) {
+                return self::myPartValidator($p, $d, $e);
+            },
+            function ($s) {
+                return rawurldecode($s);
+            },
+            $isAbsolute,
+            $aboveBaseLevel,
+            $directoryParts,
+            $filename)
+        ) {
             return null;
         }
 

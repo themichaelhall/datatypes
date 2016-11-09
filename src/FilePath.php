@@ -136,6 +136,7 @@ class FilePath implements FilePathInterface
             function ($p, $d, &$e) {
                 return self::myPartValidator($p, $d, $e);
             },
+            null,
             $isAbsolute,
             $aboveBaseLevel,
             $directoryParts,
@@ -167,6 +168,7 @@ class FilePath implements FilePathInterface
             function ($p, $d, &$e) {
                 return self::myPartValidator($p, $d, $e);
             },
+            null,
             $isAbsolute,
             $aboveBaseLevel,
             $directoryParts,

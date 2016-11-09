@@ -155,6 +155,7 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertSame('foo/bar/baz.html', UrlPath::tryParse('foo/bar/baz.html')->__toString());
         $this->assertNull(UrlPath::tryParse('/foo/{bar}/'));
         $this->assertNull(UrlPath::tryParse('/foo/../../'));
+        $this->assertSame('/path%3F%21/file%3F%21', UrlPath::tryParse('/path%3f!/file%3f!')->__toString());
     }
 
     /**
