@@ -103,7 +103,7 @@ class Scheme implements SchemeInterface
     {
         assert(is_string($scheme), '$scheme is not a string');
 
-        return static::myParse($scheme, true);
+        return self::myParse($scheme, true);
     }
 
     /**
@@ -121,7 +121,7 @@ class Scheme implements SchemeInterface
     {
         assert(is_string($scheme), '$scheme is not a string');
 
-        if (!static::myParse($scheme, false, $result, $type, $defaultPort, $error)) {
+        if (!self::myParse($scheme, false, $result, $type, $defaultPort, $error)) {
             throw new SchemeInvalidArgumentException($error);
         }
 
@@ -141,7 +141,7 @@ class Scheme implements SchemeInterface
     {
         assert(is_string($scheme), '$scheme is not a string');
 
-        if (!static::myParse($scheme, false, $result, $type, $defaultPort)) {
+        if (!self::myParse($scheme, false, $result, $type, $defaultPort)) {
             return null;
         }
 
@@ -177,14 +177,14 @@ class Scheme implements SchemeInterface
     private static function myParse($scheme, $validateOnly, &$result = null, &$type = null, &$defaultPort = null, &$error = null)
     {
         // Pre-validate scheme.
-        if (!static::myPreValidate($scheme, $error)) {
+        if (!self::myPreValidate($scheme, $error)) {
             return false;
         }
 
         $result = strtolower($scheme);
 
         // Not existing scheme is invalid.
-        if (!isset(static::$mySchemes[$result])) {
+        if (!isset(self::$mySchemes[$result])) {
             $error = 'Scheme "' . $scheme . '" is invalid: Scheme must be "http" or "https"';
 
             return false;
@@ -192,7 +192,7 @@ class Scheme implements SchemeInterface
 
         // Save the result.
         if (!$validateOnly) {
-            $schemeInfo = static::$mySchemes[$result];
+            $schemeInfo = self::$mySchemes[$result];
             $type = $schemeInfo[0];
             $defaultPort = $schemeInfo[1];
         }

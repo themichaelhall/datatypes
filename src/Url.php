@@ -89,7 +89,7 @@ class Url implements UrlInterface
      *
      * @param HostInterface $host The host.
      *
-     * @return Url The Url instance.
+     * @return UrlInterface The Url instance.
      */
     public function withHost(HostInterface $host)
     {
@@ -104,7 +104,7 @@ class Url implements UrlInterface
      * @param SchemeInterface $scheme          The scheme.
      * @param bool            $keepDefaultPort If true, port is changed to the schemes default port if port is current schemes default port, if false port is not changed.
      *
-     * @return Url The Url instance.
+     * @return UrlInterface The Url instance.
      */
     public function withScheme(SchemeInterface $scheme, $keepDefaultPort = true)
     {
@@ -136,7 +136,7 @@ class Url implements UrlInterface
      *
      * @throws UrlInvalidArgumentException If any of the parameters are invalid.
      *
-     * @return Url The url.
+     * @return UrlInterface The url.
      */
     public static function fromParts(SchemeInterface $scheme, HostInterface $host, $port, UrlPathInterface $urlPath, $queryString = null)
     {
@@ -175,7 +175,7 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        return static::myParse($url, true);
+        return self::myParse($url, true);
     }
 
     /**
@@ -193,7 +193,7 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        if (!static::myParse($url, false, $scheme, $host, $port, $path, $queryString, $error)) {
+        if (!self::myParse($url, false, $scheme, $host, $port, $path, $queryString, $error)) {
             throw new UrlInvalidArgumentException($error);
         }
 
@@ -213,7 +213,7 @@ class Url implements UrlInterface
     {
         assert(is_string($url), '$url is not a string');
 
-        if (!static::myParse($url, false, $scheme, $host, $port, $path, $queryString)) {
+        if (!self::myParse($url, false, $scheme, $host, $port, $path, $queryString)) {
             return null;
         }
 
@@ -255,21 +255,21 @@ class Url implements UrlInterface
     private static function myParse($url, $validateOnly, SchemeInterface &$scheme = null, HostInterface &$host = null, &$port = null, UrlPathInterface &$path = null, &$queryString = null, &$error = null)
     {
         // Pre-validate Url.
-        if (!static::myPreValidate($url, $error)) {
+        if (!self::myPreValidate($url, $error)) {
             return false;
         }
 
         $parsedUrl = $url;
 
         // Parse scheme.
-        if (!static::myParseScheme($parsedUrl, $validateOnly, $scheme, $error)) {
+        if (!self::myParseScheme($parsedUrl, $validateOnly, $scheme, $error)) {
             $error = 'Url "' . $url . '" is invalid: ' . $error;
 
             return false;
         }
 
         // Parse host and port.
-        if (!static::myParseHostAndPort($parsedUrl, $validateOnly, $host, $port, $error)) {
+        if (!self::myParseHostAndPort($parsedUrl, $validateOnly, $host, $port, $error)) {
             $error = 'Url "' . $url . '" is invalid: ' . $error;
 
             return false;
@@ -283,7 +283,7 @@ class Url implements UrlInterface
         // fixme: User
         // fixme: Password
 
-        if (!static::myParsePath($parsedUrl, $validateOnly, $path, $queryString, $error)) {
+        if (!self::myParsePath($parsedUrl, $validateOnly, $path, $queryString, $error)) {
             $error = 'Url "' . $url . '" is invalid: ' . $error;
 
             return false;

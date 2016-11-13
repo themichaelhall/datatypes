@@ -53,7 +53,7 @@ class IPAddress implements IPAddressInterface
     {
         assert(is_string($ipAddress), '$ipAddress is not a string');
 
-        return static::myParse($ipAddress, true);
+        return self::myParse($ipAddress, true);
     }
 
     /**
@@ -71,7 +71,7 @@ class IPAddress implements IPAddressInterface
     {
         assert(is_string($ipAddress), '$ipAddress is not a string');
 
-        if (!static::myParse($ipAddress, false, $octets, $error)) {
+        if (!self::myParse($ipAddress, false, $octets, $error)) {
             throw new IPAddressInvalidArgumentException($error);
         }
 
@@ -91,7 +91,7 @@ class IPAddress implements IPAddressInterface
     {
         assert(is_string($ipAddress), '$ipAddress is not a string');
 
-        if (!static::myParse($ipAddress, false, $octets)) {
+        if (!self::myParse($ipAddress, false, $octets)) {
             return null;
         }
 
@@ -121,7 +121,7 @@ class IPAddress implements IPAddressInterface
     private static function myParse($ipAddress, $validateOnly, array &$octets = null, &$error = null)
     {
         // Pre-validate IP address.
-        if (!static::myPreValidate($ipAddress, $error)) {
+        if (!self::myPreValidate($ipAddress, $error)) {
             return false;
         }
 
@@ -138,7 +138,7 @@ class IPAddress implements IPAddressInterface
         // Validate the parts.
         $octets = [];
         foreach ($ipAddressParts as $ipAddressPart) {
-            if (!static::myValidateIpAddressPart($ipAddressPart, $octet, $error)) {
+            if (!self::myValidateIpAddressPart($ipAddressPart, $octet, $error)) {
                 $error = 'IP address "' . $ipAddress . '" is invalid: ' . $error;
 
                 return false;

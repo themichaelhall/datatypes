@@ -61,18 +61,18 @@ class Hostname implements HostnameInterface
      *
      * @throws HostnameInvalidArgumentException If the top-level domain parameter is not a valid top-level domain.
      *
-     * @return Hostname The Hostname instance.
+     * @return HostnameInterface The Hostname instance.
      */
     public function withTld($tld)
     {
         assert(is_string($tld), '$tld is not a string');
 
-        if (!static::myValidateTld($tld, $error)) {
+        if (!self::myValidateTld($tld, $error)) {
             throw new HostnameInvalidArgumentException($error);
         }
 
         // Normalize top-level domain.
-        static::myNormalizeTld($tld);
+        self::myNormalizeTld($tld);
 
         return new self($this->myDomainParts, $tld);
     }
@@ -111,18 +111,18 @@ class Hostname implements HostnameInterface
         }
 
         // Validate the domain parts.
-        if (!static::myValidateDomainParts($domainParts, $error)) {
+        if (!self::myValidateDomainParts($domainParts, $error)) {
             throw new HostnameInvalidArgumentException('Domain parts ["' . implode('", "', $domainParts) . '"] is invalid: ' . $error);
         }
 
         // Validate top-level domain.
-        if (!static::myValidateTld($tld, $error)) {
+        if (!self::myValidateTld($tld, $error)) {
             throw new HostnameInvalidArgumentException($error);
         }
 
         // Normalize parts.
-        static::myNormalizeDomainParts($domainParts);
-        static::myNormalizeTld($tld);
+        self::myNormalizeDomainParts($domainParts);
+        self::myNormalizeTld($tld);
 
         return new self($domainParts, $tld);
     }
@@ -140,7 +140,7 @@ class Hostname implements HostnameInterface
     {
         assert(is_string($hostname), '$hostname is not a string');
 
-        return static::myParse($hostname, true);
+        return self::myParse($hostname, true);
     }
 
     /**
@@ -158,7 +158,7 @@ class Hostname implements HostnameInterface
     {
         assert(is_string($hostname), '$hostname is not a string');
 
-        if (!static::myParse($hostname, false, $domainParts, $tld, $error)) {
+        if (!self::myParse($hostname, false, $domainParts, $tld, $error)) {
             throw new HostnameInvalidArgumentException($error);
         }
 
@@ -178,7 +178,7 @@ class Hostname implements HostnameInterface
     {
         assert(is_string($hostname), '$hostname is not a string');
 
-        if (!static::myParse($hostname, false, $domainParts, $tld)) {
+        if (!self::myParse($hostname, false, $domainParts, $tld)) {
             return null;
         }
 
@@ -211,7 +211,7 @@ class Hostname implements HostnameInterface
     private static function myParse($hostname, $validateOnly, array &$domainParts = null, &$tld = null, &$error = null)
     {
         // Pre-validate hostname.
-        if (!static::myPreValidate($hostname, $error)) {
+        if (!self::myPreValidate($hostname, $error)) {
             return false;
         }
 
@@ -225,7 +225,7 @@ class Hostname implements HostnameInterface
         $tld = count($domainParts) > 1 ? array_pop($domainParts) : null;
 
         if ($tld !== null) {
-            if (!static::myValidateTld($tld, $error)) {
+            if (!self::myValidateTld($tld, $error)) {
                 $error = 'Hostname "' . $hostname . '" is invalid: ' . $error;
 
                 return false;
@@ -233,7 +233,7 @@ class Hostname implements HostnameInterface
         }
 
         // Validate the domain parts.
-        if (!static::myValidateDomainParts($domainParts, $error)) {
+        if (!self::myValidateDomainParts($domainParts, $error)) {
             $error = 'Hostname "' . $hostname . '" is invalid: ' . $error;
 
             return false;
@@ -241,8 +241,8 @@ class Hostname implements HostnameInterface
 
         if (!$validateOnly) {
             // Normalize result.
-            static::myNormalizeDomainParts($domainParts);
-            static::myNormalizeTld($tld);
+            self::myNormalizeDomainParts($domainParts);
+            self::myNormalizeTld($tld);
         }
 
         return true;
@@ -320,7 +320,7 @@ class Hostname implements HostnameInterface
     private static function myValidateDomainParts(array $domainParts, &$error)
     {
         foreach ($domainParts as $part) {
-            if (!static::myValidateDomainPart($part, $error)) {
+            if (!self::myValidateDomainPart($part, $error)) {
                 return false;
             }
         }

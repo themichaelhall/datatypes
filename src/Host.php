@@ -113,7 +113,7 @@ class Host implements HostInterface
     {
         assert(is_string($host), '$host is not a string');
 
-        return static::myParse($host, true);
+        return self::myParse($host, true);
     }
 
     /**
@@ -131,7 +131,7 @@ class Host implements HostInterface
     {
         assert(is_string($host), '$host is not a string');
 
-        if (!static::myParse($host, false, $hostname, $ipAddress, $error)) {
+        if (!self::myParse($host, false, $hostname, $ipAddress, $error)) {
             throw new HostInvalidArgumentException($error);
         }
 
@@ -151,7 +151,7 @@ class Host implements HostInterface
     {
         assert(is_string($host), '$host is not a string');
 
-        if (!static::myParse($host, false, $hostname, $ipAddress)) {
+        if (!self::myParse($host, false, $hostname, $ipAddress)) {
             return null;
         }
 
@@ -184,7 +184,7 @@ class Host implements HostInterface
     private static function myParse($host, $validateOnly, HostnameInterface &$hostname = null, IPAddressInterface &$ipAddress = null, &$error = null)
     {
         // Pre-validate host.
-        if (!static::myPreValidate($host, $error)) {
+        if (!self::myPreValidate($host, $error)) {
             return false;
         }
 
