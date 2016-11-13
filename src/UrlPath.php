@@ -25,7 +25,7 @@ class UrlPath implements UrlPathInterface
      *
      * @since 1.0.0
      *
-     * @return UrlPath The directory of the url path.
+     * @return UrlPathInterface The directory of the url path.
      */
     public function getDirectory()
     {
@@ -39,7 +39,7 @@ class UrlPath implements UrlPathInterface
      *
      * @throws UrlPathLogicException if the url path could not be made absolute.
      *
-     * @return UrlPath The url path as an absolute path.
+     * @return UrlPathInterface The url path as an absolute path.
      */
     public function toAbsolute()
     {
@@ -55,7 +55,7 @@ class UrlPath implements UrlPathInterface
      *
      * @since 1.0.0
      *
-     * @return UrlPath The url path as a relative path.
+     * @return UrlPathInterface The url path as a relative path.
      */
     public function toRelative()
     {
@@ -71,7 +71,7 @@ class UrlPath implements UrlPathInterface
      *
      * @throws UrlPathLogicException if the url paths could not be combined.
      *
-     * @return UrlPath The combined url path.
+     * @return UrlPathInterface The combined url path.
      */
     public function withUrlPath(UrlPathInterface $urlPath)
     {
@@ -130,11 +130,24 @@ class UrlPath implements UrlPathInterface
      */
     public static function parse($urlPath)
     {
-        // fixme: use myParse from PathTrait
         assert(is_string($urlPath), '$urlPath is not a string');
 
-        if (!static::myParse2($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
-            throw new UrlPathInvalidArgumentException($error);
+        if (!self::myParse(
+            '/',
+            $urlPath,
+            function ($p, $d, &$e) {
+                return self::myPartValidator($p, $d, $e);
+            },
+            function ($s) {
+                return rawurldecode($s);
+            },
+            $isAbsolute,
+            $aboveBaseLevel,
+            $directoryParts,
+            $filename,
+            $error)
+        ) {
+            throw new UrlPathInvalidArgumentException($error = 'Url path "' . $urlPath . '" is invalid: ' . $error);
         }
 
         return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
@@ -190,130 +203,6 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
-     * Tries to parse an url path and returns the result or error text.
-     *
-     * @param string        $urlPath        The url path.
-     * @param bool|null     $isAbsolute     Whether the path is absolute or relative is parsing was successful, undefined otherwise.
-     * @param int|null      $aboveBaseLevel The number of directory parts above base level if parsing was successful, undefined otherwise.
-     * @param string[]|null $directoryParts The directory parts if parsing was successful, undefined otherwise.
-     * @param string|null   $filename       The file if parsing was not successful, undefined otherwise.
-     * @param string|null   $error          The error text if parsing was not successful, undefined otherwise.
-     *
-     * @return bool True if parsing was successful, false otherwise.
-     */
-    private static function myParse2($urlPath, &$isAbsolute = null, &$aboveBaseLevel = null, array &$directoryParts = null, &$filename = null, &$error = null)
-    {
-        $parts = explode('/', str_replace('\\', '/', $urlPath));
-        $partsCount = count($parts);
-
-        $directoryParts = [];
-        $filename = null;
-        $isAbsolute = false;
-        $aboveBaseLevel = 0;
-
-        // Parse the directories
-        for ($i = 0; $i < $partsCount; ++$i) {
-            $part = $parts[$i];
-
-            // If the first part is empty and other parts follow, the path begins with "/" and is therefore absolute.
-            if ($i === 0 && $part === '' && $partsCount > 1) {
-                $isAbsolute = true;
-
-                continue;
-            }
-
-            // If part is empty, the path contains "//" and should be skipped.
-            if ($part === '') {
-                continue;
-            }
-
-            // Handle "current directory"-part.
-            if ($part === '.') {
-                continue;
-            }
-
-            // Handle "parent directory"-part.
-            if ($part === '..') {
-                if (count($directoryParts) === 0) {
-                    if ($isAbsolute) {
-                        $error = 'Url path "' . $urlPath . '" is invalid: Absolute path is above root level.';
-
-                        return false;
-                    }
-
-                    ++$aboveBaseLevel;
-                } else {
-                    array_pop($directoryParts);
-                }
-
-                continue;
-            }
-
-            if ($i === $partsCount - 1) {
-                // This is the last part (i.e. the filename part).
-                if ($part !== '') {
-                    if (!static::myValidateFilename($part, $error)) {
-                        $error = 'Url path "' . $urlPath . '" is invalid: ' . $error;
-
-                        return false;
-                    }
-
-                    $filename = rawurldecode($part);
-                }
-            } else {
-                // This is a directory part.
-                if (!static::myValidateDirectoryPart($part, $error)) {
-                    $error = 'Url path "' . $urlPath . '" is invalid: ' . $error;
-
-                    return false;
-                }
-
-                $directoryParts[] = rawurldecode($part);
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Validates a directory part.
-     *
-     * @param string      $directoryPart The directory part.
-     * @param string|null $error         The error text if validation was not successful, undefined otherwise.
-     *
-     * @return bool True if validation was successful, false otherwise.
-     */
-    private static function myValidateDirectoryPart($directoryPart, &$error = null)
-    {
-        if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]%-]/', $directoryPart, $matches)) {
-            $error = 'Part of directory "' . $directoryPart . '" contains invalid character "' . $matches[0] . '".';
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Validates a filename.
-     *
-     * @param string      $filename The filename.
-     * @param string|null $error    The error text if validation was not successful, undefined otherwise.
-     *
-     * @return bool True if validation was successful, false otherwise.
-     */
-    private static function myValidateFilename($filename, &$error = null)
-    {
-        if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]%-]/', $filename, $matches)) {
-            $error = 'Filename "' . $filename . '" contains invalid character "' . $matches[0] . '".';
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Validates a directory part name or a file name.
      *
      * @param string $part        The part to validate.
@@ -325,6 +214,8 @@ class UrlPath implements UrlPathInterface
     private static function myPartValidator($part, $isDirectory, &$error)
     {
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]%-]/', $part, $matches)) {
+            $error = ($isDirectory ? 'Part of directory' : 'Filename') . ' "' . $part . '" contains invalid character "' . $matches[0] . '".';
+
             return false;
         }
 
