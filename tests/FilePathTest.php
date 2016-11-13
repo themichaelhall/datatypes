@@ -4,6 +4,8 @@ use DataTypes\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\Exceptions\FilePathLogicException;
 use DataTypes\FilePath;
 
+require_once __DIR__ . '/Helpers/Fakes/FakePhpUname.php';
+
 /**
  * Test FilePath class.
  */
@@ -137,6 +139,39 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test that path with invalid windows character in directory is invalid in windows.
+     */
+    public function testPathWithInvalidWindowsCharacterInDirectoryIsInvalidInWindows()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
+
+        $DS = DIRECTORY_SEPARATOR;
+        $exceptionMessage = '';
+
+        try {
+            FilePath::parse($DS . 'foo' . $DS . '<bar' . $DS);
+        } catch (FilePathInvalidArgumentException $e) {
+            $exceptionMessage = $e->getMessage();
+        }
+
+        $this->assertSame('File path "' . $DS . 'foo' . $DS . '<bar' . $DS . '" is invalid: Part of directory "<bar" contains invalid character "<".', $exceptionMessage);
+    }
+
+    /**
+     * Test that path with invalid windows character in directory is valid on other operations systems.
+     */
+    public function testPathWithInvalidWindowsCharacterInDirectoryIsValidInOther()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Other');
+
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame($DS . 'foo' . $DS . '<bar' . $DS, FilePath::parse($DS . 'foo' . $DS . '<bar' . $DS)->__toString());
+    }
+
+    /**
      * Test that file path with invalid character in filename is invalid.
      */
     public function testPathWithInvalidCharacterInFilenameIsInvalid()
@@ -151,6 +186,39 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         }
 
         $this->assertSame('File path "' . $DS . 'foo' . $DS . "\0" . 'bar" is invalid: Filename "' . "\0" . 'bar" contains invalid character "' . "\0" . '".', $exceptionMessage);
+    }
+
+    /**
+     * Test that path with invalid windows character in filename is invalid in windows.
+     */
+    public function testPathWithInvalidWindowsCharacterInFilenameIsInvalidInWindows()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
+
+        $DS = DIRECTORY_SEPARATOR;
+        $exceptionMessage = '';
+
+        try {
+            FilePath::parse($DS . 'foo' . $DS . ':bar');
+        } catch (FilePathInvalidArgumentException $e) {
+            $exceptionMessage = $e->getMessage();
+        }
+
+        $this->assertSame('File path "' . $DS . 'foo' . $DS . ':bar" is invalid: Filename ":bar" contains invalid character ":".', $exceptionMessage);
+    }
+
+    /**
+     * Test that path with invalid windows character in filename is valid on other operations systems.
+     */
+    public function testPathWithInvalidWindowsCharacterInFilenameIsValidInOther()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Other');
+
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame($DS . 'foo' . $DS . '<bar' . $DS, FilePath::parse($DS . 'foo' . $DS . '<bar' . $DS)->__toString());
     }
 
     /**
@@ -370,5 +438,13 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         }
 
         $this->assertSame('File path "' . $DS . 'foo' . $DS . 'bar' . $DS . '" can not be combined with file path "..' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS . 'file": Absolute path is above root level.', $exceptionMessage);
+    }
+
+    /**
+     * Tear down.
+     */
+    public function tearDown()
+    {
+        FakePhpUname::disable();
     }
 }

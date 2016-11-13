@@ -25,7 +25,7 @@ class FilePath implements FilePathInterface
      *
      * @since 1.0.0
      *
-     * @return FilePath The directory of the file path.
+     * @return FilePathInterface The directory of the file path.
      */
     public function getDirectory()
     {
@@ -39,7 +39,7 @@ class FilePath implements FilePathInterface
      *
      * @throws FilePathLogicException if the file path could not be made absolute.
      *
-     * @return FilePath The file path as an absolute path.
+     * @return FilePathInterface The file path as an absolute path.
      */
     public function toAbsolute()
     {
@@ -55,7 +55,7 @@ class FilePath implements FilePathInterface
      *
      * @since 1.0.0
      *
-     * @return FilePath The file path as a relative path.
+     * @return FilePathInterface The file path as a relative path.
      */
     public function toRelative()
     {
@@ -71,7 +71,7 @@ class FilePath implements FilePathInterface
      *
      * @throws FilePathLogicException if the file paths could not be combined.
      *
-     * @return FilePath The combined file path.
+     * @return FilePathInterface The combined file path.
      */
     public function withFilePath(FilePathInterface $filePath)
     {
@@ -124,7 +124,7 @@ class FilePath implements FilePathInterface
      *
      * @throws FilePathInvalidArgumentException If the $filePath parameter is not a valid file path.
      *
-     * @return FilePath The file path instance.
+     * @return FilePathInterface The file path instance.
      */
     public static function parse($filePath)
     {
@@ -156,7 +156,7 @@ class FilePath implements FilePathInterface
      *
      * @param string $filePath The file path.
      *
-     * @return FilePath|null The file path instance if the $filePath parameter is a valid file path, null otherwise.
+     * @return FilePathInterface|null The file path instance if the $filePath parameter is a valid file path, null otherwise.
      */
     public static function tryParse($filePath)
     {
@@ -209,21 +209,22 @@ class FilePath implements FilePathInterface
      */
     private static function myPartValidator($part, $isDirectory, &$error)
     {
-        // fixme: More specific validation depending on the operating system.
-        if ($isDirectory) {
-            if (preg_match('/[\0]+/', $part, $matches)) {
-                $error = 'Part of directory "' . $part . '" contains invalid character "' . $matches[0] . '".';
+        if (preg_match(self::myIsWindows() ? '/[\0<>:*?"|]+/' : '/[\0]+/', $part, $matches)) {
+            $error = ($isDirectory ? 'Part of directory' : 'Filename') . ' "' . $part . '" contains invalid character "' . $matches[0] . '".';
 
-                return false;
-            }
-        } else {
-            if (preg_match('/[\0]+/', $part, $matches)) {
-                $error = 'Filename "' . $part . '" contains invalid character "' . $matches[0] . '".';
-
-                return false;
-            }
+            return false;
         }
 
         return true;
+    }
+
+    /**
+     * Returns true if the operating system is windows, false otherwise.
+     *
+     * @return bool True if the operating system is windows, false otherwise.
+     */
+    private static function myIsWindows()
+    {
+        return strtolower(substr(php_uname('s'), 0, 7)) === 'windows';
     }
 }
