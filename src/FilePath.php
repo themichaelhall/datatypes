@@ -247,7 +247,7 @@ class FilePath implements FilePathInterface
 
         return self::myParse(
             $directorySeparator,
-            $path,
+            DIRECTORY_SEPARATOR !== '\'' ? str_replace('/', DIRECTORY_SEPARATOR, $path) : $path,
             $partValidator,
             $stringDecoder,
             $isAbsolute,

@@ -479,6 +479,20 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test that forward slash is always a valid directory separator.
+     */
+    public function testForwardSlashIsAlwaysDirectorySeparator()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $filePath = FilePath::parse('/foo/bar/baz');
+
+        $this->assertSame(['foo', 'bar'], $filePath->getDirectoryParts());
+        $this->assertSame('baz', $filePath->getFilename());
+        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz', $filePath->__toString());
+    }
+
+    /**
      * Tear down.
      */
     public function tearDown()
