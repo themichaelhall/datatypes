@@ -200,12 +200,12 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $exceptionMessage = '';
 
         try {
-            FilePath::parse($DS . 'foo' . $DS . ':bar');
+            FilePath::parse($DS . 'foo' . $DS . '|bar');
         } catch (FilePathInvalidArgumentException $e) {
             $exceptionMessage = $e->getMessage();
         }
 
-        $this->assertSame('File path "' . $DS . 'foo' . $DS . ':bar" is invalid: Filename ":bar" contains invalid character ":".', $exceptionMessage);
+        $this->assertSame('File path "' . $DS . 'foo' . $DS . '|bar" is invalid: Filename "|bar" contains invalid character "|".', $exceptionMessage);
     }
 
     /**
@@ -218,7 +218,7 @@ class FilePathTest extends PHPUnit_Framework_TestCase
 
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame($DS . 'foo' . $DS . '<bar' . $DS, FilePath::parse($DS . 'foo' . $DS . '<bar' . $DS)->__toString());
+        $this->assertSame($DS . 'foo' . $DS . '|bar' . $DS, FilePath::parse($DS . 'foo' . $DS . '|bar' . $DS)->__toString());
     }
 
     /**
@@ -438,6 +438,44 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         }
 
         $this->assertSame('File path "' . $DS . 'foo' . $DS . 'bar' . $DS . '" can not be combined with file path "..' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS . 'file": Absolute path is above root level.', $exceptionMessage);
+    }
+
+    /**
+     * Test parse a file path with volume in windows.
+     */
+    public function testParseWithVolumeInWindows()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
+
+        $DS = DIRECTORY_SEPARATOR;
+
+        $filePath = FilePath::parse('C:' . $DS . 'path' . $DS . 'file');
+
+        $this->assertSame('C', $filePath->getDrive());
+        $this->assertSame(['path'], $filePath->getDirectoryParts());
+        $this->assertSame('file', $filePath->getFilename());
+        $this->assertSame('C:' . $DS . 'path' . $DS . 'file', $filePath->__toString());
+        $this->assertTrue($filePath->isAbsolute());
+    }
+
+    /**
+     * Test parse a file path with volume in other operating systems.
+     */
+    public function testParseWithVolumeInOther()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Other');
+
+        $DS = DIRECTORY_SEPARATOR;
+
+        $filePath = FilePath::parse('C:' . $DS . 'path' . $DS . 'file');
+
+        $this->assertNull($filePath->getDrive());
+        $this->assertSame(['C:', 'path'], $filePath->getDirectoryParts());
+        $this->assertSame('file', $filePath->getFilename());
+        $this->assertSame('C:' . $DS . 'path' . $DS . 'file', $filePath->__toString());
+        $this->assertFalse($filePath->isAbsolute());
     }
 
     /**

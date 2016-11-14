@@ -26,6 +26,15 @@ interface FilePathInterface extends PathTraitInterface
     public function getDirectory();
 
     /**
+     * Returns the drive of the file path or null if no drive is present or supported.
+     *
+     * @since 1.0.0
+     *
+     * @return string|null The drive of the file path or null if no drive is present or supported.
+     */
+    public function getDrive();
+
+    /**
      * Returns the file path as an absolute path.
      *
      * @since 1.0.0
