@@ -526,6 +526,23 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test withFilePath method for paths that contains drives.
+     */
+    public function testWithFilePathWithDriveInFilePath()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
+
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame('C:' . $DS . 'baz', FilePath::parse('foo' . $DS . 'bar')->withFilePath(FilePath::parse('C:' . $DS . 'baz'))->__toString());
+        $this->assertSame('C:' . $DS . 'baz', FilePath::parse($DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse('C:' . $DS . 'baz'))->__toString());
+        $this->assertSame('C:' . $DS . 'foo' . $DS . 'baz', FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse('baz'))->__toString());
+        $this->assertSame('C:' . $DS . 'baz', FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse($DS . 'baz'))->__toString());
+        $this->assertSame('D:' . $DS . 'baz', FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse('D:' . $DS . 'baz'))->__toString());
+    }
+
+    /**
      * Tear down.
      */
     public function tearDown()
