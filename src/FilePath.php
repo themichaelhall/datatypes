@@ -140,7 +140,7 @@ class FilePath implements FilePathInterface
      * @param string $filePath The file path.
      *
      * @throws FilePathInvalidArgumentException If the $filePath parameter is not a valid file path.
-     * @throws \InvalidArgumentException If the $filePath parameter is not a string.
+     * @throws \InvalidArgumentException        If the $filePath parameter is not a string.
      *
      * @return FilePathInterface The file path instance.
      */

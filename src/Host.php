@@ -128,7 +128,7 @@ class Host implements HostInterface
      * @param string $host The host.
      *
      * @throws HostInvalidArgumentException If the $host parameter is not a valid host.
-     * @throws \InvalidArgumentException If the $host parameter is not a string.
+     * @throws \InvalidArgumentException    If the $host parameter is not a string.
      *
      * @return HostInterface The Host instance.
      */

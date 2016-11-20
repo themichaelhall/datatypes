@@ -117,7 +117,7 @@ class Scheme implements SchemeInterface
      *
      * @param string $scheme The scheme.
      *
-     * @throws \InvalidArgumentException If the $scheme parameter is not a string.
+     * @throws \InvalidArgumentException      If the $scheme parameter is not a string.
      * @throws SchemeInvalidArgumentException If the $scheme parameter is not a valid scheme.
      *
      * @return SchemeInterface The Scheme instance.

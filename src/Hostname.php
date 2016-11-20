@@ -60,7 +60,7 @@ class Hostname implements HostnameInterface
      * @param string $tld The top-level domain.
      *
      * @throws HostnameInvalidArgumentException If the top-level domain parameter is not a valid top-level domain.
-     * @throws \InvalidArgumentException If the $tld parameter is not a string.
+     * @throws \InvalidArgumentException        If the $tld parameter is not a string.
      *
      * @return HostnameInterface The Hostname instance.
      */
@@ -101,7 +101,7 @@ class Hostname implements HostnameInterface
      * @param string|null $tld         The top level domain or null if no top-level domain should be included.
      *
      * @throws HostnameInvalidArgumentException If any of the parameters are invalid.
-     * @throws \InvalidArgumentException If any of the parameters are of invalid type.
+     * @throws \InvalidArgumentException        If any of the parameters are of invalid type.
      *
      * @return HostnameInterface The hostname instance.
      */
@@ -161,7 +161,7 @@ class Hostname implements HostnameInterface
      * @param string $hostname The hostname.
      *
      * @throws HostnameInvalidArgumentException If the $hostname parameter is not a valid hostname.
-     * @throws \InvalidArgumentException If the $hostname parameter is not a string.
+     * @throws \InvalidArgumentException        If the $hostname parameter is not a string.
      *
      * @return HostnameInterface The Hostname instance.
      */

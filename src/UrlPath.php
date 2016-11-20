@@ -129,7 +129,7 @@ class UrlPath implements UrlPathInterface
      * @param string $urlPath The url path.
      *
      * @throws UrlPathInvalidArgumentException If the $urlPath parameter is not a valid url path.
-     * @throws \InvalidArgumentException If the $urlPath parameter is not a string.
+     * @throws \InvalidArgumentException       If the $urlPath parameter is not a string.
      *
      * @return UrlPathInterface The url path instance.
      */

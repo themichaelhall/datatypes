@@ -67,7 +67,7 @@ class IPAddress implements IPAddressInterface
      *
      * @param string $ipAddress The IP address.
      *
-     * @throws \InvalidArgumentException If the $ipAddress parameter is not a string.
+     * @throws \InvalidArgumentException         If the $ipAddress parameter is not a string.
      * @throws IPAddressInvalidArgumentException If the $ipAddress parameter is not a valid IP address.
      *
      * @return IPAddressInterface The IPAddress instance.

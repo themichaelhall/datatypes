@@ -134,7 +134,7 @@ class Url implements UrlInterface
      * @param UrlPathInterface $urlPath     The url path.
      * @param null             $queryString The query string or null if no query string should be used.
      *
-     * @throws \InvalidArgumentException If any of the parameters are of invalid type.
+     * @throws \InvalidArgumentException   If any of the parameters are of invalid type.
      * @throws UrlInvalidArgumentException If any of the parameters are invalid.
      *
      * @return UrlInterface The url.
@@ -195,7 +195,7 @@ class Url implements UrlInterface
      *
      * @param string $url The url.
      *
-     * @throws \InvalidArgumentException If the $url parameter is not a string.
+     * @throws \InvalidArgumentException   If the $url parameter is not a string.
      * @throws UrlInvalidArgumentException If the $url parameter is not a valid url.
      *
      * @return UrlInterface The Url instance.
