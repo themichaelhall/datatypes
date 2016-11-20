@@ -134,14 +134,20 @@ class Url implements UrlInterface
      * @param UrlPathInterface $urlPath     The url path.
      * @param null             $queryString The query string or null if no query string should be used.
      *
+     * @throws \InvalidArgumentException If any of the parameters are of invalid type.
      * @throws UrlInvalidArgumentException If any of the parameters are invalid.
      *
      * @return UrlInterface The url.
      */
     public static function fromParts(SchemeInterface $scheme, HostInterface $host, $port, UrlPathInterface $urlPath, $queryString = null)
     {
-        assert(is_int($port) || is_null($port), '$port is not an int or null');
-        assert(is_string($queryString) || is_null($queryString), '$queryString is not a string or null');
+        if (!is_int($port) && !is_null($port)) {
+            throw new \InvalidArgumentException('$port parameter is not an integer or null.');
+        }
+
+        if (!is_string($queryString) && !is_null($queryString)) {
+            throw new \InvalidArgumentException('$queryString parameter is not a string or null.');
+        }
 
         if ($port === null) {
             $port = $scheme->getDefaultPort();
@@ -169,11 +175,15 @@ class Url implements UrlInterface
      *
      * @param string $url The url.
      *
+     * @throws \InvalidArgumentException If the $url parameter is not a string.
+     *
      * @return bool True if the $url parameter is a valid url, false otherwise.
      */
     public static function isValid($url)
     {
-        assert(is_string($url), '$url is not a string');
+        if (!is_string($url)) {
+            throw new \InvalidArgumentException('$url parameter is not a string.');
+        }
 
         return self::myParse($url, true);
     }
@@ -185,13 +195,16 @@ class Url implements UrlInterface
      *
      * @param string $url The url.
      *
+     * @throws \InvalidArgumentException If the $url parameter is not a string.
      * @throws UrlInvalidArgumentException If the $url parameter is not a valid url.
      *
      * @return UrlInterface The Url instance.
      */
     public static function parse($url)
     {
-        assert(is_string($url), '$url is not a string');
+        if (!is_string($url)) {
+            throw new \InvalidArgumentException('$url parameter is not a string.');
+        }
 
         if (!self::myParse($url, false, $scheme, $host, $port, $path, $queryString, $error)) {
             throw new UrlInvalidArgumentException($error);
@@ -207,11 +220,15 @@ class Url implements UrlInterface
      *
      * @param string $url The url.
      *
+     * @throws \InvalidArgumentException If the $url parameter is not a string.
+     *
      * @return UrlInterface|null The Url instance if the $url parameter is a valid url, null otherwise.
      */
     public static function tryParse($url)
     {
-        assert(is_string($url), '$url is not a string');
+        if (!is_string($url)) {
+            throw new \InvalidArgumentException('$url parameter is not a string.');
+        }
 
         if (!self::myParse($url, false, $scheme, $host, $port, $path, $queryString)) {
             return null;

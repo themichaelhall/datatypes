@@ -107,11 +107,15 @@ class Host implements HostInterface
      *
      * @param string $host The host.
      *
+     * @throws \InvalidArgumentException If the $host parameter is not a string.
+     *
      * @return bool True if the $host parameter is a valid host, false otherwise.
      */
     public static function isValid($host)
     {
-        assert(is_string($host), '$host is not a string');
+        if (!is_string($host)) {
+            throw new \InvalidArgumentException('$host parameter is not a string.');
+        }
 
         return self::myParse($host, true);
     }
@@ -124,12 +128,15 @@ class Host implements HostInterface
      * @param string $host The host.
      *
      * @throws HostInvalidArgumentException If the $host parameter is not a valid host.
+     * @throws \InvalidArgumentException If the $host parameter is not a string.
      *
      * @return HostInterface The Host instance.
      */
     public static function parse($host)
     {
-        assert(is_string($host), '$host is not a string');
+        if (!is_string($host)) {
+            throw new \InvalidArgumentException('$host parameter is not a string.');
+        }
 
         if (!self::myParse($host, false, $hostname, $ipAddress, $error)) {
             throw new HostInvalidArgumentException($error);
@@ -145,11 +152,15 @@ class Host implements HostInterface
      *
      * @param string $host The host.
      *
+     * @throws \InvalidArgumentException If the $host parameter is not a string.
+     *
      * @return HostInterface The Host instance if the $host parameter is a valid host, null otherwise.
      */
     public static function tryParse($host)
     {
-        assert(is_string($host), '$host is not a string');
+        if (!is_string($host)) {
+            throw new \InvalidArgumentException('$host parameter is not a string.');
+        }
 
         if (!self::myParse($host, false, $hostname, $ipAddress)) {
             return null;

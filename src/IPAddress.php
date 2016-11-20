@@ -47,11 +47,15 @@ class IPAddress implements IPAddressInterface
      *
      * @param string $ipAddress The IP address.
      *
+     * @throws \InvalidArgumentException If the $ipAddress parameter is not a string.
+     *
      * @return bool True if the $ipAddress parameter is a valid IP address, false otherwise.
      */
     public static function isValid($ipAddress)
     {
-        assert(is_string($ipAddress), '$ipAddress is not a string');
+        if (!is_string($ipAddress)) {
+            throw new \InvalidArgumentException('$ipAddress parameter is not a string.');
+        }
 
         return self::myParse($ipAddress, true);
     }
@@ -63,13 +67,16 @@ class IPAddress implements IPAddressInterface
      *
      * @param string $ipAddress The IP address.
      *
+     * @throws \InvalidArgumentException If the $ipAddress parameter is not a string.
      * @throws IPAddressInvalidArgumentException If the $ipAddress parameter is not a valid IP address.
      *
      * @return IPAddressInterface The IPAddress instance.
      */
     public static function parse($ipAddress)
     {
-        assert(is_string($ipAddress), '$ipAddress is not a string');
+        if (!is_string($ipAddress)) {
+            throw new \InvalidArgumentException('$ipAddress parameter is not a string.');
+        }
 
         if (!self::myParse($ipAddress, false, $octets, $error)) {
             throw new IPAddressInvalidArgumentException($error);
@@ -85,11 +92,15 @@ class IPAddress implements IPAddressInterface
      *
      * @param string $ipAddress The IP address.
      *
+     * @throws \InvalidArgumentException If the $ipAddress parameter is not a string.
+     *
      * @return IPAddressInterface|null The IPAddress instance if the $ipAddress parameter is a valid IP address, null otherwise.
      */
     public static function tryParse($ipAddress)
     {
-        assert(is_string($ipAddress), '$ipAddress is not a string');
+        if (!is_string($ipAddress)) {
+            throw new \InvalidArgumentException('$ipAddress parameter is not a string.');
+        }
 
         if (!self::myParse($ipAddress, false, $octets)) {
             return null;

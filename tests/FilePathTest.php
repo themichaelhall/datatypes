@@ -239,6 +239,17 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $filePath parameter is not a string.
+     */
+    public function testParseWithInvalidArgumentType()
+    {
+        FilePath::parse(1.0);
+    }
+
+    /**
      * Test tryParse method.
      */
     public function testTryParse()
@@ -252,6 +263,17 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test tryParse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $filePath parameter is not a string.
+     */
+    public function testTryParseWithInvalidArgumentType()
+    {
+        FilePath::tryParse(false);
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -262,6 +284,17 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(FilePath::isValid('foo' . $DS . 'bar' . $DS . 'baz.html'));
         $this->assertFalse(FilePath::isValid($DS . 'foo' . "\0" . 'bar' . $DS));
         $this->assertFalse(FilePath::isValid($DS . 'foo' . $DS . '..' . $DS . '..' . $DS));
+    }
+
+    /**
+     * Test isValid method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $filePath parameter is not a string.
+     */
+    public function testIsValidWithInvalidArgumentType()
+    {
+        FilePath::isValid(1234);
     }
 
     /**

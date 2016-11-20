@@ -72,6 +72,17 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $ipAddress parameter is not a string.
+     */
+    public function testParseWithInvalidArgumentType()
+    {
+        IPAddress::parse(1.0);
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -86,6 +97,17 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test isValid method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $ipAddress parameter is not a string.
+     */
+    public function testIsValidWithInvalidArgumentType()
+    {
+        IPAddress::isValid(false);
+    }
+
+    /**
      * Test tryParse method.
      */
     public function testTryParse()
@@ -97,6 +119,17 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
         $this->assertNull(IPAddress::tryParse('yyy.123.234.1'));
         $this->assertSame('0.0.0.0', IPAddress::tryParse('0.0.0.0')->__toString());
         $this->assertSame('255.255.255.255', IPAddress::tryParse('255.255.255.255')->__toString());
+    }
+
+    /**
+     * Test tryParse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $ipAddress parameter is not a string.
+     */
+    public function testTryParseWithInvalidArgumentType()
+    {
+        IPAddress::tryParse([192, 168, 1, 1]);
     }
 
     /**

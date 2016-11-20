@@ -163,6 +163,17 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $hostname parameter is not a string.
+     */
+    public function testParseWithInvalidArgumentType()
+    {
+        Hostname::parse(1.234);
+    }
+
+    /**
      * Test getTld method.
      */
     public function testGetTld()
@@ -200,6 +211,17 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test isValid method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $hostname parameter is not a string.
+     */
+    public function testIsValidWithInvalidArgumentType()
+    {
+        Hostname::isValid(true);
+    }
+
+    /**
      * Test tryParse method.
      */
     public function testTryParse()
@@ -214,6 +236,17 @@ class HostnameTest extends PHPUnit_Framework_TestCase
         $this->assertNull(Hostname::tryParse('foo.[bar].org'));
         $this->assertNull(Hostname::tryParse('[foo].bar.org'));
         $this->assertNull(Hostname::tryParse('foo.bar..'));
+    }
+
+    /**
+     * Test tryParse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $hostname parameter is not a string.
+     */
+    public function testTryParseWithInvalidArgumentType()
+    {
+        Hostname::tryParse(false);
     }
 
     /**
@@ -236,6 +269,17 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     public function testWithTldWithInvalidTopDomainLevelIsInvalid()
     {
         Hostname::parse('domain.com')->withTld('123');
+    }
+
+    /**
+     * Test withTld method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $tld parameter is not a string.
+     */
+    public function testWithTldWithInvalidArgumentType()
+    {
+        Hostname::parse('domain.com')->withTld(123);
     }
 
     /**
@@ -290,5 +334,27 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     public function testFromPartsWithInvalidTopLevelDomainIsInvalid()
     {
         Hostname::fromParts(['foo'], 'c*m');
+    }
+
+    /**
+     * Test fromParts method with invalid argument type for top-level domain parameter.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $tld parameter is not a string or null.
+     */
+    public function testFromPartsWithInvalidTldArgumentType()
+    {
+        Hostname::fromParts(['foo'], ['bar']);
+    }
+
+    /**
+     * Test fromParts method with invalid argument type for domain part.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $domainParts parameter is not an array of strings.
+     */
+    public function testFromPartsWithInvalidDomainPartArgumentType()
+    {
+        Hostname::fromParts(['foo', 98765], 'bar');
     }
 }

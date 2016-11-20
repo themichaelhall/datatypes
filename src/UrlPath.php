@@ -103,11 +103,15 @@ class UrlPath implements UrlPathInterface
      *
      * @param string $urlPath The url path.
      *
+     * @throws \InvalidArgumentException If the $urlPath parameter is not a string.
+     *
      * @return bool True if the $urlPath parameter is a valid url path, false otherwise.
      */
     public static function isValid($urlPath)
     {
-        assert(is_string($urlPath), '$urlPath is not a string');
+        if (!is_string($urlPath)) {
+            throw new \InvalidArgumentException('$urlPath parameter is not a string.');
+        }
 
         return self::myParse(
             '/',
@@ -125,12 +129,15 @@ class UrlPath implements UrlPathInterface
      * @param string $urlPath The url path.
      *
      * @throws UrlPathInvalidArgumentException If the $urlPath parameter is not a valid url path.
+     * @throws \InvalidArgumentException If the $urlPath parameter is not a string.
      *
      * @return UrlPathInterface The url path instance.
      */
     public static function parse($urlPath)
     {
-        assert(is_string($urlPath), '$urlPath is not a string');
+        if (!is_string($urlPath)) {
+            throw new \InvalidArgumentException('$urlPath parameter is not a string.');
+        }
 
         if (!self::myParse(
             '/',
@@ -160,11 +167,15 @@ class UrlPath implements UrlPathInterface
      *
      * @param string $urlPath The url path.
      *
+     * @throws \InvalidArgumentException If the $urlPath parameter is not a string.
+     *
      * @return UrlPathInterface|null The url path instance if the $urlPath parameter is a valid url path, null otherwise.
      */
     public static function tryParse($urlPath)
     {
-        assert(is_string($urlPath), '$urlPath is not a string');
+        if (!is_string($urlPath)) {
+            throw new \InvalidArgumentException('$urlPath parameter is not a string.');
+        }
 
         if (!self::myParse(
             '/',

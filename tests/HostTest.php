@@ -31,6 +31,17 @@ class HostTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $host parameter is not a string.
+     */
+    public function testParseWithInvalidArgumentType()
+    {
+        Host::parse(12345);
+    }
+
+    /**
      * Test tryParse method.
      */
     public function testTryParse()
@@ -42,6 +53,17 @@ class HostTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test tryParse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $host parameter is not a string.
+     */
+    public function testTryParseWithInvalidArgumentType()
+    {
+        Host::tryParse(true);
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -50,6 +72,17 @@ class HostTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(Host::isValid('domain.com'));
         $this->assertTrue(Host::isValid('1.2.3.4'));
         $this->assertFalse(Host::isValid('*'));
+    }
+
+    /**
+     * Test isValid method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $host parameter is not a string.
+     */
+    public function testIsValidWithInvalidArgumentType()
+    {
+        Host::isValid(['foo', 'bar']);
     }
 
     /**

@@ -39,6 +39,17 @@ class SchemeTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $scheme parameter is not a string.
+     */
+    public function testParseWithInvalidArgumentType()
+    {
+        Scheme::parse(['https']);
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -51,6 +62,17 @@ class SchemeTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test isValid method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $scheme parameter is not a string.
+     */
+    public function testIsValidWithInvalidArgumentType()
+    {
+        Scheme::isValid(true);
+    }
+
+    /**
      * Test tryParse method.
      */
     public function testTryParse()
@@ -60,6 +82,17 @@ class SchemeTest extends PHPUnit_Framework_TestCase
         $this->assertSame('http', Scheme::tryParse('http')->__toString());
         $this->assertSame('https', Scheme::tryParse('https')->__toString());
         $this->assertSame('https', Scheme::tryParse('HTTPS')->__toString());
+    }
+
+    /**
+     * Test tryParse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $scheme parameter is not a string.
+     */
+    public function testTryParseWithInvalidArgumentType()
+    {
+        Scheme::tryParse(1.2);
     }
 
     /**

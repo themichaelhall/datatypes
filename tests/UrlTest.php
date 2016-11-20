@@ -187,6 +187,17 @@ class UrlTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $url parameter is not a string.
+     */
+    public function testParseWithInvalidArgumentType()
+    {
+        Url::parse(true);
+    }
+
+    /**
      * Test getQueryString method.
      */
     public function testGetQueryString()
@@ -242,6 +253,28 @@ class UrlTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test fromParts method with invalid port argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $port parameter is not an integer or null.
+     */
+    public function testFromPartsWithInvalidPortArgumentType()
+    {
+        Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), '80', UrlPath::parse('/'));
+    }
+
+    /**
+     * Test fromParts method with invalid query string argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $queryString parameter is not a string or null.
+     */
+    public function testFromPartsWithInvalidQueryStringArgumentType()
+    {
+        Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), null, UrlPath::parse('/'), ['foo']);
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -259,6 +292,17 @@ class UrlTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test isValid method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $url parameter is not a string.
+     */
+    public function testIsValidWithInvalidArgumentType()
+    {
+        Url::isValid([]);
+    }
+
+    /**
      * Test tryParse method.
      */
     public function testTryParse()
@@ -273,5 +317,16 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertNull(Url::tryParse('http://domain.com:1234/{foo}'));
         $this->assertSame('http://domain.com/foo?bar', Url::tryParse('http://domain.com/foo?bar')->__toString());
         // fixme: More tests
+    }
+
+    /**
+     * Test tryParse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $url parameter is not a string.
+     */
+    public function testTryParseWithInvalidArgumentType()
+    {
+        Url::tryParse(67890);
     }
 }

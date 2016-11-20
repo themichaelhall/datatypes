@@ -147,6 +147,17 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $urlPath parameter is not a string.
+     */
+    public function testParseWithInvalidArgumentType()
+    {
+        UrlPath::parse(1.0);
+    }
+
+    /**
      * Test tryParse method.
      */
     public function testTryParse()
@@ -159,6 +170,17 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test tryParse method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $urlPath parameter is not a string.
+     */
+    public function testTryParseWithInvalidArgumentType()
+    {
+        UrlPath::tryParse(true);
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -167,6 +189,17 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(UrlPath::isValid('foo/bar/baz.html'));
         $this->assertFalse(UrlPath::isValid('/foo/{bar}/'));
         $this->assertFalse(UrlPath::isValid('/foo/../../'));
+    }
+
+    /**
+     * Test isValid method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $urlPath parameter is not a string.
+     */
+    public function testIsValidWithInvalidArgumentType()
+    {
+        UrlPath::isValid(42);
     }
 
     /**

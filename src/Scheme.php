@@ -97,11 +97,15 @@ class Scheme implements SchemeInterface
      *
      * @param string $scheme The scheme.
      *
+     * @throws \InvalidArgumentException If the $scheme parameter is not a string.
+     *
      * @return bool True if the $scheme parameter is a valid scheme, false otherwise.
      */
     public static function isValid($scheme)
     {
-        assert(is_string($scheme), '$scheme is not a string');
+        if (!is_string($scheme)) {
+            throw new \InvalidArgumentException('$scheme parameter is not a string.');
+        }
 
         return self::myParse($scheme, true);
     }
@@ -113,13 +117,16 @@ class Scheme implements SchemeInterface
      *
      * @param string $scheme The scheme.
      *
+     * @throws \InvalidArgumentException If the $scheme parameter is not a string.
      * @throws SchemeInvalidArgumentException If the $scheme parameter is not a valid scheme.
      *
      * @return SchemeInterface The Scheme instance.
      */
     public static function parse($scheme)
     {
-        assert(is_string($scheme), '$scheme is not a string');
+        if (!is_string($scheme)) {
+            throw new \InvalidArgumentException('$scheme parameter is not a string.');
+        }
 
         if (!self::myParse($scheme, false, $result, $type, $defaultPort, $error)) {
             throw new SchemeInvalidArgumentException($error);
@@ -135,11 +142,15 @@ class Scheme implements SchemeInterface
      *
      * @param string $scheme The scheme.
      *
+     * @throws \InvalidArgumentException If the $scheme parameter is not a string.
+     *
      * @return SchemeInterface|null The Scheme instance if the $scheme parameter is a valid scheme, null otherwise.
      */
     public static function tryParse($scheme)
     {
-        assert(is_string($scheme), '$scheme is not a string');
+        if (!is_string($scheme)) {
+            throw new \InvalidArgumentException('$scheme parameter is not a string.');
+        }
 
         if (!self::myParse($scheme, false, $result, $type, $defaultPort)) {
             return null;

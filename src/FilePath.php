@@ -114,11 +114,15 @@ class FilePath implements FilePathInterface
      *
      * @param string $filePath The file path.
      *
+     * @throws \InvalidArgumentException If the $filePath parameter is not a string.
+     *
      * @return bool True if the $filePath parameter is a valid file path, false otherwise.
      */
     public static function isValid($filePath)
     {
-        assert(is_string($filePath), '$filePath is not a string');
+        if (!is_string($filePath)) {
+            throw new \InvalidArgumentException('$filePath parameter is not a string.');
+        }
 
         return self::myFilePathParse(
             DIRECTORY_SEPARATOR,
@@ -136,12 +140,15 @@ class FilePath implements FilePathInterface
      * @param string $filePath The file path.
      *
      * @throws FilePathInvalidArgumentException If the $filePath parameter is not a valid file path.
+     * @throws \InvalidArgumentException If the $filePath parameter is not a string.
      *
      * @return FilePathInterface The file path instance.
      */
     public static function parse($filePath)
     {
-        assert(is_string($filePath), '$filePath is not a string');
+        if (!is_string($filePath)) {
+            throw new \InvalidArgumentException('$filePath parameter is not a string.');
+        }
 
         if (!self::myFilePathParse(
             DIRECTORY_SEPARATOR,
@@ -170,11 +177,15 @@ class FilePath implements FilePathInterface
      *
      * @param string $filePath The file path.
      *
+     * @throws \InvalidArgumentException If the $filePath parameter is not a string.
+     *
      * @return FilePathInterface|null The file path instance if the $filePath parameter is a valid file path, null otherwise.
      */
     public static function tryParse($filePath)
     {
-        assert(is_string($filePath), '$filePath is not a string');
+        if (!is_string($filePath)) {
+            throw new \InvalidArgumentException('$filePath parameter is not a string.');
+        }
 
         if (!self::myFilePathParse(
             DIRECTORY_SEPARATOR,
