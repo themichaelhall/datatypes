@@ -390,6 +390,20 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test toRelative method with FilePath with drive.
+     */
+    public function testToRelativeWithDrive()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
+
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame('', FilePath::parse('C:' . $DS)->toRelative()->__toString());
+        $this->assertSame('foo' . $DS . 'bar', FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->toRelative()->__toString());
+    }
+
+    /**
      * Test toAbsolute method.
      */
     public function testToAbsolute()

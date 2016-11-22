@@ -71,7 +71,7 @@ class FilePath implements FilePathInterface
      */
     public function toRelative()
     {
-        return new self(false, $this->myAboveBaseLevel, null, $this->myDirectoryParts, $this->myFilename); // fixme: Test an absolute path with drive.
+        return new self(false, $this->myAboveBaseLevel, null, $this->myDirectoryParts, $this->myFilename);
     }
 
     /**
