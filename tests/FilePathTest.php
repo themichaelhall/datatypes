@@ -526,6 +526,26 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parse a file path with drive and relative path is invalid.
+     */
+    public function testParseWithDriveAndRelativePathIsInvalid()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
+
+        $DS = DIRECTORY_SEPARATOR;
+        $exceptionMessage = '';
+
+        try {
+            FilePath::parse('C:foo' . $DS . 'bar');
+        } catch (FilePathInvalidArgumentException $e) {
+            $exceptionMessage = $e->getMessage();
+        }
+
+        $this->assertSame('File path "C:foo' . $DS . 'bar" is invalid: Path can not contain drive "C" and non-absolute path "foo' . $DS . 'bar".', $exceptionMessage);
+    }
+
+    /**
      * Test that forward slash is always a valid directory separator.
      */
     public function testForwardSlashIsAlwaysDirectorySeparator()

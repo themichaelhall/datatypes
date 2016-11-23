@@ -243,9 +243,10 @@ class FilePath implements FilePathInterface
      */
     private static function myFilePathParse($directorySeparator, $path, callable $partValidator, callable $stringDecoder = null, &$isAbsolute = null, &$aboveBaseLevel = null, &$drive = null, array &$directoryParts = null, &$filename = null, &$error = null)
     {
+        $drive = null;
+
         // If on Window, try to parse drive.
         if (self::myIsWindows()) {
-            $drive = null;
             $driveAndPath = explode(':', $path, 2);
 
             if (count($driveAndPath) === 2) {
@@ -255,7 +256,7 @@ class FilePath implements FilePathInterface
             }
         }
 
-        return self::myParse(
+        $result = self::myParse(
             $directorySeparator,
             DIRECTORY_SEPARATOR !== '\'' ? str_replace('/', DIRECTORY_SEPARATOR, $path) : $path,
             $partValidator,
@@ -267,7 +268,14 @@ class FilePath implements FilePathInterface
             $error
         );
 
-        // fixme: Handle drive + relative path.
+        // File path containing a drive and relative path is invalid.
+        if ($drive !== null && !$isAbsolute) {
+            $error = 'Path can not contain drive "' . $drive . '" and non-absolute path "' . $path . '".';
+
+            return false;
+        }
+
+        return $result;
     }
 
     /**
