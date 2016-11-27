@@ -251,8 +251,11 @@ class FilePath implements FilePathInterface
 
             if (count($driveAndPath) === 2) {
                 $drive = $driveAndPath[0];
+                if (!self::myDriveValidator($drive, $error)) {
+                    return false;
+                }
+
                 $path = $driveAndPath[1];
-                // fixme: Validate drive
             }
         }
 
@@ -291,6 +294,25 @@ class FilePath implements FilePathInterface
     {
         if (preg_match(self::myIsWindows() ? '/[\0<>:*?"|]+/' : '/[\0]+/', $part, $matches)) {
             $error = ($isDirectory ? 'Part of directory' : 'Filename') . ' "' . $part . '" contains invalid character "' . $matches[0] . '".';
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates a drive.
+     *
+     * @param string $drive The drive to validate.
+     * @param string $error The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    private static function myDriveValidator($drive, &$error)
+    {
+        if (!preg_match('/^[a-zA-Z]$/', $drive)) {
+            $error = 'Drive "' . $drive . '" is invalid.';
 
             return false;
         }
