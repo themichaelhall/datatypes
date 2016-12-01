@@ -320,6 +320,28 @@ class UrlTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parseRelative method.
+     */
+    public function testParseRelative()
+    {
+        $url = Url::parse('http://foo.com:8080/path/file?query');
+
+        $this->assertSame('https://bar.com/new-path/new-file?new-query', Url::parseRelative('https://bar.com/new-path/new-file?new-query', $url)->__toString());
+        // fixme: more tests
+    }
+
+    /**
+     * Test parseRelative method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $url parameter is not a string.
+     */
+    public function testParseRelativeWithInvalidArgumentType()
+    {
+        Url::parseRelative(null, Url::parse('http://domain.com/'));
+    }
+
+    /**
      * Test tryParse method with invalid argument type.
      *
      * @expectedException \InvalidArgumentException

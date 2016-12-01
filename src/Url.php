@@ -214,6 +214,31 @@ class Url implements UrlInterface
     }
 
     /**
+     * Parses a relative url and combines it with a base url.
+     *
+     * @since 1.0.0
+     *
+     * @param string       $url     The url
+     * @param UrlInterface $baseUrl The base url.
+     *
+     * @throws \InvalidArgumentException If the $url parameter is not a string.
+     *
+     * @return UrlInterface The Url instance.
+     */
+    public static function parseRelative($url, UrlInterface $baseUrl)
+    {
+        if (!is_string($url)) {
+            throw new \InvalidArgumentException('$url parameter is not a string.');
+        }
+
+        // fixme: Error handling
+        self::myParse($url, false, $scheme, $host, $port, $path, $queryString, $error);
+
+        // fixme: Handle relative $url
+        return new self($scheme, $host, $port, $path, $queryString);
+    }
+
+    /**
      * Parses a url.
      *
      * @since 1.0.0
@@ -307,7 +332,6 @@ class Url implements UrlInterface
         }
 
         // fixme: Fragment
-        // fixme: Relative vs. Absolute
 
         return true;
     }
