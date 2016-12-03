@@ -222,7 +222,8 @@ class Url implements UrlInterface
      * @param string       $url     The url
      * @param UrlInterface $baseUrl The base url.
      *
-     * @throws \InvalidArgumentException If the $url parameter is not a string.
+     * @throws \InvalidArgumentException   If the $url parameter is not a string.
+     * @throws UrlInvalidArgumentException If the $url parameter is not a valid relative url.
      *
      * @return UrlInterface The Url instance.
      */
@@ -232,8 +233,9 @@ class Url implements UrlInterface
             throw new \InvalidArgumentException('$url parameter is not a string.');
         }
 
-        // fixme: Error handling
-        self::myParseRelative($baseUrl, $url, false, $scheme, $host, $port, $path, $queryString, $error);
+        if (!self::myParseRelative($baseUrl, $url, false, $scheme, $host, $port, $path, $queryString, $error)) {
+            throw new UrlInvalidArgumentException($error);
+        }
 
         return new self($scheme, $host, $port, $path, $queryString);
     }

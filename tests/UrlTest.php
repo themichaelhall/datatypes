@@ -362,9 +362,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
      */
     public function testParseRelativeWithEmptyScheme()
     {
-        $url = Url::parse('http://foo.com:8080/path/file?query');
-
-        Url::parseRelative($url, Url::parse('://domain.com/'));
+        Url::parseRelative('://domain.com/', Url::parse('http://foo.com:8080/path/file?query'));
     }
 
     /**
@@ -375,9 +373,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
      */
     public function testParseRelativeWithInvalidScheme()
     {
-        $url = Url::parse('http://foo.com:8080/path/file?query');
-
-        Url::parseRelative($url, Url::parse('baz://domain.com/'));
+        Url::parseRelative('baz://domain.com/', Url::parse('http://foo.com:8080/path/file?query'));
     }
 
     /**
