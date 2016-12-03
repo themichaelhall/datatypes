@@ -4,6 +4,7 @@
  *
  * Read more at https://phpdatatypes.com/
  */
+
 namespace DataTypes\Traits;
 
 use DataTypes\Interfaces\Traits\PathTraitInterface;

@@ -4,6 +4,7 @@
  *
  * Read more at https://phpdatatypes.com/
  */
+
 namespace DataTypes\Interfaces\Traits;
 
 use DataTypes\Interfaces\DataTypeInterface;

@@ -4,6 +4,7 @@
  *
  * Read more at https://phpdatatypes.com/
  */
+
 namespace DataTypes\Interfaces;
 
 use DataTypes\Exceptions\UrlPathLogicException;

@@ -4,6 +4,7 @@
  *
  * Read more at https://phpdatatypes.com/
  */
+
 namespace DataTypes;
 
 use DataTypes\Exceptions\HostInvalidArgumentException;
