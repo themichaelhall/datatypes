@@ -232,9 +232,8 @@ class Url implements UrlInterface
         }
 
         // fixme: Error handling
-        self::myParse($url, false, $scheme, $host, $port, $path, $queryString, $error);
+        self::myParseRelative($baseUrl, $url, false, $scheme, $host, $port, $path, $queryString, $error);
 
-        // fixme: Handle relative $url
         return new self($scheme, $host, $port, $path, $queryString);
     }
 
@@ -304,7 +303,7 @@ class Url implements UrlInterface
         $parsedUrl = $url;
 
         // Parse scheme.
-        if (!self::myParseScheme($parsedUrl, $validateOnly, $scheme, $error)) {
+        if (!self::myParseScheme($parsedUrl, $validateOnly, false, $scheme, $error)) {
             $error = 'Url "' . $url . '" is invalid: ' . $error;
 
             return false;
@@ -337,18 +336,78 @@ class Url implements UrlInterface
     }
 
     /**
-     * Parse scheme.
+     * Tries to parse a relative Url and returns the result or error text.
      *
-     * @param string               $parsedUrl    The part of url that is to be parsed.
-     * @param bool                 $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param SchemeInterface|null $scheme       The scheme if parsing was successful, undefined otherwise.
-     * @param string|null          $error        The error text if parsing was not successful, undefined otherwise.
+     * @param UrlInterface          $baseUrl      The base Url.
+     * @param string                $url          The Url.
+     * @param bool                  $validateOnly If true only validation is performed, if false parse results are returned.
+     * @param SchemeInterface|null  $scheme       The scheme if parsing was successful, undefined otherwise.
+     * @param HostInterface|null    $host         The host if parsing was successful, undefined otherwise.
+     * @param int|null              $port         The port if parsing was successful, undefined otherwise.
+     * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
+     * @param string|null           $queryString  The query string if parsing was successful, undefined otherwise.
+     * @param string|null           $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParseScheme(&$parsedUrl, $validateOnly, SchemeInterface &$scheme = null, &$error = null)
+    private static function myParseRelative(UrlInterface $baseUrl, $url, $validateOnly, SchemeInterface &$scheme = null, HostInterface &$host = null, &$port = null, UrlPathInterface &$path = null, &$queryString = null, &$error = null)
     {
-        $parts = explode('://', $parsedUrl, 2);
+        $parsedUrl = $url;
+
+        // Parse scheme.
+        if (!self::myParseScheme($parsedUrl, $validateOnly, true, $scheme, $error)) {
+            $error = 'Url "' . $url . '" is invalid: ' . $error;
+
+            return false;
+        }
+
+        if ($scheme === null) {
+            $scheme = $baseUrl->getScheme();
+        }
+
+        // fixme: Handle $baseUrl below.
+
+        // Parse host and port.
+        if (!self::myParseHostAndPort($parsedUrl, $validateOnly, $host, $port, $error)) {
+            $error = 'Url "' . $url . '" is invalid: ' . $error;
+
+            return false;
+        }
+
+        // Set default port if none is given.
+        if (!$validateOnly && $port === null) {
+            $port = $scheme->getDefaultPort();
+        }
+
+        // fixme: User
+        // fixme: Password
+
+        if (!self::myParsePath($parsedUrl, $validateOnly, $path, $queryString, $error)) {
+            $error = 'Url "' . $url . '" is invalid: ' . $error;
+
+            return false;
+        }
+
+        // fixme: Fragment
+
+        return true;
+    }
+
+    /**
+     * Parse scheme.
+     *
+     * @param string               $parsedUrl          The part of url that is to be parsed.
+     * @param bool                 $validateOnly       If true only validation is performed, if false parse results are returned.
+     * @param bool                 $allowMissingScheme If true missing scheme is allowed, if false missing scheme returns an error.
+     * @param SchemeInterface|null $scheme             The scheme if parsing was successful, undefined otherwise.
+     * @param string|null          $error              The error text if parsing was not successful, undefined otherwise.
+     *
+     * @return bool True if parsing was successful, false otherwise.
+     */
+    private static function myParseScheme(&$parsedUrl, $validateOnly, $allowMissingScheme, SchemeInterface &$scheme = null, &$error = null)
+    {
+        $scheme = null;
+        $parts = explode('//', $parsedUrl, 2);
 
         if (count($parts) < 2) {
             $error = 'Scheme is missing.';
@@ -356,15 +415,24 @@ class Url implements UrlInterface
             return false;
         }
 
+        $schemeStr = $parts[0];
         $parsedUrl = $parts[1];
+
+        if (substr($schemeStr, -1) !== ':') {
+            $error = 'Scheme is missing.';
+
+            return $allowMissingScheme;
+        }
+
+        $schemeStr = substr($schemeStr, 0, -1);
 
         // Validate or try parse scheme.
         if ($validateOnly) {
-            return Scheme::isValid($parts[0]);
+            return Scheme::isValid($schemeStr);
         }
 
         try {
-            $scheme = Scheme::parse($parts[0]);
+            $scheme = Scheme::parse($schemeStr);
         } catch (SchemeInvalidArgumentException $e) {
             $error = $e->getMessage();
 

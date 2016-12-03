@@ -31,7 +31,7 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      * Test that invalid scheme is invalid.
      *
      * @expectedException DataTypes\Exceptions\SchemeInvalidArgumentException
-     * @expectedExceptionMessage Scheme "foobar" is invalid: Scheme must be "http" or "https"
+     * @expectedExceptionMessage Scheme "foobar" is invalid: Scheme must be "http" or "https".
      */
     public function testInvalidSchemeIsInvalid()
     {

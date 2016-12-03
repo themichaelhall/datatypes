@@ -68,6 +68,17 @@ class UrlTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test that no scheme is invalid.
+     *
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "//foo.bar.com/" is invalid: Scheme is missing.
+     */
+    public function testNoSchemeIsInvalid()
+    {
+        Url::parse('//foo.bar.com/');
+    }
+
+    /**
      * Test that invalid scheme is invalid.
      *
      * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
@@ -327,6 +338,8 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $url = Url::parse('http://foo.com:8080/path/file?query');
 
         $this->assertSame('https://bar.com/new-path/new-file?new-query', Url::parseRelative('https://bar.com/new-path/new-file?new-query', $url)->__toString());
+        $this->assertSame('http://bar.com/new-path/new-file?new-query', Url::parseRelative('//bar.com/new-path/new-file?new-query', $url)->__toString());
+
         // fixme: more tests
     }
 
@@ -339,6 +352,32 @@ class UrlTest extends PHPUnit_Framework_TestCase
     public function testParseRelativeWithInvalidArgumentType()
     {
         Url::parseRelative(null, Url::parse('http://domain.com/'));
+    }
+
+    /**
+     * Test parseRelative method with empty scheme.
+     *
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "://domain.com/" is invalid: Scheme "" is empty.
+     */
+    public function testParseRelativeWithEmptyScheme()
+    {
+        $url = Url::parse('http://foo.com:8080/path/file?query');
+
+        Url::parseRelative($url, Url::parse('://domain.com/'));
+    }
+
+    /**
+     * Test parseRelative method with invalid scheme.
+     *
+     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "baz://domain.com/" is invalid: Scheme "baz" is invalid: Scheme must be "http" or "https".
+     */
+    public function testParseRelativeWithInvalidScheme()
+    {
+        $url = Url::parse('http://foo.com:8080/path/file?query');
+
+        Url::parseRelative($url, Url::parse('baz://domain.com/'));
     }
 
     /**

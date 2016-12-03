@@ -196,7 +196,7 @@ class Scheme implements SchemeInterface
 
         // Not existing scheme is invalid.
         if (!isset(self::$mySchemes[$result])) {
-            $error = 'Scheme "' . $scheme . '" is invalid: Scheme must be "http" or "https"';
+            $error = 'Scheme "' . $scheme . '" is invalid: Scheme must be "http" or "https".';
 
             return false;
         }
