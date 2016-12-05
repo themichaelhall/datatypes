@@ -367,7 +367,7 @@ class Url implements UrlInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParseScheme(UrlInterface $baseUrl = null, $schemeString = null, $validateOnly, SchemeInterface &$scheme = null, &$error = null)
+    private static function myParseScheme(UrlInterface $baseUrl = null, $schemeString, $validateOnly, SchemeInterface &$scheme = null, &$error = null)
     {
         if ($schemeString === null) {
             if ($baseUrl === null) {
