@@ -339,8 +339,12 @@ class UrlTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('https://bar.com/new-path/new-file?new-query', Url::parseRelative('https://bar.com/new-path/new-file?new-query', $url)->__toString());
         $this->assertSame('http://bar.com/new-path/new-file?new-query', Url::parseRelative('//bar.com/new-path/new-file?new-query', $url)->__toString());
-
-        // fixme: more tests
+        $this->assertSame('http://foo.com:8080/new-path/new-file?new-query', Url::parseRelative('/new-path/new-file?new-query', $url)->__toString());
+        // fixme: Relative path
+        // fixme: Relative path beginning with ../
+        // fixme: Relative path beginning with ../ above base level
+        // fixme: Query string
+        // fixme: Empty url
     }
 
     /**
@@ -375,6 +379,10 @@ class UrlTest extends PHPUnit_Framework_TestCase
     {
         Url::parseRelative('baz://domain.com/', Url::parse('http://foo.com:8080/path/file?query'));
     }
+
+    // fixme: Test parse relative with invalid host
+    // fixme: Test parse relative with invalid port
+    // fixme: Test parse relative with invalid path
 
     /**
      * Test tryParse method with invalid argument type.
