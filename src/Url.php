@@ -285,7 +285,7 @@ class Url implements UrlInterface
     /**
      * Tries to parse a url and returns the result or error text.
      *
-     * @param UrlInterface          $baseUrl      The base url or null if no base url is present.
+     * @param UrlInterface|null     $baseUrl      The base url or null if no base url is present.
      * @param string                $url          The url.
      * @param bool                  $validateOnly If true only validation is performed, if false parse results are returned.
      * @param SchemeInterface|null  $scheme       The scheme if parsing was successful, undefined otherwise.
@@ -359,15 +359,15 @@ class Url implements UrlInterface
     /**
      * Parse scheme.
      *
-     * @param UrlInterface         $baseUrl      The base url or null if no base url is present.
-     * @param string               $schemeString The scheme that is to be parsed.
+     * @param UrlInterface|null    $baseUrl      The base url or null if no base url is present.
+     * @param string|null          $schemeString The scheme that is to be parsed or null if no scheme is present.
      * @param bool                 $validateOnly If true only validation is performed, if false parse results are returned.
      * @param SchemeInterface|null $scheme       The scheme if parsing was successful, undefined otherwise.
      * @param string|null          $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParseScheme(UrlInterface $baseUrl = null, $schemeString, $validateOnly, SchemeInterface &$scheme = null, &$error = null)
+    private static function myParseScheme(UrlInterface $baseUrl = null, $schemeString = null, $validateOnly, SchemeInterface &$scheme = null, &$error = null)
     {
         if ($schemeString === null) {
             if ($baseUrl === null) {
@@ -400,8 +400,8 @@ class Url implements UrlInterface
     /**
      * Parse authority part.
      *
-     * @param UrlInterface       $baseUrl         The base url or null if no base url is present.
-     * @param string             $authorityString The authority part that is to be parsed.
+     * @param UrlInterface|null  $baseUrl         The base url or null if no base url is present.
+     * @param string|null        $authorityString The authority part that is to be parsed or null if no authority part is present.
      * @param bool               $validateOnly    If true only validation is performed, if false parse results are returned.
      * @param HostInterface|null $host            The host if parsing was successful, undefined otherwise.
      * @param int|null           $port            The port if parsing was successful, undefined otherwise.
@@ -409,7 +409,7 @@ class Url implements UrlInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParseAuthority(UrlInterface $baseUrl = null, $authorityString, $validateOnly, HostInterface &$host = null, &$port = null, &$error = null)
+    private static function myParseAuthority(UrlInterface $baseUrl = null, $authorityString = null, $validateOnly, HostInterface &$host = null, &$port = null, &$error = null)
     {
         if ($authorityString === null && $baseUrl !== null) {
             $host = $baseUrl->getHost();
@@ -457,7 +457,7 @@ class Url implements UrlInterface
     /**
      * Parse path.
      *
-     * @param UrlInterface          $baseUrl      The base url or null if no base url is present.
+     * @param UrlInterface|null     $baseUrl      The base url or null if no base url is present.
      * @param string                $pathString   The path that is to be parsed.
      * @param bool                  $validateOnly If true only validation is performed, if false parse results are returned.
      * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
@@ -482,6 +482,10 @@ class Url implements UrlInterface
             $error = $e->getMessage();
 
             return false;
+        }
+
+        if ($baseUrl !== null) {
+            $path = $baseUrl->getPath()->withUrlPath($path);
         }
 
         return true;
