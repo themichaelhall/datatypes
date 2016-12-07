@@ -305,24 +305,8 @@ class Url implements UrlInterface
             return false;
         }
 
-        $schemeString = null;
-        $authorityString = null;
-        $pathString = null;
-
-        // Split the url in scheme, authority and path parts.
-        $parts = explode('://', $url, 2);
-        if (count($parts) === 2) {
-            $schemeString = $parts[0];
-            $parts = explode('/', $parts[1], 2);
-            $authorityString = $parts[0];
-            $pathString = '/' . (count($parts) === 2 ? $parts[1] : '');
-        } elseif (substr($url, 0, 2) === '//') {
-            $parts = explode('/', substr($url, 2), 2);
-            $authorityString = $parts[0];
-            $pathString = '/' . (count($parts) === 2 ? $parts[1] : '');
-        } else {
-            $pathString = $url;
-        }
+        // Split the url in its main components.
+        self::mySplit($url, $schemeString, $authorityString, $pathString);
 
         // Parse scheme.
         if (!self::myParseScheme($baseUrl, $schemeString, $validateOnly, $scheme, $error)) {
@@ -354,6 +338,45 @@ class Url implements UrlInterface
         }
 
         return true;
+    }
+
+    /**
+     * Splits a url in its mail components.
+     *
+     * @param string      $url             The url.
+     * @param string|null $schemeString    The scheme or null if scheme is not present.
+     * @param string|null $authorityString The authority part or null if authority part is not present.
+     * @param string|null $pathString      The path or null if path is not present.
+     */
+    private static function mySplit($url, &$schemeString = null, &$authorityString = null, &$pathString = null)
+    {
+        $schemeString = null;
+        $authorityString = null;
+        $pathString = null;
+
+        $parts = explode('://', $url, 2);
+
+        if (count($parts) === 2) {
+            // Absolute url.
+            $schemeString = $parts[0];
+            $parts = explode('/', $parts[1], 2);
+            $authorityString = $parts[0];
+            $pathString = '/' . (count($parts) === 2 ? $parts[1] : '');
+
+            return;
+        }
+
+        if (substr($url, 0, 2) === '//') {
+            // Relative url beginning with "//".
+            $parts = explode('/', substr($url, 2), 2);
+            $authorityString = $parts[0];
+            $pathString = '/' . (count($parts) === 2 ? $parts[1] : '');
+
+            return;
+        }
+
+        // Relative url as a path.
+        $pathString = $url;
     }
 
     /**
