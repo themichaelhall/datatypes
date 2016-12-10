@@ -404,4 +404,14 @@ class UrlTest extends PHPUnit_Framework_TestCase
     {
         Url::tryParse(67890);
     }
+
+    /**
+     * Test getHostAndPort method.
+     */
+    public function testGetHostAndPort()
+    {
+        $this->assertSame('foo.bar.com', Url::parse('http://foo.bar.com/')->getHostAndPort());
+        $this->assertSame('foo.bar.com', Url::parse('https://foo.bar.com/')->getHostAndPort());
+        $this->assertSame('foo.bar.com:80', Url::parse('https://foo.bar.com:80/')->getHostAndPort());
+    }
 }

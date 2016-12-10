@@ -24,6 +24,15 @@ interface UrlInterface extends DataTypeInterface
     public function getHost();
 
     /**
+     * Returns the host and port of the url as a string.
+     *
+     * @since 1.0.0
+     *
+     * @return string The host and port of the url.
+     */
+    public function getHostAndPort();
+
+    /**
      * Returns the path of the url.
      *
      * @since 1.0.0

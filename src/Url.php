@@ -36,6 +36,22 @@ class Url implements UrlInterface
     }
 
     /**
+     * Returns the host and port of the url as a string.
+     *
+     * @since 1.0.0
+     *
+     * @return string The host and port of the url.
+     */
+    public function getHostAndPort()
+    {
+        if ($this->myPort !== $this->myScheme->getDefaultPort()) {
+            return $this->myHost . ':' . $this->myPort;
+        }
+
+        return $this->myHost->__toString();
+    }
+
+    /**
      * Returns the path of the url.
      *
      * @since 1.0.0
@@ -121,7 +137,7 @@ class Url implements UrlInterface
      */
     public function __toString()
     {
-        return $this->myScheme . '://' . $this->myHost . ($this->myPort !== $this->myScheme->getDefaultPort() ? (':' . $this->myPort) : '') . $this->myPath . ($this->myQueryString !== null ? '?' . $this->myQueryString : '');
+        return $this->myScheme . '://' . $this->getHostAndPort() . $this->myPath . ($this->myQueryString !== null ? '?' . $this->myQueryString : '');
     }
 
     /**
