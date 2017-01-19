@@ -30,6 +30,27 @@ class IPAddress implements IPAddressInterface
     }
 
     /**
+     * Returns a copy of the IP address instance masked with the specified mask.
+     *
+     * @since 1.0.0
+     *
+     * @param IPAddressInterface $mask The mask.
+     *
+     * @return IPAddressInterface The IP address instance.
+     */
+    public function withMask(IPAddressInterface $mask)
+    {
+        $octets = $this->getParts();
+        $maskOctets = $mask->getParts();
+
+        for ($i = 0; $i < 4; $i++) {
+            $octets[$i] = $octets[$i] & $maskOctets[$i];
+        }
+
+        return new self($octets);
+    }
+
+    /**
      * Returns the IP address as a string.
      *
      * @since 1.0.0

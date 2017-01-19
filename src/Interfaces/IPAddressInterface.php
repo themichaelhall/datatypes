@@ -22,4 +22,15 @@ interface IPAddressInterface extends DataTypeInterface
      * @return int[] The IP address parts.
      */
     public function getParts();
+
+    /**
+     * Returns a copy of the IP address masked with the specified mask.
+     *
+     * @since 1.0.0
+     *
+     * @param IPAddressInterface $mask The mask.
+     *
+     * @return IPAddressInterface The IP address.
+     */
+    public function withMask(IPAddressInterface $mask);
 }

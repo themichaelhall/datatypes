@@ -139,4 +139,16 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame([192, 168, 0, 1], IPAddress::parse('192.168.0.1')->getParts());
     }
+
+    /**
+     * Test withMask method.
+     */
+    public function testWithMask()
+    {
+        $this->assertSame('192.168.1.1', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('255.255.255.255'))->__toString());
+        $this->assertSame('192.168.1.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('255.255.255.0'))->__toString());
+        $this->assertSame('192.168.0.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('255.255.0.0'))->__toString());
+        $this->assertSame('192.0.0.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('255.0.0.0'))->__toString());
+        $this->assertSame('0.0.0.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('0.0.0.0'))->__toString());
+    }
 }
