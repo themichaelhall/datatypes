@@ -141,6 +141,14 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test fromParts method.
+     */
+    public function testFromParts()
+    {
+        $this->assertSame('192.168.0.1', IPAddress::fromParts([192, 168, 0, 1])->__toString());
+    }
+
+    /**
      * Test withMask method.
      */
     public function testWithMask()

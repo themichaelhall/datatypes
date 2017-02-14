@@ -63,6 +63,22 @@ class IPAddress implements IPAddressInterface
     }
 
     /**
+     * Creates an IP address from octets.
+     *
+     * @since 1.0.0
+     *
+     * @param int[] $octets The octets.
+     *
+     * @return IPAddress The IP address.
+     */
+    public static function fromParts(array $octets)
+    {
+        // fixme: Validate parts.
+
+        return new self($octets);
+    }
+
+    /**
      * Checks if an IP address is valid.
      *
      * @since 1.0.0
