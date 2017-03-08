@@ -82,7 +82,6 @@ class IPAddress implements IPAddressInterface
         return new self($octets);
     }
 
-
     /**
      * Checks if an IP address is valid.
      *
