@@ -69,14 +69,19 @@ class IPAddress implements IPAddressInterface
      *
      * @param int[] $octets The octets.
      *
+     * @throws IPAddressInvalidArgumentException If the $octets parameter is not a valid array of octets.
+     *
      * @return IPAddress The IP address.
      */
     public static function fromParts(array $octets)
     {
-        // fixme: Validate parts.
+        if (!self::myValidateOctets($octets, $error)) {
+            throw new IPAddressInvalidArgumentException('Octets are invalid: ' . $error);
+        }
 
         return new self($octets);
     }
+
 
     /**
      * Checks if an IP address is valid.
@@ -169,15 +174,12 @@ class IPAddress implements IPAddressInterface
      */
     private static function myParse($ipAddress, $validateOnly, array &$octets = null, &$error = null)
     {
-        // Pre-validate IP address.
         if (!self::myPreValidate($ipAddress, $error)) {
             return false;
         }
 
-        // Split IP address in parts.
         $ipAddressParts = explode('.', $ipAddress);
 
-        // IP address must have four parts.
         if (count($ipAddressParts) !== 4) {
             $error = 'IP address "' . $ipAddress . '" is invalid: IP address must consist of four octets.';
 
@@ -193,8 +195,8 @@ class IPAddress implements IPAddressInterface
                 return false;
             }
 
-            // Save the resulting octet.
             if (!$validateOnly) {
+                // Save the resulting octet.
                 $octets[] = $octet;
             }
         }
@@ -233,14 +235,12 @@ class IPAddress implements IPAddressInterface
      */
     private static function myValidateIpAddressPart($ipAddressPart, &$octet, &$error)
     {
-        // Empty octet is invalid.
         if ($ipAddressPart === '') {
             $error = 'Octet "' . $ipAddressPart . '" is empty.';
 
             return false;
         }
 
-        // Octet containing invalid character is invalid.
         if (preg_match('/[^0-9]/', $ipAddressPart, $matches)) {
             $error = 'Octet "' . $ipAddressPart . '" contains invalid character "' . $matches[0] . '".';
 
@@ -249,9 +249,62 @@ class IPAddress implements IPAddressInterface
 
         $octet = intval($ipAddressPart);
 
-        // Octet out of range is invalid.
+        if (!self::myValidateOctet($octet, $error)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates an array of octets.
+     *
+     * @param int[]  $octets The array of octets.
+     * @param string $error  The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    private static function myValidateOctets(array $octets, &$error)
+    {
+        if (count($octets) !== 4) {
+            $error = 'IP address must consist of four octets.';
+
+            return false;
+        }
+
+        foreach ($octets as $octet) {
+            if (!self::myValidateOctet($octet, $error)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates an octet.
+     *
+     * @param int    $octet The octet.
+     * @param string $error The error text if validation was not successful, undefined otherwise.
+     *
+     * @throws \InvalidArgumentException If the octet parameter is not an integer.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    private static function myValidateOctet($octet, &$error)
+    {
+        if (!is_int($octet)) {
+            throw new \InvalidArgumentException('$octet is not an integer.');
+        }
+
+        if ($octet < 0) {
+            $error = 'Octet ' . $octet . ' is out of range: Minimum value for an octet is 0.';
+
+            return false;
+        }
+
         if ($octet > 255) {
-            $error = 'Octet "' . $ipAddressPart . '" is out of range: Maximum value for octet is 255.';
+            $error = 'Octet ' . $octet . ' is out of range: Maximum value for an octet is 255.';
 
             return false;
         }

@@ -64,7 +64,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
      * Test that IP address with octet out of range is invalid.
      *
      * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
-     * @expectedExceptionMessage IP address "255.255.256.255" is invalid: Octet "256" is out of range: Maximum value for octet is 255.
+     * @expectedExceptionMessage IP address "255.255.256.255" is invalid: Octet 256 is out of range: Maximum value for an octet is 255.
      */
     public function testIPAddressWithOctetOutOfRangeIsInvalid()
     {
@@ -146,6 +146,50 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
     public function testFromParts()
     {
         $this->assertSame('192.168.0.1', IPAddress::fromParts([192, 168, 0, 1])->__toString());
+    }
+
+    /**
+     * Test fromParts method with invalid number of octets.
+     *
+     * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
+     * @expectedExceptionMessage Octets are invalid: IP address must consist of four octets.
+     */
+    public function testFromPartsWithInvalidNumberOfOctets()
+    {
+        IPAddress::fromParts([1, 2, 3]);
+    }
+
+    /**
+     * Test fromParts method with invalid octet type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $octet is not an integer.
+     */
+    public function testFromPartsWithInvalidOctetType()
+    {
+        IPAddress::fromParts([1, 'Foo', 3, 4]);
+    }
+
+    /**
+     * Test fromParts method with octet value too low.
+     *
+     * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
+     * @expectedExceptionMessage Octets are invalid: Octet -1 is out of range: Minimum value for an octet is 0.
+     */
+    public function testFromPartsWithOctetValueTooLow()
+    {
+        IPAddress::fromParts([1, 2, -1, 4]);
+    }
+
+    /**
+     * Test fromParts method with octet value too high.
+     *
+     * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
+     * @expectedExceptionMessage Octets are invalid: Octet 256 is out of range: Maximum value for an octet is 255.
+     */
+    public function testFromPartsWithOctetValueTooHigh()
+    {
+        IPAddress::fromParts([1, 2, 256, 4]);
     }
 
     /**
