@@ -466,7 +466,7 @@ class Url implements UrlInterface
         $port = null;
 
         // Try parse and validate port.
-        if (count($parts) === 2) {
+        if (count($parts) === 2 && $parts[1] !== '') {
             // Port containing invalid character is invalid.
             if (preg_match('/[^0-9]/', $parts[1], $matches)) {
                 $error = 'Port "' . $parts[1] . '" contains invalid character "' . $matches[0] . '".';

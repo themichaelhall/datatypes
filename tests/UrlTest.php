@@ -156,6 +156,15 @@ class UrlTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parse url with empty port.
+     */
+    public function testParseUrlWithEmptyPort()
+    {
+        $this->assertSame('http://foo.com/', Url::parse('http://foo.com:')->__toString());
+        $this->assertSame('http://foo.com/bar/baz', Url::parse('http://foo.com:/bar/baz')->__toString());
+    }
+
+    /**
      * Test that url with invalid character in port is invalid.
      *
      * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
