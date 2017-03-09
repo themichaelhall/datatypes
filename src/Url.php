@@ -145,18 +145,18 @@ class Url implements UrlInterface
      *
      * @since 1.0.0
      *
-     * @param SchemeInterface  $scheme      The scheme.
-     * @param HostInterface    $host        The host.
-     * @param int|null         $port        The port or null if default port for the scheme should be used.
-     * @param UrlPathInterface $urlPath     The url path.
-     * @param null             $queryString The query string or null if no query string should be used.
+     * @param SchemeInterface       $scheme      The scheme.
+     * @param HostInterface         $host        The host.
+     * @param int|null              $port        The port or null if default port for the scheme should be used.
+     * @param UrlPathInterface|null $urlPath     The url path or null if root path should be used.
+     * @param string|null           $queryString The query string or null if no query string should be used.
      *
      * @throws \InvalidArgumentException   If any of the parameters are of invalid type.
      * @throws UrlInvalidArgumentException If any of the parameters are invalid.
      *
      * @return UrlInterface The url.
      */
-    public static function fromParts(SchemeInterface $scheme, HostInterface $host, $port, UrlPathInterface $urlPath, $queryString = null)
+    public static function fromParts(SchemeInterface $scheme, HostInterface $host, $port = null, UrlPathInterface $urlPath = null, $queryString = null)
     {
         if (!is_int($port) && !is_null($port)) {
             throw new \InvalidArgumentException('$port parameter is not an integer or null.');
@@ -166,8 +166,13 @@ class Url implements UrlInterface
             throw new \InvalidArgumentException('$queryString parameter is not a string or null.');
         }
 
+        // Default values.
         if ($port === null) {
             $port = $scheme->getDefaultPort();
+        }
+
+        if ($urlPath === null) {
+            $urlPath = UrlPath::parse('/');
         }
 
         // Validate port.
@@ -357,7 +362,7 @@ class Url implements UrlInterface
     }
 
     /**
-     * Splits a url in its mail components.
+     * Splits a url in its main components.
      *
      * @param string      $url             The url.
      * @param string|null $schemeString    The scheme or null if scheme is not present.

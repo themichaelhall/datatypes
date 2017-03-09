@@ -228,6 +228,8 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertSame('https://www.domain.com/foo/bar?query', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), null, UrlPath::parse('/foo/bar'), 'query')->__toString());
         $this->assertSame('https://www.domain.com/foo/bar?', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), null, UrlPath::parse('/foo/bar'), '')->__toString());
         $this->assertSame('https://www.domain.com/foo/bar', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), null, UrlPath::parse('/foo/bar'))->__toString());
+        $this->assertSame('https://www.domain.com:1000/', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), 1000)->__toString());
+        $this->assertSame('https://www.domain.com/', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'))->__toString());
     }
 
     /**
