@@ -256,6 +256,7 @@ class FilePath implements FilePathInterface
                     return false;
                 }
 
+                $drive = strtoupper($drive);
                 $path = $driveAndPath[1];
             }
         }

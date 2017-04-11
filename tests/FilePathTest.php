@@ -507,6 +507,25 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parse a file path with lower case volume in windows.
+     */
+    public function testParseWithLowerCaseVolumeInWindows()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
+
+        $DS = DIRECTORY_SEPARATOR;
+
+        $filePath = FilePath::parse('c:' . $DS . 'path' . $DS . 'file');
+
+        $this->assertSame('C', $filePath->getDrive());
+        $this->assertSame(['path'], $filePath->getDirectoryParts());
+        $this->assertSame('file', $filePath->getFilename());
+        $this->assertSame('C:' . $DS . 'path' . $DS . 'file', $filePath->__toString());
+        $this->assertTrue($filePath->isAbsolute());
+    }
+
+    /**
      * Test parse a file path with volume in other operating systems.
      */
     public function testParseWithVolumeInOther()
@@ -522,6 +541,25 @@ class FilePathTest extends PHPUnit_Framework_TestCase
         $this->assertSame(['C:', 'path'], $filePath->getDirectoryParts());
         $this->assertSame('file', $filePath->getFilename());
         $this->assertSame('C:' . $DS . 'path' . $DS . 'file', $filePath->__toString());
+        $this->assertFalse($filePath->isAbsolute());
+    }
+
+    /**
+     * Test parse a file path with lower case volume in other operating systems.
+     */
+    public function testParseWithLowerCaseVolumeInOther()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Other');
+
+        $DS = DIRECTORY_SEPARATOR;
+
+        $filePath = FilePath::parse('c:' . $DS . 'path' . $DS . 'file');
+
+        $this->assertNull($filePath->getDrive());
+        $this->assertSame(['c:', 'path'], $filePath->getDirectoryParts());
+        $this->assertSame('file', $filePath->getFilename());
+        $this->assertSame('c:' . $DS . 'path' . $DS . 'file', $filePath->__toString());
         $this->assertFalse($filePath->isAbsolute());
     }
 
