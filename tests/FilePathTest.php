@@ -635,6 +635,29 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test hasParentDirectory method.
+     */
+    public function testHasParentDirectory()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertTrue(FilePath::parse('')->hasParentDirectory());
+        $this->assertFalse(FilePath::parse($DS)->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('foo')->hasParentDirectory());
+        $this->assertFalse(FilePath::parse($DS . 'foo')->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('foo' . $DS)->hasParentDirectory());
+        $this->assertTrue(FilePath::parse($DS . 'foo' . $DS)->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('foo' . $DS . 'bar')->hasParentDirectory());
+        $this->assertTrue(FilePath::parse($DS . 'foo' . $DS . 'bar')->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('foo' . $DS . 'bar' . $DS)->hasParentDirectory());
+        $this->assertTrue(FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('..' . $DS)->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('..' . $DS . 'foo')->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('..' . $DS . '..' . $DS . 'foo')->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('..' . $DS . '..' . $DS . 'foo' . $DS)->hasParentDirectory());
+    }
+
+    /**
      * Tear down.
      */
     public function tearDown()

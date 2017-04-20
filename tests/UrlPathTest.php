@@ -351,4 +351,25 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
     {
         UrlPath::parse('/foo/bar/')->withUrlPath(UrlPath::parse('../../../baz/file'));
     }
+
+    /**
+     * Test hasParentDirectory method.
+     */
+    public function hasParentDirectory()
+    {
+        $this->assertTrue(UrlPath::parse('')->hasParentDirectory());
+        $this->assertFalse(UrlPath::parse('/')->hasParentDirectory());
+        $this->assertTrue(UrlPath::parse('foo')->hasParentDirectory());
+        $this->assertFalse(UrlPath::parse('/foo')->hasParentDirectory());
+        $this->assertTrue(UrlPath::parse('foo/')->hasParentDirectory());
+        $this->assertTrue(UrlPath::parse('/foo/')->hasParentDirectory());
+        $this->assertTrue(UrlPath::parse('foo/bar')->hasParentDirectory());
+        $this->assertTrue(UrlPath::parse('/foo/bar')->hasParentDirectory());
+        $this->assertTrue(UrlPath::parse('foo/bar/')->hasParentDirectory());
+        $this->assertTrue(UrlPath::parse('/foo/bar/')->hasParentDirectory());
+        $this->assertTrue(UrlPath::parse('../')->hasParentDirectory());
+        $this->assertTrue(UrlPath::parse('../foo')->hasParentDirectory());
+        $this->assertTrue(UrlPath::parse('../../foo')->hasParentDirectory());
+        $this->assertTrue(UrlPath::parse('../../foo/')->hasParentDirectory());
+    }
 }

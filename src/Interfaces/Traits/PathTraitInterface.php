@@ -44,6 +44,15 @@ interface PathTraitInterface extends DataTypeInterface
     public function getFilename();
 
     /**
+     * Returns true if path has a parent directory, false otherwise.
+     *
+     * @since 1.0.0
+     *
+     * @return bool True if path has a parent directory, false otherwise.
+     */
+    public function hasParentDirectory();
+
+    /**
      * Returns true if path is absolute, false otherwise.
      *
      * @since 1.0.0

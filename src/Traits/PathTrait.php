@@ -53,6 +53,18 @@ trait PathTrait
     }
 
     /**
+     * Returns true if path has a parent directory, false otherwise.
+     *
+     * @since 1.0.0
+     *
+     * @return bool True if path has a parent directory, false otherwise.
+     */
+    public function hasParentDirectory()
+    {
+        return $this->isRelative() || count($this->myDirectoryParts) > 0;
+    }
+
+    /**
      * Returns true if path is absolute, false otherwise.
      *
      * @since 1.0.0
