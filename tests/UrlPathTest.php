@@ -355,7 +355,7 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
     /**
      * Test hasParentDirectory method.
      */
-    public function hasParentDirectory()
+    public function testHasParentDirectory()
     {
         $this->assertTrue(UrlPath::parse('')->hasParentDirectory());
         $this->assertFalse(UrlPath::parse('/')->hasParentDirectory());
@@ -371,5 +371,26 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(UrlPath::parse('../foo')->hasParentDirectory());
         $this->assertTrue(UrlPath::parse('../../foo')->hasParentDirectory());
         $this->assertTrue(UrlPath::parse('../../foo/')->hasParentDirectory());
+    }
+
+    /**
+     * Test getParentDirectory method.
+     */
+    public function testGetParentDirectory()
+    {
+        $this->assertSame('../', UrlPath::parse('')->getParentDirectory()->__toString());
+        $this->assertNull(UrlPath::parse('/')->getParentDirectory());
+        $this->assertSame('../', UrlPath::parse('foo')->getParentDirectory()->__toString());
+        $this->assertNull(UrlPath::parse('/foo')->getParentDirectory());
+        $this->assertSame('', UrlPath::parse('foo/')->getParentDirectory()->__toString());
+        $this->assertSame('/', UrlPath::parse('/foo/')->getParentDirectory()->__toString());
+        $this->assertSame('', UrlPath::parse('foo/bar')->getParentDirectory()->__toString());
+        $this->assertSame('/', UrlPath::parse('/foo/bar')->getParentDirectory()->__toString());
+        $this->assertSame('foo/', UrlPath::parse('foo/bar/')->getParentDirectory()->__toString());
+        $this->assertSame('/foo/', UrlPath::parse('/foo/bar/')->getParentDirectory()->__toString());
+        $this->assertSame('../../', UrlPath::parse('../')->getParentDirectory()->__toString());
+        $this->assertSame('../../', UrlPath::parse('../foo')->getParentDirectory()->__toString());
+        $this->assertSame('../../../', UrlPath::parse('../../foo')->getParentDirectory()->__toString());
+        $this->assertSame('../../', UrlPath::parse('../../foo/')->getParentDirectory()->__toString());
     }
 }

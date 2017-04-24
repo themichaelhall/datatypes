@@ -27,6 +27,15 @@ interface UrlPathInterface extends PathTraitInterface
     public function getDirectory();
 
     /**
+     * Returns the parent directory of the url path or null if url path does not have a parent directory.
+     *
+     * @since 1.0.0
+     *
+     * @return UrlPathInterface|null The parent directory of the url path or null if url path does not have a parent directory.
+     */
+    public function getParentDirectory();
+
+    /**
      * Returns the url path as a absolute path.
      *
      * @since 1.0.0

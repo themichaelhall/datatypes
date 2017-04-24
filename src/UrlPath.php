@@ -34,6 +34,26 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * Returns the parent directory of the url path or null if url path does not have a parent directory.
+     *
+     * @since 1.0.0
+     *
+     * @return UrlPathInterface|null The parent directory of the url path or null if url path does not have a parent directory.
+     */
+    public function getParentDirectory()
+    {
+        if (count($this->myDirectoryParts) > 0) {
+            return new self($this->myIsAbsolute, $this->myAboveBaseLevel, array_slice($this->myDirectoryParts, 0, -1), null);
+        }
+
+        if ($this->myIsAbsolute) {
+            return null;
+        }
+
+        return new self($this->myIsAbsolute, $this->myAboveBaseLevel + 1, $this->myDirectoryParts, null);
+    }
+
+    /**
      * Returns The url path as an absolute path.
      *
      * @since 1.0.0
