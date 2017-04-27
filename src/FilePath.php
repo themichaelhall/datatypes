@@ -46,6 +46,26 @@ class FilePath implements FilePathInterface
     }
 
     /**
+     * Returns the parent directory of the file path or null if file path does not have a parent directory.
+     *
+     * @since 1.0.0
+     *
+     * @return FilePathInterface|null The parent directory of the file path or null if file path does not have a parent directory.
+     */
+    public function getParentDirectory()
+    {
+        if (count($this->myDirectoryParts) > 0) {
+            return new self($this->myIsAbsolute, $this->myAboveBaseLevel, $this->myDrive, array_slice($this->myDirectoryParts, 0, -1), null);
+        }
+
+        if ($this->myIsAbsolute) {
+            return null;
+        }
+
+        return new self($this->myIsAbsolute, $this->myAboveBaseLevel + 1, $this->myDrive, $this->myDirectoryParts, null);
+    }
+
+    /**
      * Returns the file path as an absolute path.
      *
      * @since 1.0.0

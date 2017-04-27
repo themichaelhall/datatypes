@@ -658,6 +658,101 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test hasParentDirectory method with path containing a drive in windows.
+     */
+    public function testHasParentDirectoryWithDriveInWindows()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
+
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertFalse(FilePath::parse('C:' . $DS)->hasParentDirectory());
+        $this->assertFalse(FilePath::parse('C:' . $DS . 'foo')->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS)->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS . 'baz')->hasParentDirectory());
+    }
+
+    /**
+     * Test hasParentDirectory method with path containing a drive in other operating systems.
+     */
+    public function testHasParentDirectoryWithDriveInOther()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Other');
+
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertTrue(FilePath::parse('C:' . $DS)->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo')->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS)->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->hasParentDirectory());
+        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS . 'baz')->hasParentDirectory());
+    }
+
+    /**
+     * Test getParentDirectory method.
+     */
+    public function testGetParentDirectory()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame('..' . $DS, FilePath::parse('')->getParentDirectory()->__toString());
+        $this->assertNull(FilePath::parse($DS)->getParentDirectory());
+        $this->assertSame('..' . $DS, FilePath::parse('foo')->getParentDirectory()->__toString());
+        $this->assertNull(FilePath::parse($DS . 'foo')->getParentDirectory());
+        $this->assertSame('', FilePath::parse('foo' . $DS)->getParentDirectory()->__toString());
+        $this->assertSame($DS, FilePath::parse($DS . 'foo' . $DS)->getParentDirectory()->__toString());
+        $this->assertSame('', FilePath::parse('foo' . $DS . 'bar')->getParentDirectory()->__toString());
+        $this->assertSame($DS, FilePath::parse($DS . 'foo' . $DS . 'bar')->getParentDirectory()->__toString());
+        $this->assertSame('foo' . $DS, FilePath::parse('foo' . $DS . 'bar' . $DS)->getParentDirectory()->__toString());
+        $this->assertSame($DS . 'foo' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->getParentDirectory()->__toString());
+        $this->assertSame('..' . $DS . '..' . $DS, FilePath::parse('..' . $DS)->getParentDirectory()->__toString());
+        $this->assertSame('..' . $DS . '..' . $DS, FilePath::parse('..' . $DS . 'foo')->getParentDirectory()->__toString());
+        $this->assertSame('..' . $DS . '..' . $DS . '..' . $DS, FilePath::parse('..' . $DS . '..' . $DS . 'foo')->getParentDirectory()->__toString());
+        $this->assertSame('..' . $DS . '..' . $DS, FilePath::parse('..' . $DS . '..' . $DS . 'foo' . $DS)->getParentDirectory()->__toString());
+    }
+
+    /**
+     * Test getParentDirectory method with path containing a drive in windows.
+     */
+    public function testGetParentDirectoryWithDriveInWindows()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
+
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertNull(FilePath::parse('C:' . $DS)->getParentDirectory());
+        $this->assertNull(FilePath::parse('C:' . $DS . 'foo')->getParentDirectory());
+        $this->assertSame('C:' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS)->getParentDirectory()->__toString());
+        $this->assertSame('C:' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->getParentDirectory()->__toString());
+        $this->assertSame('C:' . $DS . 'foo' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->getParentDirectory()->__toString());
+        $this->assertSame('C:' . $DS . 'foo' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS . 'baz')->getParentDirectory()->__toString());
+    }
+
+    /**
+     * Test getParentDirectory method with path containing a drive in other operating systems.
+     */
+    public function testGetParentDirectoryWithDriveInOther()
+    {
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Other');
+
+        $DS = DIRECTORY_SEPARATOR;
+
+        $this->assertSame('', FilePath::parse('C:' . $DS)->getParentDirectory()->__toString());
+        $this->assertSame('', FilePath::parse('C:' . $DS . 'foo')->getParentDirectory()->__toString());
+        $this->assertSame('C:' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS)->getParentDirectory()->__toString());
+        $this->assertSame('C:' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->getParentDirectory()->__toString());
+        $this->assertSame('C:' . $DS . 'foo' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->getParentDirectory()->__toString());
+        $this->assertSame('C:' . $DS . 'foo' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS . 'baz')->getParentDirectory()->__toString());
+    }
+
+    /**
      * Tear down.
      */
     public function tearDown()
