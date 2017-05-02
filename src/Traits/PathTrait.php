@@ -195,6 +195,33 @@ trait PathTrait
     }
 
     /**
+     * Tries to calculate the parent directory for this path and return the result.
+     *
+     * @param int|null      $aboveBaseLevel The number of directory parts above base level if parsing was successful, undefined otherwise.
+     * @param string[]|null $directoryParts The directory parts if parsing was successful, undefined otherwise.
+     *
+     * @return bool True if this path has a parent directory, false otherwise.
+     */
+    private function myParentDirectory(&$aboveBaseLevel = null, array &$directoryParts = null)
+    {
+        if (count($this->myDirectoryParts) > 0) {
+            $aboveBaseLevel = $this->myAboveBaseLevel;
+            $directoryParts = array_slice($this->myDirectoryParts, 0, -1);
+
+            return true;
+        }
+
+        if ($this->myIsAbsolute) {
+            return false;
+        }
+
+        $aboveBaseLevel = $this->myAboveBaseLevel + 1;
+        $directoryParts = $this->myDirectoryParts;
+
+        return true;
+    }
+
+    /**
      * Tries to parse a path and returns the result or error text.
      *
      * @param string        $directorySeparator The directory separator.

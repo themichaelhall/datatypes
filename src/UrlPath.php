@@ -42,15 +42,11 @@ class UrlPath implements UrlPathInterface
      */
     public function getParentDirectory()
     {
-        if (count($this->myDirectoryParts) > 0) {
-            return new self($this->myIsAbsolute, $this->myAboveBaseLevel, array_slice($this->myDirectoryParts, 0, -1), null);
+        if ($this->myParentDirectory($aboveBaseLevel, $directoryParts)) {
+            return new self($this->myIsAbsolute, $aboveBaseLevel, $directoryParts, null);
         }
 
-        if ($this->myIsAbsolute) {
-            return null;
-        }
-
-        return new self($this->myIsAbsolute, $this->myAboveBaseLevel + 1, $this->myDirectoryParts, null);
+        return null;
     }
 
     /**
