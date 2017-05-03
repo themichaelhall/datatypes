@@ -425,4 +425,26 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertSame('foo.bar.com', Url::parse('https://foo.bar.com/')->getHostAndPort());
         $this->assertSame('foo.bar.com:80', Url::parse('https://foo.bar.com:80/')->getHostAndPort());
     }
+
+    /**
+     * Test withUrlPath method.
+     */
+    public function testWithUrlPath()
+    {
+        $this->assertSame('https://localhost/', Url::parse('https://localhost/foo/bar')->withUrlPath(UrlPath::parse('/'))->__toString());
+        $this->assertSame('https://localhost/baz.html', Url::parse('https://localhost/foo/bar')->withUrlPath(UrlPath::parse('/baz.html'))->__toString());
+        $this->assertSame('https://localhost/foo/', Url::parse('https://localhost/foo/bar')->withUrlPath(UrlPath::parse(''))->__toString());
+        $this->assertSame('https://localhost/', Url::parse('https://localhost/foo/bar')->withUrlPath(UrlPath::parse('..'))->__toString());
+    }
+
+    /**
+     * Test withUrlPath method with path that resolves above root level.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlPathLogicException
+     * @expectedExceptionMessage Url path "/foo/bar" can not be combined with url path "../../": Absolute path is above root level.
+     */
+    public function testWithUrlPathWithPathAboveRootLevel()
+    {
+        Url::parse('https://localhost.com/foo/bar')->withUrlPath(UrlPath::parse('../../'));
+    }
 }
