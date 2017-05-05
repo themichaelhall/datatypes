@@ -79,7 +79,17 @@ interface UrlInterface extends DataTypeInterface
      */
     public function withHost(HostInterface $host);
 
-    // fixme: withPort()
+    /**
+     * Returns a copy of the Url instance with the specified port.
+     *
+     * @since 1.0.0
+     *
+     * @param int $port The port.
+     *
+     * @return UrlInterface The Url instance.
+     */
+    public function withPort($port);
+
     // fixme: withQueryString()
 
     /**

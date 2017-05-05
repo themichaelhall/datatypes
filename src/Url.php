@@ -114,6 +114,30 @@ class Url implements UrlInterface
     }
 
     /**
+     * Returns a copy of the Url instance with the specified port.
+     *
+     * @since 1.0.0
+     *
+     * @param int $port The port.
+     *
+     * @throws \InvalidArgumentException If the $port parameter is not an integer.
+     *
+     * @return UrlInterface The Url instance.
+     */
+    public function withPort($port)
+    {
+        if (!is_int($port)) {
+            throw new \InvalidArgumentException('$port parameter is not an integer.');
+        }
+
+        if (!self::myValidatePort($port, $error)) {
+            throw new UrlInvalidArgumentException($error);
+        }
+
+        return new self($this->myScheme, $this->myHost, $port, $this->myPath);
+    }
+
+    /**
      * Returns a copy of the Url instance with the specified scheme.
      *
      * @since 1.0.0

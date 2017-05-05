@@ -447,4 +447,47 @@ class UrlTest extends PHPUnit_Framework_TestCase
     {
         Url::parse('https://localhost.com/foo/bar')->withUrlPath(UrlPath::parse('../../'));
     }
+
+    /**
+     * Test withPort method.
+     */
+    public function testWithPort()
+    {
+        $this->assertSame('http://localhost:81/', Url::parse('http://localhost/')->withPort(81)->__toString());
+        $this->assertSame('http://localhost/', Url::parse('http://localhost:81/')->withPort(80)->__toString());
+        $this->assertSame('https://localhost/', Url::parse('https://localhost:80/')->withPort(443)->__toString());
+    }
+
+    /**
+     * Test withPort method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $port parameter is not an integer.
+     */
+    public function testWithPortWithInvalidArgumentType()
+    {
+        Url::parse('http://localhost/')->withPort(null);
+    }
+
+    /**
+     * Test withPort method with port below 0.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Port -1 is out of range: Minimum port number is 0.
+     */
+    public function testWithPortWithPortBelow0()
+    {
+        Url::parse('http://localhost/')->withPort(-1);
+    }
+
+    /**
+     * Test withPort method with port above 65535.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Port 65536 is out of range: Maximum port number is 65535.
+     */
+    public function testWithPortWithPortAbove65535()
+    {
+        Url::parse('http://localhost/')->withPort(65536);
+    }
 }
