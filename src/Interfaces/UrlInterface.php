@@ -80,6 +80,17 @@ interface UrlInterface extends DataTypeInterface
     public function withHost(HostInterface $host);
 
     /**
+     * Returns a copy of the Url instance with the specified path.
+     *
+     * @since 1.0.0
+     *
+     * @param UrlPathInterface $path The path.
+     *
+     * @return UrlInterface The Url instance.
+     */
+    public function withPath(UrlPathInterface $path);
+
+    /**
      * Returns a copy of the Url instance with the specified port.
      *
      * @since 1.0.0
@@ -103,15 +114,4 @@ interface UrlInterface extends DataTypeInterface
      * @return UrlInterface The Url instance.
      */
     public function withScheme(SchemeInterface $scheme, $keepDefaultPort = true);
-
-    /**
-     * Returns a copy of the Url instance with the specified url path.
-     *
-     * @since 1.0.0
-     *
-     * @param UrlPathInterface $urlPath The path.
-     *
-     * @return UrlInterface The Url instance.
-     */
-    public function withUrlPath(UrlPathInterface $urlPath);
 }

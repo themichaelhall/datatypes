@@ -1,5 +1,7 @@
 <?php
 
+namespace DataTypes\Tests;
+
 use DataTypes\Host;
 use DataTypes\Scheme;
 use DataTypes\Url;
@@ -8,7 +10,7 @@ use DataTypes\UrlPath;
 /**
  * Test Url class.
  */
-class UrlTest extends PHPUnit_Framework_TestCase
+class UrlTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test __toString method.
@@ -28,7 +30,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test that empty Url is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url "" is empty.
      */
     public function testEmptyUrlIsInvalid()
@@ -48,7 +50,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test that missing scheme is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url "foo.bar.com" is invalid: Scheme is missing.
      */
     public function testMissingSchemeIsInvalid()
@@ -59,7 +61,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test that empty scheme is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url "://foo.bar.com/" is invalid: Scheme "" is empty.
      */
     public function testEmptySchemeIsInvalid()
@@ -70,7 +72,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test that no scheme is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url "//foo.bar.com/" is invalid: Scheme is missing.
      */
     public function testNoSchemeIsInvalid()
@@ -81,7 +83,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test that invalid scheme is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url "baz://foo.bar.com/" is invalid: Scheme "baz" is invalid: Scheme must be "http" or "https"
      */
     public function testInvalidSchemeIsInvalid()
@@ -117,7 +119,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test that empty host is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url "https://" is invalid: Host "" is empty.
      */
     public function testEmptyHostIsInvalid()
@@ -128,7 +130,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test that invalid host is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url "https://foo@bar" is invalid: Host "foo@bar" is invalid: Hostname "foo@bar" is invalid: Part of domain "foo@bar" contains invalid character "@".
      */
     public function testInvalidHostIsInvalid()
@@ -167,7 +169,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test that url with invalid character in port is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url "http://domain.com:12X45" is invalid: Port "12X45" contains invalid character "X".
      */
     public function testUrlWithInvalidCharacterInPortIsInvalid()
@@ -178,7 +180,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test that url with port out of range is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url "http://domain.com:65536" is invalid: Port 65536 is out of range: Maximum port number is 65535.
      */
     public function testUrlWithPortOutOfRangeIsInvalid()
@@ -198,7 +200,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test that url with invalid path is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url "https://domain.com:1000/foo/{bar}" is invalid: Url path "/foo/{bar}" is invalid: Filename "{bar}" contains invalid character "{".
      */
     public function testUrlWithInvalidPathIsInvalid()
@@ -244,7 +246,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test that using fromParts method with port number below 0 is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Port -1 is out of range: Minimum port number is 0.
      */
     public function testFromPartsWithPortNumberBelow0IsInvalid()
@@ -255,7 +257,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test that using fromParts method with port number above 65535 is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Port 65536 is out of range: Maximum port number is 65535.
      */
     public function testFromPartsWithPortNumberAbove65535IsInvalid()
@@ -266,7 +268,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test that using fromParts method with relative url path is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url path "foo/" is relative.
      */
     public function testFromPartsWithRelativeUrlPathIsInvalid()
@@ -321,6 +323,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
      */
     public function testIsValidWithInvalidArgumentType()
     {
+        /** @noinspection PhpParamsInspection */
         Url::isValid([]);
     }
 
@@ -371,7 +374,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test parseRelative method with empty scheme.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url "://domain.com/" is invalid: Scheme "" is empty.
      */
     public function testParseRelativeWithEmptyScheme()
@@ -382,7 +385,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     /**
      * Test parseRelative method with invalid scheme.
      *
-     * @expectedException DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
      * @expectedExceptionMessage Url "baz://domain.com/" is invalid: Scheme "baz" is invalid: Scheme must be "http" or "https".
      */
     public function testParseRelativeWithInvalidScheme()
@@ -427,25 +430,25 @@ class UrlTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test withUrlPath method.
+     * Test withPath method.
      */
-    public function testWithUrlPath()
+    public function testWithPath()
     {
-        $this->assertSame('https://localhost/', Url::parse('https://localhost/foo/bar')->withUrlPath(UrlPath::parse('/'))->__toString());
-        $this->assertSame('https://localhost/baz.html', Url::parse('https://localhost/foo/bar')->withUrlPath(UrlPath::parse('/baz.html'))->__toString());
-        $this->assertSame('https://localhost/foo/', Url::parse('https://localhost/foo/bar')->withUrlPath(UrlPath::parse(''))->__toString());
-        $this->assertSame('https://localhost/', Url::parse('https://localhost/foo/bar')->withUrlPath(UrlPath::parse('..'))->__toString());
+        $this->assertSame('https://localhost/', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse('/'))->__toString());
+        $this->assertSame('https://localhost/baz.html', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse('/baz.html'))->__toString());
+        $this->assertSame('https://localhost/foo/', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse(''))->__toString());
+        $this->assertSame('https://localhost/', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse('..'))->__toString());
     }
 
     /**
-     * Test withUrlPath method with path that resolves above root level.
+     * Test withPath method with path that resolves above root level.
      *
      * @expectedException \DataTypes\Exceptions\UrlPathLogicException
      * @expectedExceptionMessage Url path "/foo/bar" can not be combined with url path "../../": Absolute path is above root level.
      */
     public function testWithUrlPathWithPathAboveRootLevel()
     {
-        Url::parse('https://localhost.com/foo/bar')->withUrlPath(UrlPath::parse('../../'));
+        Url::parse('https://localhost.com/foo/bar')->withPath(UrlPath::parse('../../'));
     }
 
     /**

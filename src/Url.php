@@ -153,17 +153,17 @@ class Url implements UrlInterface
     }
 
     /**
-     * Returns a copy of the Url instance with the specified url path.
+     * Returns a copy of the Url instance with the specified path.
      *
      * @since 1.0.0
      *
-     * @param UrlPathInterface $urlPath The path.
+     * @param UrlPathInterface $path The path.
      *
      * @return UrlInterface The Url instance.
      */
-    public function withUrlPath(UrlPathInterface $urlPath)
+    public function withPath(UrlPathInterface $path)
     {
-        return new self($this->myScheme, $this->myHost, $this->myPort, $this->myPath->withUrlPath($urlPath));
+        return new self($this->myScheme, $this->myHost, $this->myPort, $this->myPath->withUrlPath($path));
     }
 
     /**
