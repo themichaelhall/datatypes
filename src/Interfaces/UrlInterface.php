@@ -101,7 +101,16 @@ interface UrlInterface extends DataTypeInterface
      */
     public function withPort($port);
 
-    // fixme: withQueryString()
+    /**
+     * Returns a copy of the Url instance with the specified query string.
+     *
+     * @since 1.0.0
+     *
+     * @param string|null $queryString The query string or null for no query string.
+     *
+     * @return UrlInterface The url instance.
+     */
+    public function withQueryString($queryString = null);
 
     /**
      * Returns a copy of the Url instance with the specified scheme.

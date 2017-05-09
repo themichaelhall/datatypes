@@ -110,7 +110,7 @@ class Url implements UrlInterface
      */
     public function withHost(HostInterface $host)
     {
-        return new self($this->myScheme, $host, $this->myPort, $this->myPath);
+        return new self($this->myScheme, $host, $this->myPort, $this->myPath, $this->myQueryString);
     }
 
     /**
@@ -121,6 +121,7 @@ class Url implements UrlInterface
      * @param int $port The port.
      *
      * @throws \InvalidArgumentException If the $port parameter is not an integer.
+     * @throws UrlInvalidArgumentException If the port is out of range.
      *
      * @return UrlInterface The Url instance.
      */
@@ -134,7 +135,46 @@ class Url implements UrlInterface
             throw new UrlInvalidArgumentException($error);
         }
 
-        return new self($this->myScheme, $this->myHost, $port, $this->myPath);
+        return new self($this->myScheme, $this->myHost, $port, $this->myPath, $this->myQueryString);
+    }
+
+    /**
+     * Returns a copy of the Url instance with the specified path.
+     *
+     * @since 1.0.0
+     *
+     * @param UrlPathInterface $path The path.
+     *
+     * @return UrlInterface The Url instance.
+     */
+    public function withPath(UrlPathInterface $path)
+    {
+        return new self($this->myScheme, $this->myHost, $this->myPort, $this->myPath->withUrlPath($path), $this->myQueryString);
+    }
+
+    /**
+     * Returns a copy of the Url instance with the specified query string.
+     *
+     * @since 1.0.0
+     *
+     * @param string|null $queryString The query string or null for no query string.
+     *
+     * @throws \InvalidArgumentException If the $queryString parameter is not a string or null.
+     * @throws UrlInvalidArgumentException If the query parameter is invalid.
+     *
+     * @return UrlInterface The url instance.
+     */
+    public function withQueryString($queryString = null)
+    {
+        if (!is_string($queryString) && !is_null($queryString)) {
+            throw new \InvalidArgumentException('$queryString parameter is not a string or null.');
+        }
+
+        if (!self::myValidateQueryString($queryString, $error)) {
+            throw new UrlInvalidArgumentException($error);
+        }
+
+        return new self($this->myScheme, $this->myHost, $this->myPort, $this->myPath, $queryString);
     }
 
     /**
@@ -149,21 +189,7 @@ class Url implements UrlInterface
      */
     public function withScheme(SchemeInterface $scheme, $keepDefaultPort = true)
     {
-        return new self($scheme, $this->myHost, ($keepDefaultPort && $this->myPort === $this->myScheme->getDefaultPort() ? $scheme->getDefaultPort() : $this->myPort), $this->myPath);
-    }
-
-    /**
-     * Returns a copy of the Url instance with the specified path.
-     *
-     * @since 1.0.0
-     *
-     * @param UrlPathInterface $path The path.
-     *
-     * @return UrlInterface The Url instance.
-     */
-    public function withPath(UrlPathInterface $path)
-    {
-        return new self($this->myScheme, $this->myHost, $this->myPort, $this->myPath->withUrlPath($path));
+        return new self($scheme, $this->myHost, ($keepDefaultPort && $this->myPort === $this->myScheme->getDefaultPort() ? $scheme->getDefaultPort() : $this->myPort), $this->myPath, $this->myQueryString);
     }
 
     /**

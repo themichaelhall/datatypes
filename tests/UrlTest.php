@@ -104,6 +104,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('https://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('https'))->__toString());
         $this->assertSame('http://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('http'), false)->__toString());
         $this->assertSame('https://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('https'), false)->__toString());
+        $this->assertSame('http://foo.bar.com/path/?query', Url::parse('https://foo.bar.com/path/?query')->withScheme(Scheme::parse('http'))->__toString());
     }
 
     /**
@@ -144,7 +145,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     public function testWithHost()
     {
         $this->assertSame('http://foo.org/path/', Url::parse('http://192.168.0.1/path/')->withHost(Host::parse('foo.org'))->__toString());
-        $this->assertSame('https://foo.bar.com/path/', Url::parse('https://foo.bar.com/path/')->withHost(Host::parse('foo.bar.com'))->__toString());
+        $this->assertSame('http://foo.org/path/?query', Url::parse('http://192.168.0.1/path/?query')->withHost(Host::parse('foo.org'))->__toString());
     }
 
     /**
@@ -462,6 +463,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('https://localhost/baz.html', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse('/baz.html'))->__toString());
         $this->assertSame('https://localhost/foo/', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse(''))->__toString());
         $this->assertSame('https://localhost/', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse('..'))->__toString());
+        $this->assertSame('https://localhost/?query', Url::parse('https://localhost/foo/bar?query')->withPath(UrlPath::parse('/'))->__toString());
     }
 
     /**
@@ -483,6 +485,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('http://localhost:81/', Url::parse('http://localhost/')->withPort(81)->__toString());
         $this->assertSame('http://localhost/', Url::parse('http://localhost:81/')->withPort(80)->__toString());
         $this->assertSame('https://localhost/', Url::parse('https://localhost:80/')->withPort(443)->__toString());
+        $this->assertSame('http://localhost:81/?query', Url::parse('http://localhost/?query')->withPort(81)->__toString());
     }
 
     /**
@@ -516,5 +519,38 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     public function testWithPortWithPortAbove65535()
     {
         Url::parse('http://localhost/')->withPort(65536);
+    }
+
+    /**
+     * Test withQueryString method.
+     */
+    public function testWithQueryString()
+    {
+        self::assertSame('https://domain.com/foo?bar', Url::parse('https://domain.com/foo')->withQueryString('bar')->__toString());
+        self::assertSame('https://domain.com/foo?baz', Url::parse('https://domain.com/foo?bar')->withQueryString('baz')->__toString());
+        self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo')->withQueryString(null)->__toString());
+        self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo?bar')->withQueryString(null)->__toString());
+    }
+
+    /**
+     * Test withQueryString method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $queryString parameter is not a string or null.
+     */
+    public function testWithQueryStringWithInvalidArgumentType()
+    {
+        Url::parse('https://domain.com/')->withQueryString(false);
+    }
+
+    /**
+     * Test withQueryString method with invalid query string.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Query string "{foo}" contains invalid character "{".
+     */
+    public function testWithQueryStringWithInvalidQueryString()
+    {
+        Url::parse('https://domain.com/')->withQueryString('{foo}');
     }
 }
