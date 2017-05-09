@@ -223,7 +223,10 @@ class Url implements UrlInterface
             throw new UrlInvalidArgumentException('Url path "' . $urlPath . '" is relative.');
         }
 
-        // fixme: Validate $queryString
+        // Validate query string.
+        if ($queryString !== null && !self::myValidateQueryString($queryString, $error)) {
+            throw new UrlInvalidArgumentException($error);
+        }
 
         return new self($scheme, $host, $port, $urlPath, $queryString);
     }
@@ -553,6 +556,11 @@ class Url implements UrlInterface
         $parts = explode('?', $pathString, 2);
         $queryString = count($parts) === 2 ? $parts[1] : null;
 
+        // Validate query string if it is set.
+        if ($queryString !== null && !self::myValidateQueryString($queryString, $error)) {
+            return false;
+        }
+
         // Validate or try parse path.
         if ($validateOnly) {
             return UrlPath::isValid($parts[0]);
@@ -593,6 +601,25 @@ class Url implements UrlInterface
         // Port above 65535 is invalid.
         if ($port > 65535) {
             $error = 'Port ' . $port . ' is out of range: Maximum port number is 65535.';
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates a query string.
+     *
+     * @param string $queryString The query string.
+     * @param string $error       The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    private static function myValidateQueryString($queryString, &$error)
+    {
+        if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,:=:@\[\]\/\?%-]/', $queryString, $matches)) {
+            $error = 'Query string "' . $queryString . '" contains invalid character "' . $matches[0] . '".';
 
             return false;
         }

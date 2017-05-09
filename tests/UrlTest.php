@@ -209,6 +209,17 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parse url with invalid query string.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "https://domain.com:1000/foo?{bar}" is invalid: Query string "{bar}" contains invalid character "{".
+     */
+    public function testParseWithInvalidQueryString()
+    {
+        Url::parse('https://domain.com:1000/foo?{bar}');
+    }
+
+    /**
      * Test parse method with invalid argument type.
      *
      * @expectedException \InvalidArgumentException
@@ -288,6 +299,17 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test fromParts method with invalid query string.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Query string "foo#bar" contains invalid character "#".
+     */
+    public function testFromPartsWithInvalidQueryString()
+    {
+        Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), null, UrlPath::parse('/'), 'foo#bar');
+    }
+
+    /**
      * Test fromParts method with invalid query string argument type.
      *
      * @expectedException \InvalidArgumentException
@@ -312,6 +334,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(Url::isValid('http://domain.com:1234/'));
         $this->assertFalse(Url::isValid('http://domain.com:1234/{foo}'));
         $this->assertTrue(Url::isValid('http://domain.com/foo?bar'));
+        $this->assertFalse(Url::isValid('http://domain.com/foo?{bar}'));
         // fixme: More tests
     }
 
@@ -341,6 +364,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('http://domain.com:1234/', Url::tryParse('http://domain.com:1234/')->__toString());
         $this->assertNull(Url::tryParse('http://domain.com:1234/{foo}'));
         $this->assertSame('http://domain.com/foo?bar', Url::tryParse('http://domain.com/foo?bar')->__toString());
+        $this->assertNull(Url::tryParse('http://domain.com/foo?{bar}'));
         // fixme: More tests
     }
 
