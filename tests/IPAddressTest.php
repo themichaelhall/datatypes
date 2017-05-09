@@ -1,25 +1,27 @@
 <?php
 
+namespace DataTypes\Tests;
+
 use DataTypes\IPAddress;
 
 /**
  * Test IPAddress class.
  */
-class IPAddressTest extends PHPUnit_Framework_TestCase
+class IPAddressTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test __toString method.
      */
     public function testToString()
     {
-        $this->assertSame('127.0.0.1', IPAddress::parse('127.0.0.1')->__toString());
-        $this->assertSame('255.255.255.255', IPAddress::parse('255.255.255.255')->__toString());
+        self::assertSame('127.0.0.1', IPAddress::parse('127.0.0.1')->__toString());
+        self::assertSame('255.255.255.255', IPAddress::parse('255.255.255.255')->__toString());
     }
 
     /**
      * Test that empty IP address is invalid.
      *
-     * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
      * @expectedExceptionMessage IP address "" is empty.
      */
     public function testEmptyIPAddressIsInvalid()
@@ -30,7 +32,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
     /**
      * Test that empty IP address with not four octets is invalid.
      *
-     * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
      * @expectedExceptionMessage IP address "1.2.3" is invalid: IP address must consist of four octets.
      */
     public function testIPAddressWithNotFourOctetsIsInvalid()
@@ -41,7 +43,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
     /**
      * Test that IP address with empty octet is invalid.
      *
-     * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
      * @expectedExceptionMessage IP address "192.168..1" is invalid: Octet "" is empty.
      */
     public function testIPAddressWithEmptyOctetIsInvalid()
@@ -52,7 +54,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
     /**
      * Test that IP address with invalid character in octet is invalid.
      *
-     * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
      * @expectedExceptionMessage IP address "127.0.0X.1" is invalid: Octet "0X" contains invalid character "X".
      */
     public function testIPAddressWithInvalidCharacterInOctetIsInvalid()
@@ -63,7 +65,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
     /**
      * Test that IP address with octet out of range is invalid.
      *
-     * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
      * @expectedExceptionMessage IP address "255.255.256.255" is invalid: Octet 256 is out of range: Maximum value for an octet is 255.
      */
     public function testIPAddressWithOctetOutOfRangeIsInvalid()
@@ -87,13 +89,13 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
      */
     public function testIsValid()
     {
-        $this->assertFalse(IPAddress::isValid(''));
-        $this->assertFalse(IPAddress::isValid('1.2.3'));
-        $this->assertFalse(IPAddress::isValid('1.2.3.'));
-        $this->assertFalse(IPAddress::isValid('256.1.1.1'));
-        $this->assertFalse(IPAddress::isValid('yyy.123.234.1'));
-        $this->assertTrue(IPAddress::isValid('0.0.0.0'));
-        $this->assertTrue(IPAddress::isValid('255.255.255.255'));
+        self::assertFalse(IPAddress::isValid(''));
+        self::assertFalse(IPAddress::isValid('1.2.3'));
+        self::assertFalse(IPAddress::isValid('1.2.3.'));
+        self::assertFalse(IPAddress::isValid('256.1.1.1'));
+        self::assertFalse(IPAddress::isValid('yyy.123.234.1'));
+        self::assertTrue(IPAddress::isValid('0.0.0.0'));
+        self::assertTrue(IPAddress::isValid('255.255.255.255'));
     }
 
     /**
@@ -112,13 +114,13 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
      */
     public function testTryParse()
     {
-        $this->assertNull(IPAddress::tryParse(''));
-        $this->assertNull(IPAddress::tryParse('1.2.3'));
-        $this->assertNull(IPAddress::tryParse('1.2.3.'));
-        $this->assertNull(IPAddress::tryParse('256.1.1.1'));
-        $this->assertNull(IPAddress::tryParse('yyy.123.234.1'));
-        $this->assertSame('0.0.0.0', IPAddress::tryParse('0.0.0.0')->__toString());
-        $this->assertSame('255.255.255.255', IPAddress::tryParse('255.255.255.255')->__toString());
+        self::assertNull(IPAddress::tryParse(''));
+        self::assertNull(IPAddress::tryParse('1.2.3'));
+        self::assertNull(IPAddress::tryParse('1.2.3.'));
+        self::assertNull(IPAddress::tryParse('256.1.1.1'));
+        self::assertNull(IPAddress::tryParse('yyy.123.234.1'));
+        self::assertSame('0.0.0.0', IPAddress::tryParse('0.0.0.0')->__toString());
+        self::assertSame('255.255.255.255', IPAddress::tryParse('255.255.255.255')->__toString());
     }
 
     /**
@@ -129,6 +131,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
      */
     public function testTryParseWithInvalidArgumentType()
     {
+        /** @noinspection PhpParamsInspection */
         IPAddress::tryParse([192, 168, 1, 1]);
     }
 
@@ -137,7 +140,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
      */
     public function testGetParts()
     {
-        $this->assertSame([192, 168, 0, 1], IPAddress::parse('192.168.0.1')->getParts());
+        self::assertSame([192, 168, 0, 1], IPAddress::parse('192.168.0.1')->getParts());
     }
 
     /**
@@ -145,13 +148,13 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
      */
     public function testFromParts()
     {
-        $this->assertSame('192.168.0.1', IPAddress::fromParts([192, 168, 0, 1])->__toString());
+        self::assertSame('192.168.0.1', IPAddress::fromParts([192, 168, 0, 1])->__toString());
     }
 
     /**
      * Test fromParts method with invalid number of octets.
      *
-     * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
      * @expectedExceptionMessage Octets are invalid: IP address must consist of four octets.
      */
     public function testFromPartsWithInvalidNumberOfOctets()
@@ -173,7 +176,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
     /**
      * Test fromParts method with octet value too low.
      *
-     * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
      * @expectedExceptionMessage Octets are invalid: Octet -1 is out of range: Minimum value for an octet is 0.
      */
     public function testFromPartsWithOctetValueTooLow()
@@ -184,7 +187,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
     /**
      * Test fromParts method with octet value too high.
      *
-     * @expectedException DataTypes\Exceptions\IPAddressInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
      * @expectedExceptionMessage Octets are invalid: Octet 256 is out of range: Maximum value for an octet is 255.
      */
     public function testFromPartsWithOctetValueTooHigh()
@@ -197,10 +200,10 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
      */
     public function testWithMask()
     {
-        $this->assertSame('192.168.1.1', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('255.255.255.255'))->__toString());
-        $this->assertSame('192.168.1.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('255.255.255.0'))->__toString());
-        $this->assertSame('192.168.0.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('255.255.0.0'))->__toString());
-        $this->assertSame('192.0.0.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('255.0.0.0'))->__toString());
-        $this->assertSame('0.0.0.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('0.0.0.0'))->__toString());
+        self::assertSame('192.168.1.1', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('255.255.255.255'))->__toString());
+        self::assertSame('192.168.1.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('255.255.255.0'))->__toString());
+        self::assertSame('192.168.0.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('255.255.0.0'))->__toString());
+        self::assertSame('192.0.0.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('255.0.0.0'))->__toString());
+        self::assertSame('0.0.0.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('0.0.0.0'))->__toString());
     }
 }

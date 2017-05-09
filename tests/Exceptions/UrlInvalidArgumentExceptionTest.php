@@ -1,11 +1,13 @@
 <?php
 
+namespace DataTypes\Tests\Exceptions;
+
 use DataTypes\Exceptions\UrlInvalidArgumentException;
 
 /**
  * Test UrlInvalidArgumentException class.
  */
-class UrlInvalidArgumentExceptionTest extends PHPUnit_Framework_TestCase
+class UrlInvalidArgumentExceptionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test that UrlInvalidArgumentException is subclass of InvalidArgumentException.

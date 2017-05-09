@@ -1,5 +1,7 @@
 <?php
 
+namespace DataTypes\Tests;
+
 use DataTypes\Host;
 use DataTypes\Hostname;
 use DataTypes\IPAddress;
@@ -7,22 +9,22 @@ use DataTypes\IPAddress;
 /**
  * Test Host class.
  */
-class HostTest extends PHPUnit_Framework_TestCase
+class HostTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test __toString() method.
      */
     public function testToString()
     {
-        $this->assertSame('foo', Host::parse('foo')->__toString());
-        $this->assertSame('www.foo.com', Host::parse('www.foo.com')->__toString());
-        $this->assertSame('192.168.0.1', Host::parse('192.168.0.1')->__toString());
+        self::assertSame('foo', Host::parse('foo')->__toString());
+        self::assertSame('www.foo.com', Host::parse('www.foo.com')->__toString());
+        self::assertSame('192.168.0.1', Host::parse('192.168.0.1')->__toString());
     }
 
     /**
      * Test that empty host is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostInvalidArgumentException
      * @expectedExceptionMessage Host "" is empty.
      */
     public function testEmptyHostIsInvalid()
@@ -46,10 +48,10 @@ class HostTest extends PHPUnit_Framework_TestCase
      */
     public function testTryParse()
     {
-        $this->assertNull(Host::tryParse(''));
-        $this->assertSame('domain.com', Host::tryParse('domain.com')->__toString());
-        $this->assertSame('1.2.3.4', Host::tryParse('1.2.3.4')->__toString());
-        $this->assertNull(Host::tryParse('*'));
+        self::assertNull(Host::tryParse(''));
+        self::assertSame('domain.com', Host::tryParse('domain.com')->__toString());
+        self::assertSame('1.2.3.4', Host::tryParse('1.2.3.4')->__toString());
+        self::assertNull(Host::tryParse('*'));
     }
 
     /**
@@ -68,10 +70,10 @@ class HostTest extends PHPUnit_Framework_TestCase
      */
     public function testIsValid()
     {
-        $this->assertFalse(Host::isValid(''));
-        $this->assertTrue(Host::isValid('domain.com'));
-        $this->assertTrue(Host::isValid('1.2.3.4'));
-        $this->assertFalse(Host::isValid('*'));
+        self::assertFalse(Host::isValid(''));
+        self::assertTrue(Host::isValid('domain.com'));
+        self::assertTrue(Host::isValid('1.2.3.4'));
+        self::assertFalse(Host::isValid('*'));
     }
 
     /**
@@ -82,13 +84,14 @@ class HostTest extends PHPUnit_Framework_TestCase
      */
     public function testIsValidWithInvalidArgumentType()
     {
+        /** @noinspection PhpParamsInspection */
         Host::isValid(['foo', 'bar']);
     }
 
     /**
      * Test that invalid hostname or invalid IP address is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostInvalidArgumentException
      * @expectedExceptionMessage Host "foo@bar.com" is invalid: Hostname "foo@bar.com" is invalid: Part of domain "foo@bar" contains invalid character "@".
      */
     public function testInvalidHostnameOrInvalidIPAddressIsInvalid()
@@ -101,8 +104,8 @@ class HostTest extends PHPUnit_Framework_TestCase
      */
     public function testFromHostname()
     {
-        $this->assertSame('www.bar.org', Host::fromHostname(Hostname::parse('www.bar.org'))->__toString());
-        $this->assertSame('www.bar.org', Host::fromHostname(Hostname::parse('WWW.BAR.ORG'))->__toString());
+        self::assertSame('www.bar.org', Host::fromHostname(Hostname::parse('www.bar.org'))->__toString());
+        self::assertSame('www.bar.org', Host::fromHostname(Hostname::parse('WWW.BAR.ORG'))->__toString());
     }
 
     /**
@@ -110,7 +113,7 @@ class HostTest extends PHPUnit_Framework_TestCase
      */
     public function testFromIPAddress()
     {
-        $this->assertSame('10.20.30.40', Host::fromIPAddress(IPAddress::parse('10.20.30.40'))->__toString());
+        self::assertSame('10.20.30.40', Host::fromIPAddress(IPAddress::parse('10.20.30.40'))->__toString());
     }
 
     /**
@@ -118,8 +121,8 @@ class HostTest extends PHPUnit_Framework_TestCase
      */
     public function testGetIPAddress()
     {
-        $this->assertNull(Host::parse('foo.bar.com')->getIPAddress());
-        $this->assertSame('10.20.30.40', Host::parse('10.20.30.40')->getIPAddress()->__toString());
+        self::assertNull(Host::parse('foo.bar.com')->getIPAddress());
+        self::assertSame('10.20.30.40', Host::parse('10.20.30.40')->getIPAddress()->__toString());
     }
 
     /**
@@ -127,7 +130,7 @@ class HostTest extends PHPUnit_Framework_TestCase
      */
     public function testGetHostname()
     {
-        $this->assertSame('domain.com', Host::parse('domain.com')->getHostname()->__toString());
-        $this->assertSame('40.30.20.10.in-addr.arpa', Host::parse('10.20.30.40')->getHostname()->__toString());
+        self::assertSame('domain.com', Host::parse('domain.com')->getHostname()->__toString());
+        self::assertSame('40.30.20.10.in-addr.arpa', Host::parse('10.20.30.40')->getHostname()->__toString());
     }
 }

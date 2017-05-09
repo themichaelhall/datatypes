@@ -17,14 +17,14 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testToString()
     {
-        $this->assertSame('http://www.domain.com/', Url::parse('http://www.domain.com/')->__toString());
-        $this->assertSame('http://www.domain.com/', Url::parse('http://www.domain.com')->__toString());
-        $this->assertSame('http://www.domain.com/foo/Bar', Url::parse('http://www.domain.com/foo/Bar')->__toString());
-        $this->assertSame('http://www.domain.com/FOO/BAR', Url::parse('HTTP://WWW.DOMAIN.COM/FOO/BAR')->__toString());
-        $this->assertSame('http://www.domain.com:1234/', Url::parse('http://www.domain.com:1234/')->__toString());
-        $this->assertSame('http://www.domain.com/foo/Bar?', Url::parse('http://www.domain.com/foo/Bar?')->__toString());
-        $this->assertSame('http://www.domain.com/foo/Bar?Baz', Url::parse('http://www.domain.com/foo/Bar?Baz')->__toString());
-        $this->assertSame('http://www.domain.com/foo/Bar?F%7Baz%7D', Url::parse('http://www.domain.com/foo/Bar?F%7Baz%7D')->__toString());
+        self::assertSame('http://www.domain.com/', Url::parse('http://www.domain.com/')->__toString());
+        self::assertSame('http://www.domain.com/', Url::parse('http://www.domain.com')->__toString());
+        self::assertSame('http://www.domain.com/foo/Bar', Url::parse('http://www.domain.com/foo/Bar')->__toString());
+        self::assertSame('http://www.domain.com/FOO/BAR', Url::parse('HTTP://WWW.DOMAIN.COM/FOO/BAR')->__toString());
+        self::assertSame('http://www.domain.com:1234/', Url::parse('http://www.domain.com:1234/')->__toString());
+        self::assertSame('http://www.domain.com/foo/Bar?', Url::parse('http://www.domain.com/foo/Bar?')->__toString());
+        self::assertSame('http://www.domain.com/foo/Bar?Baz', Url::parse('http://www.domain.com/foo/Bar?Baz')->__toString());
+        self::assertSame('http://www.domain.com/foo/Bar?F%7Baz%7D', Url::parse('http://www.domain.com/foo/Bar?F%7Baz%7D')->__toString());
     }
 
     /**
@@ -43,8 +43,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetScheme()
     {
-        $this->assertSame(Scheme::TYPE_HTTP, Url::parse('http://foo.bar.com/')->getScheme()->getType());
-        $this->assertSame(Scheme::TYPE_HTTPS, Url::parse('https://foo.bar.com/')->getScheme()->getType());
+        self::assertSame(Scheme::TYPE_HTTP, Url::parse('http://foo.bar.com/')->getScheme()->getType());
+        self::assertSame(Scheme::TYPE_HTTPS, Url::parse('https://foo.bar.com/')->getScheme()->getType());
     }
 
     /**
@@ -96,15 +96,15 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithScheme()
     {
-        $this->assertSame('http://foo.bar.com/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('http'))->__toString());
-        $this->assertSame('https://foo.bar.com/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('https'))->__toString());
-        $this->assertSame('http://foo.bar.com:443/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('http'), false)->__toString());
-        $this->assertSame('https://foo.bar.com/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('https'), false)->__toString());
-        $this->assertSame('http://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('http'))->__toString());
-        $this->assertSame('https://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('https'))->__toString());
-        $this->assertSame('http://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('http'), false)->__toString());
-        $this->assertSame('https://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('https'), false)->__toString());
-        $this->assertSame('http://foo.bar.com/path/?query', Url::parse('https://foo.bar.com/path/?query')->withScheme(Scheme::parse('http'))->__toString());
+        self::assertSame('http://foo.bar.com/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('http'))->__toString());
+        self::assertSame('https://foo.bar.com/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('https'))->__toString());
+        self::assertSame('http://foo.bar.com:443/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('http'), false)->__toString());
+        self::assertSame('https://foo.bar.com/path/', Url::parse('https://foo.bar.com/path/')->withScheme(Scheme::parse('https'), false)->__toString());
+        self::assertSame('http://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('http'))->__toString());
+        self::assertSame('https://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('https'))->__toString());
+        self::assertSame('http://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('http'), false)->__toString());
+        self::assertSame('https://foo.bar.com:1000/path/', Url::parse('https://foo.bar.com:1000/path/')->withScheme(Scheme::parse('https'), false)->__toString());
+        self::assertSame('http://foo.bar.com/path/?query', Url::parse('https://foo.bar.com/path/?query')->withScheme(Scheme::parse('http'))->__toString());
     }
 
     /**
@@ -112,9 +112,9 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetHost()
     {
-        $this->assertSame('foo.bar.com', Url::parse('http://foo.bar.com/path/')->getHost()->__toString());
-        $this->assertSame('10.10.10.10', Url::parse('http://10.10.10.10/')->getHost()->__toString());
-        $this->assertSame('10.10.10.10', Url::parse('http://10.10.10.10')->getHost()->__toString());
+        self::assertSame('foo.bar.com', Url::parse('http://foo.bar.com/path/')->getHost()->__toString());
+        self::assertSame('10.10.10.10', Url::parse('http://10.10.10.10/')->getHost()->__toString());
+        self::assertSame('10.10.10.10', Url::parse('http://10.10.10.10')->getHost()->__toString());
     }
 
     /**
@@ -144,8 +144,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithHost()
     {
-        $this->assertSame('http://foo.org/path/', Url::parse('http://192.168.0.1/path/')->withHost(Host::parse('foo.org'))->__toString());
-        $this->assertSame('http://foo.org/path/?query', Url::parse('http://192.168.0.1/path/?query')->withHost(Host::parse('foo.org'))->__toString());
+        self::assertSame('http://foo.org/path/', Url::parse('http://192.168.0.1/path/')->withHost(Host::parse('foo.org'))->__toString());
+        self::assertSame('http://foo.org/path/?query', Url::parse('http://192.168.0.1/path/?query')->withHost(Host::parse('foo.org'))->__toString());
     }
 
     /**
@@ -153,9 +153,9 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPort()
     {
-        $this->assertSame(80, Url::parse('http://foo.bar.com/path/')->getPort());
-        $this->assertSame(443, Url::parse('https://foo.bar.com/path/')->getPort());
-        $this->assertSame(1000, Url::parse('https://foo.bar.com:1000/path/')->getPort());
+        self::assertSame(80, Url::parse('http://foo.bar.com/path/')->getPort());
+        self::assertSame(443, Url::parse('https://foo.bar.com/path/')->getPort());
+        self::assertSame(1000, Url::parse('https://foo.bar.com:1000/path/')->getPort());
     }
 
     /**
@@ -163,8 +163,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseUrlWithEmptyPort()
     {
-        $this->assertSame('http://foo.com/', Url::parse('http://foo.com:')->__toString());
-        $this->assertSame('http://foo.com/bar/baz', Url::parse('http://foo.com:/bar/baz')->__toString());
+        self::assertSame('http://foo.com/', Url::parse('http://foo.com:')->__toString());
+        self::assertSame('http://foo.com/bar/baz', Url::parse('http://foo.com:/bar/baz')->__toString());
     }
 
     /**
@@ -194,8 +194,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPath()
     {
-        $this->assertSame('/', Url::parse('http://foo.com/')->getPath()->__toString());
-        $this->assertSame('/foo/bar', Url::parse('http://domain.com/foo/bar')->getPath()->__toString());
+        self::assertSame('/', Url::parse('http://foo.com/')->getPath()->__toString());
+        self::assertSame('/foo/bar', Url::parse('http://domain.com/foo/bar')->getPath()->__toString());
     }
 
     /**
@@ -236,10 +236,10 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetQueryString()
     {
-        $this->assertNull(Url::parse('http://domain.com/foo')->getQueryString());
-        $this->assertSame('', Url::parse('http://domain.com/foo?')->getQueryString());
-        $this->assertSame('bar=baz', Url::parse('http://domain.com/foo?bar=baz')->getQueryString());
-        $this->assertSame('F%7Baz%7D', Url::parse('http://domain.com/foo?F%7Baz%7D')->getQueryString());
+        self::assertNull(Url::parse('http://domain.com/foo')->getQueryString());
+        self::assertSame('', Url::parse('http://domain.com/foo?')->getQueryString());
+        self::assertSame('bar=baz', Url::parse('http://domain.com/foo?bar=baz')->getQueryString());
+        self::assertSame('F%7Baz%7D', Url::parse('http://domain.com/foo?F%7Baz%7D')->getQueryString());
     }
 
     /**
@@ -247,12 +247,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testFromParts()
     {
-        $this->assertSame('https://www.domain.com:1000/foo/bar?query', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), 1000, UrlPath::parse('/foo/bar'), 'query')->__toString());
-        $this->assertSame('https://www.domain.com/foo/bar?query', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), null, UrlPath::parse('/foo/bar'), 'query')->__toString());
-        $this->assertSame('https://www.domain.com/foo/bar?', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), null, UrlPath::parse('/foo/bar'), '')->__toString());
-        $this->assertSame('https://www.domain.com/foo/bar', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), null, UrlPath::parse('/foo/bar'))->__toString());
-        $this->assertSame('https://www.domain.com:1000/', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), 1000)->__toString());
-        $this->assertSame('https://www.domain.com/', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'))->__toString());
+        self::assertSame('https://www.domain.com:1000/foo/bar?query', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), 1000, UrlPath::parse('/foo/bar'), 'query')->__toString());
+        self::assertSame('https://www.domain.com/foo/bar?query', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), null, UrlPath::parse('/foo/bar'), 'query')->__toString());
+        self::assertSame('https://www.domain.com/foo/bar?', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), null, UrlPath::parse('/foo/bar'), '')->__toString());
+        self::assertSame('https://www.domain.com/foo/bar', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), null, UrlPath::parse('/foo/bar'))->__toString());
+        self::assertSame('https://www.domain.com:1000/', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'), 1000)->__toString());
+        self::assertSame('https://www.domain.com/', Url::fromParts(Scheme::parse('https'), Host::parse('www.domain.com'))->__toString());
     }
 
     /**
@@ -326,16 +326,16 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsValid()
     {
-        $this->assertFalse(Url::isValid(''));
-        $this->assertFalse(Url::isValid('foo://bar.com/'));
-        $this->assertTrue(Url::isValid('http://domain.com/'));
-        $this->assertFalse(Url::isValid('http:///path/'));
-        $this->assertFalse(Url::isValid('http://+++/'));
-        $this->assertFalse(Url::isValid('http://domain.com:XXX/'));
-        $this->assertTrue(Url::isValid('http://domain.com:1234/'));
-        $this->assertFalse(Url::isValid('http://domain.com:1234/{foo}'));
-        $this->assertTrue(Url::isValid('http://domain.com/foo?bar'));
-        $this->assertFalse(Url::isValid('http://domain.com/foo?{bar}'));
+        self::assertFalse(Url::isValid(''));
+        self::assertFalse(Url::isValid('foo://bar.com/'));
+        self::assertTrue(Url::isValid('http://domain.com/'));
+        self::assertFalse(Url::isValid('http:///path/'));
+        self::assertFalse(Url::isValid('http://+++/'));
+        self::assertFalse(Url::isValid('http://domain.com:XXX/'));
+        self::assertTrue(Url::isValid('http://domain.com:1234/'));
+        self::assertFalse(Url::isValid('http://domain.com:1234/{foo}'));
+        self::assertTrue(Url::isValid('http://domain.com/foo?bar'));
+        self::assertFalse(Url::isValid('http://domain.com/foo?{bar}'));
         // fixme: More tests
     }
 
@@ -356,16 +356,16 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testTryParse()
     {
-        $this->assertNull(Url::tryParse(''));
-        $this->assertNull(Url::tryParse('foo://bar.com/'));
-        $this->assertSame('http://domain.com/', Url::tryParse('http://domain.com/')->__toString());
-        $this->assertNull(Url::tryParse('http:///path/'));
-        $this->assertNull(Url::tryParse('http://+++/'));
-        $this->assertNull(Url::tryParse('http://domain.com:XXX/'));
-        $this->assertSame('http://domain.com:1234/', Url::tryParse('http://domain.com:1234/')->__toString());
-        $this->assertNull(Url::tryParse('http://domain.com:1234/{foo}'));
-        $this->assertSame('http://domain.com/foo?bar', Url::tryParse('http://domain.com/foo?bar')->__toString());
-        $this->assertNull(Url::tryParse('http://domain.com/foo?{bar}'));
+        self::assertNull(Url::tryParse(''));
+        self::assertNull(Url::tryParse('foo://bar.com/'));
+        self::assertSame('http://domain.com/', Url::tryParse('http://domain.com/')->__toString());
+        self::assertNull(Url::tryParse('http:///path/'));
+        self::assertNull(Url::tryParse('http://+++/'));
+        self::assertNull(Url::tryParse('http://domain.com:XXX/'));
+        self::assertSame('http://domain.com:1234/', Url::tryParse('http://domain.com:1234/')->__toString());
+        self::assertNull(Url::tryParse('http://domain.com:1234/{foo}'));
+        self::assertSame('http://domain.com/foo?bar', Url::tryParse('http://domain.com/foo?bar')->__toString());
+        self::assertNull(Url::tryParse('http://domain.com/foo?{bar}'));
         // fixme: More tests
     }
 
@@ -376,11 +376,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     {
         $url = Url::parse('http://foo.com:8080/path/file?query');
 
-        $this->assertSame('https://bar.com/new-path/new-file?new-query', Url::parseRelative('https://bar.com/new-path/new-file?new-query', $url)->__toString());
-        $this->assertSame('http://bar.com/new-path/new-file?new-query', Url::parseRelative('//bar.com/new-path/new-file?new-query', $url)->__toString());
-        $this->assertSame('http://foo.com:8080/new-path/new-file?new-query', Url::parseRelative('/new-path/new-file?new-query', $url)->__toString());
-        $this->assertSame('http://foo.com:8080/path/new-file?new-query', Url::parseRelative('new-file?new-query', $url)->__toString());
-        $this->assertSame('http://foo.com:8080/new-file?new-query', Url::parseRelative('../new-file?new-query', $url)->__toString());
+        self::assertSame('https://bar.com/new-path/new-file?new-query', Url::parseRelative('https://bar.com/new-path/new-file?new-query', $url)->__toString());
+        self::assertSame('http://bar.com/new-path/new-file?new-query', Url::parseRelative('//bar.com/new-path/new-file?new-query', $url)->__toString());
+        self::assertSame('http://foo.com:8080/new-path/new-file?new-query', Url::parseRelative('/new-path/new-file?new-query', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/new-file?new-query', Url::parseRelative('new-file?new-query', $url)->__toString());
+        self::assertSame('http://foo.com:8080/new-file?new-query', Url::parseRelative('../new-file?new-query', $url)->__toString());
         // fixme: Query string
         // fixme: Empty url
     }
@@ -449,9 +449,9 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetHostAndPort()
     {
-        $this->assertSame('foo.bar.com', Url::parse('http://foo.bar.com/')->getHostAndPort());
-        $this->assertSame('foo.bar.com', Url::parse('https://foo.bar.com/')->getHostAndPort());
-        $this->assertSame('foo.bar.com:80', Url::parse('https://foo.bar.com:80/')->getHostAndPort());
+        self::assertSame('foo.bar.com', Url::parse('http://foo.bar.com/')->getHostAndPort());
+        self::assertSame('foo.bar.com', Url::parse('https://foo.bar.com/')->getHostAndPort());
+        self::assertSame('foo.bar.com:80', Url::parse('https://foo.bar.com:80/')->getHostAndPort());
     }
 
     /**
@@ -459,11 +459,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithPath()
     {
-        $this->assertSame('https://localhost/', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse('/'))->__toString());
-        $this->assertSame('https://localhost/baz.html', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse('/baz.html'))->__toString());
-        $this->assertSame('https://localhost/foo/', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse(''))->__toString());
-        $this->assertSame('https://localhost/', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse('..'))->__toString());
-        $this->assertSame('https://localhost/?query', Url::parse('https://localhost/foo/bar?query')->withPath(UrlPath::parse('/'))->__toString());
+        self::assertSame('https://localhost/', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse('/'))->__toString());
+        self::assertSame('https://localhost/baz.html', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse('/baz.html'))->__toString());
+        self::assertSame('https://localhost/foo/', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse(''))->__toString());
+        self::assertSame('https://localhost/', Url::parse('https://localhost/foo/bar')->withPath(UrlPath::parse('..'))->__toString());
+        self::assertSame('https://localhost/?query', Url::parse('https://localhost/foo/bar?query')->withPath(UrlPath::parse('/'))->__toString());
     }
 
     /**
@@ -482,10 +482,10 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithPort()
     {
-        $this->assertSame('http://localhost:81/', Url::parse('http://localhost/')->withPort(81)->__toString());
-        $this->assertSame('http://localhost/', Url::parse('http://localhost:81/')->withPort(80)->__toString());
-        $this->assertSame('https://localhost/', Url::parse('https://localhost:80/')->withPort(443)->__toString());
-        $this->assertSame('http://localhost:81/?query', Url::parse('http://localhost/?query')->withPort(81)->__toString());
+        self::assertSame('http://localhost:81/', Url::parse('http://localhost/')->withPort(81)->__toString());
+        self::assertSame('http://localhost/', Url::parse('http://localhost:81/')->withPort(80)->__toString());
+        self::assertSame('https://localhost/', Url::parse('https://localhost:80/')->withPort(443)->__toString());
+        self::assertSame('http://localhost:81/?query', Url::parse('http://localhost/?query')->withPort(81)->__toString());
     }
 
     /**

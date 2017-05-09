@@ -1,22 +1,24 @@
 <?php
 
+namespace DataTypes\Tests;
+
 use DataTypes\Hostname;
 
 /**
  * Test Hostname class.
  */
-class HostnameTest extends PHPUnit_Framework_TestCase
+class HostnameTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test __toString() method.
      */
     public function testToString()
     {
-        $this->assertSame('foo', Hostname::parse('foo')->__toString());
-        $this->assertSame('foo.com', Hostname::parse('foo.com')->__toString());
-        $this->assertSame('www.foo.com', Hostname::parse('www.foo.com')->__toString());
-        $this->assertSame('www.foo.bar.com', Hostname::parse('www.foo.bar.com')->__toString());
-        $this->assertSame('www.foo-bar.com', Hostname::parse('www.foo-bar.com')->__toString());
+        self::assertSame('foo', Hostname::parse('foo')->__toString());
+        self::assertSame('foo.com', Hostname::parse('foo.com')->__toString());
+        self::assertSame('www.foo.com', Hostname::parse('www.foo.com')->__toString());
+        self::assertSame('www.foo.bar.com', Hostname::parse('www.foo.bar.com')->__toString());
+        self::assertSame('www.foo-bar.com', Hostname::parse('www.foo-bar.com')->__toString());
     }
 
     /**
@@ -24,7 +26,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testHostnameIsLowerCase()
     {
-        $this->assertSame('www.bar.org', Hostname::parse('WWW.BAR.ORG')->__toString());
+        self::assertSame('www.bar.org', Hostname::parse('WWW.BAR.ORG')->__toString());
     }
 
     /**
@@ -32,13 +34,13 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testTrailingDotInHostnameIsRemoved()
     {
-        $this->assertSame('www.bar.org', Hostname::parse('www.bar.org.')->__toString());
+        self::assertSame('www.bar.org', Hostname::parse('www.bar.org.')->__toString());
     }
 
     /**
      * Test that empty hostname is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Hostname "" is empty.
      */
     public function testEmptyHostnameIsInvalid()
@@ -49,7 +51,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that hostname with only a dot is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Hostname "." is invalid: Part of domain "" is empty.
      */
     public function testHostnameWithOnlyADotIsInvalid()
@@ -60,7 +62,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that too long hostname is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Hostname "xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxx" is too long: Maximum allowed length is 255 characters.
      */
     public function testTooLongHostnameIsInvalid()
@@ -77,7 +79,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that hostname with invalid character is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Hostname "foo.ba+r.com" is invalid: Part of domain "ba+r" contains invalid character "+".
      */
     public function testHostnameWithInvalidCharacterIsInvalid()
@@ -88,7 +90,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that hostname with empty part is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Hostname "foo..com" is invalid: Part of domain "" is empty.
      */
     public function testHostnameWithEmptyPartIsInvalid()
@@ -99,7 +101,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that hostname with too long part is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Hostname "foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.com" is invalid: Part of domain "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is too long: Maximum allowed length is 63 characters.
      */
     public function testHostNameWithTooLongPartIsInvalid()
@@ -110,7 +112,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that hostname with part beginning with dash is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Hostname "-foo.bar.com" is invalid: Part of domain "-foo" begins with "-".
      */
     public function testHostnameWithPartBeginningWithDashIsInvalid()
@@ -121,7 +123,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that hostname with part ending with dash is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Hostname "foo.bar-.com" is invalid: Part of domain "bar-" ends with "-".
      */
     public function testHostnameWithPartEndingWithDashIsInvalid()
@@ -132,7 +134,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that hostname with empty top-level domain is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Hostname "bar.." is invalid: Top-level domain "" is empty.
      */
     public function testHostnameWithEmptyTopLevelDomainIsInvalid()
@@ -143,7 +145,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that hostname with too long top-level domain is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Hostname "foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is invalid: Top-level domain "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is too long: Maximum allowed length is 63 characters.
      */
     public function testHostNameWithTooLongTopLevelDomainIsInvalid()
@@ -154,7 +156,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that hostname with invalid character in top level domain is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Hostname "foo.bar.co2" is invalid: Top-level domain "co2" contains invalid character "2".
      */
     public function testHostnameWithInvalidCharacterInTopLevelDomainIsInvalid()
@@ -178,9 +180,9 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTld()
     {
-        $this->assertNull(Hostname::parse('foo')->getTld());
-        $this->assertSame('com', Hostname::parse('foo.com')->getTld());
-        $this->assertSame('org', Hostname::parse('foo.bar.org')->getTld());
+        self::assertNull(Hostname::parse('foo')->getTld());
+        self::assertSame('com', Hostname::parse('foo.com')->getTld());
+        self::assertSame('org', Hostname::parse('foo.bar.org')->getTld());
     }
 
     /**
@@ -188,9 +190,9 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDomainName()
     {
-        $this->assertSame('foo', Hostname::parse('foo')->getDomainName());
-        $this->assertSame('foo.com', Hostname::parse('foo.com')->getDomainName());
-        $this->assertSame('bar.org', Hostname::parse('foo.bar.org')->getDomainName());
+        self::assertSame('foo', Hostname::parse('foo')->getDomainName());
+        self::assertSame('foo.com', Hostname::parse('foo.com')->getDomainName());
+        self::assertSame('bar.org', Hostname::parse('foo.bar.org')->getDomainName());
     }
 
     /**
@@ -198,16 +200,16 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testIsValid()
     {
-        $this->assertFalse(Hostname::isValid(''));
-        $this->assertFalse(Hostname::isValid('.'));
-        $this->assertFalse(Hostname::isValid('bar..com'));
-        $this->assertTrue(Hostname::isValid('foo.bar.com.'));
-        $this->assertTrue(Hostname::isValid('FOO.BAR.COM.'));
-        $this->assertFalse(Hostname::isValid('foo..org'));
-        $this->assertFalse(Hostname::isValid('*.org'));
-        $this->assertFalse(Hostname::isValid('foo.[bar].org'));
-        $this->assertFalse(Hostname::isValid('[foo].bar.org'));
-        $this->assertFalse(Hostname::isValid('foo.bar..'));
+        self::assertFalse(Hostname::isValid(''));
+        self::assertFalse(Hostname::isValid('.'));
+        self::assertFalse(Hostname::isValid('bar..com'));
+        self::assertTrue(Hostname::isValid('foo.bar.com.'));
+        self::assertTrue(Hostname::isValid('FOO.BAR.COM.'));
+        self::assertFalse(Hostname::isValid('foo..org'));
+        self::assertFalse(Hostname::isValid('*.org'));
+        self::assertFalse(Hostname::isValid('foo.[bar].org'));
+        self::assertFalse(Hostname::isValid('[foo].bar.org'));
+        self::assertFalse(Hostname::isValid('foo.bar..'));
     }
 
     /**
@@ -226,16 +228,16 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testTryParse()
     {
-        $this->assertNull(Hostname::tryParse(''));
-        $this->assertNull(Hostname::tryParse('.'));
-        $this->assertNull(Hostname::tryParse('bar..com'));
-        $this->assertSame('foo.bar.com', Hostname::tryParse('foo.bar.com.')->__toString());
-        $this->assertSame('foo.bar.com', Hostname::tryParse('FOO.BAR.COM.')->__toString());
-        $this->assertNull(Hostname::tryParse('foo..org'));
-        $this->assertNull(Hostname::tryParse('*.org'));
-        $this->assertNull(Hostname::tryParse('foo.[bar].org'));
-        $this->assertNull(Hostname::tryParse('[foo].bar.org'));
-        $this->assertNull(Hostname::tryParse('foo.bar..'));
+        self::assertNull(Hostname::tryParse(''));
+        self::assertNull(Hostname::tryParse('.'));
+        self::assertNull(Hostname::tryParse('bar..com'));
+        self::assertSame('foo.bar.com', Hostname::tryParse('foo.bar.com.')->__toString());
+        self::assertSame('foo.bar.com', Hostname::tryParse('FOO.BAR.COM.')->__toString());
+        self::assertNull(Hostname::tryParse('foo..org'));
+        self::assertNull(Hostname::tryParse('*.org'));
+        self::assertNull(Hostname::tryParse('foo.[bar].org'));
+        self::assertNull(Hostname::tryParse('[foo].bar.org'));
+        self::assertNull(Hostname::tryParse('foo.bar..'));
     }
 
     /**
@@ -254,16 +256,16 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testWithTld()
     {
-        $this->assertSame('foo.com', Hostname::parse('foo')->withTld('com')->__toString());
-        $this->assertSame('foo.org', Hostname::parse('foo.com')->withTld('org')->__toString());
-        $this->assertSame('foo.bar.org', Hostname::parse('foo.bar.com')->withTld('org')->__toString());
-        $this->assertSame('foo.bar.org', Hostname::parse('FOO.BAR.COM')->withTld('ORG')->__toString());
+        self::assertSame('foo.com', Hostname::parse('foo')->withTld('com')->__toString());
+        self::assertSame('foo.org', Hostname::parse('foo.com')->withTld('org')->__toString());
+        self::assertSame('foo.bar.org', Hostname::parse('foo.bar.com')->withTld('org')->__toString());
+        self::assertSame('foo.bar.org', Hostname::parse('FOO.BAR.COM')->withTld('ORG')->__toString());
     }
 
     /**
      * Test that a call to withTld method with an invalid top-level domain is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Top-level domain "123" contains invalid character "1".
      */
     public function testWithTldWithInvalidTopDomainLevelIsInvalid()
@@ -287,9 +289,9 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDomainParts()
     {
-        $this->assertSame(['foo'], Hostname::parse('foo')->getDomainParts());
-        $this->assertSame(['foo'], Hostname::parse('foo.com')->getDomainParts());
-        $this->assertSame(['bar', 'foo'], Hostname::parse('bar.foo.com')->getDomainParts());
+        self::assertSame(['foo'], Hostname::parse('foo')->getDomainParts());
+        self::assertSame(['foo'], Hostname::parse('foo.com')->getDomainParts());
+        self::assertSame(['bar', 'foo'], Hostname::parse('bar.foo.com')->getDomainParts());
     }
 
     /**
@@ -297,16 +299,16 @@ class HostnameTest extends PHPUnit_Framework_TestCase
      */
     public function testFromParts()
     {
-        $this->assertSame('foo', Hostname::fromParts(['foo'])->__toString());
-        $this->assertSame('foo.com', Hostname::fromParts(['foo'], 'com')->__toString());
-        $this->assertSame('bar.foo.com', Hostname::fromParts(['bar', 'foo'], 'com')->__toString());
-        $this->assertSame('bar.foo.com', Hostname::fromParts(['BAR', 'FOO'], 'COM')->__toString());
+        self::assertSame('foo', Hostname::fromParts(['foo'])->__toString());
+        self::assertSame('foo.com', Hostname::fromParts(['foo'], 'com')->__toString());
+        self::assertSame('bar.foo.com', Hostname::fromParts(['bar', 'foo'], 'com')->__toString());
+        self::assertSame('bar.foo.com', Hostname::fromParts(['BAR', 'FOO'], 'COM')->__toString());
     }
 
     /**
      * Test that a call to fromParts with empty domain parts is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Domain parts [] is empty.
      */
     public function testFromPartsWithEmptyDomainPartsIsInvalid()
@@ -317,7 +319,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that a call to fromParts with invalid domain part is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Domain parts ["foo", "b*r"] is invalid: Part of domain "b*r" contains invalid character "*".
      */
     public function testFromPartsWithInvalidDomainPartsIsInvalid()
@@ -328,7 +330,7 @@ class HostnameTest extends PHPUnit_Framework_TestCase
     /**
      * Test that a call to fromParts with invalid top-level domain is invalid.
      *
-     * @expectedException DataTypes\Exceptions\HostnameInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
      * @expectedExceptionMessage Top-level domain "c*m" contains invalid character "*".
      */
     public function testFromPartsWithInvalidTopLevelDomainIsInvalid()

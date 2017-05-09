@@ -1,5 +1,7 @@
 <?php
 
+namespace DataTypes\Tests;
+
 use DataTypes\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\Exceptions\FilePathLogicException;
 use DataTypes\FilePath;
@@ -9,7 +11,7 @@ require_once __DIR__ . '/Helpers/Fakes/FakePhpUname.php';
 /**
  * Test FilePath class.
  */
-class FilePathTest extends PHPUnit_Framework_TestCase
+class FilePathTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test __toString method.
@@ -18,10 +20,10 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame($DS, FilePath::parse($DS)->__toString());
-        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->__toString());
-        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz.html', FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz.html')->__toString());
-        $this->assertSame('foo' . $DS . 'bar' . $DS . 'baz.html', FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz.html')->__toString());
+        self::assertSame($DS, FilePath::parse($DS)->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz.html', FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz.html')->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS . 'baz.html', FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz.html')->__toString());
     }
 
     /**
@@ -31,12 +33,12 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame([], FilePath::parse($DS)->getDirectoryParts());
-        $this->assertSame(['foo'], FilePath::parse($DS . 'foo' . $DS)->getDirectoryParts());
-        $this->assertSame(['foo', 'bar'], FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz.html')->getDirectoryParts());
-        $this->assertSame(['foo', 'bar'], FilePath::parse($DS . $DS . 'foo' . $DS . 'bar' . $DS . 'baz.html')->getDirectoryParts());
-        $this->assertSame(['foo', 'bar'], FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz.html')->getDirectoryParts());
-        $this->assertSame(['foo', 'bar'], FilePath::parse('foo' . $DS . 'bar' . $DS . $DS . 'baz.html')->getDirectoryParts());
+        self::assertSame([], FilePath::parse($DS)->getDirectoryParts());
+        self::assertSame(['foo'], FilePath::parse($DS . 'foo' . $DS)->getDirectoryParts());
+        self::assertSame(['foo', 'bar'], FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz.html')->getDirectoryParts());
+        self::assertSame(['foo', 'bar'], FilePath::parse($DS . $DS . 'foo' . $DS . 'bar' . $DS . 'baz.html')->getDirectoryParts());
+        self::assertSame(['foo', 'bar'], FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz.html')->getDirectoryParts());
+        self::assertSame(['foo', 'bar'], FilePath::parse('foo' . $DS . 'bar' . $DS . $DS . 'baz.html')->getDirectoryParts());
     }
 
     /**
@@ -46,9 +48,9 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertNull(FilePath::parse($DS)->getFilename());
-        $this->assertSame('foo.html', FilePath::parse('foo.html')->getFilename());
-        $this->assertSame('baz', FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz')->getFilename());
+        self::assertNull(FilePath::parse($DS)->getFilename());
+        self::assertSame('foo.html', FilePath::parse('foo.html')->getFilename());
+        self::assertSame('baz', FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz')->getFilename());
     }
 
     /**
@@ -58,12 +60,12 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertFalse(FilePath::parse('')->isAbsolute());
-        $this->assertTrue(FilePath::parse($DS)->isAbsolute());
-        $this->assertFalse(FilePath::parse('foo')->isAbsolute());
-        $this->assertTrue(FilePath::parse($DS . 'foo')->isAbsolute());
-        $this->assertFalse(FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz')->isAbsolute());
-        $this->assertTrue(FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz')->isAbsolute());
+        self::assertFalse(FilePath::parse('')->isAbsolute());
+        self::assertTrue(FilePath::parse($DS)->isAbsolute());
+        self::assertFalse(FilePath::parse('foo')->isAbsolute());
+        self::assertTrue(FilePath::parse($DS . 'foo')->isAbsolute());
+        self::assertFalse(FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz')->isAbsolute());
+        self::assertTrue(FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz')->isAbsolute());
     }
 
     /**
@@ -73,12 +75,12 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertTrue(FilePath::parse('')->isRelative());
-        $this->assertFalse(FilePath::parse($DS)->isRelative());
-        $this->assertTrue(FilePath::parse('foo')->isRelative());
-        $this->assertFalse(FilePath::parse($DS . 'foo')->isRelative());
-        $this->assertTrue(FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz')->isRelative());
-        $this->assertFalse(FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz')->isRelative());
+        self::assertTrue(FilePath::parse('')->isRelative());
+        self::assertFalse(FilePath::parse($DS)->isRelative());
+        self::assertTrue(FilePath::parse('foo')->isRelative());
+        self::assertFalse(FilePath::parse($DS . 'foo')->isRelative());
+        self::assertTrue(FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz')->isRelative());
+        self::assertFalse(FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . 'baz')->isRelative());
     }
 
     /**
@@ -88,10 +90,10 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . '.' . $DS . 'baz' . $DS)->__toString());
-        $this->assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('foo' . $DS . 'bar' . $DS . '.' . $DS)->__toString());
-        $this->assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('.' . $DS . 'foo' . $DS . 'bar' . $DS)->__toString());
-        $this->assertSame('foo' . $DS . 'bar' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS . '.' . $DS . 'file')->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . '.' . $DS . 'baz' . $DS)->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('foo' . $DS . 'bar' . $DS . '.' . $DS)->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('.' . $DS . 'foo' . $DS . 'bar' . $DS)->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS . '.' . $DS . 'file')->__toString());
     }
 
     /**
@@ -101,10 +103,10 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame($DS . 'foo' . $DS . 'baz' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . '..' . $DS . 'baz' . $DS)->__toString());
-        $this->assertSame($DS . 'baz' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS)->__toString());
-        $this->assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz' . $DS . '..')->__toString());
-        $this->assertSame('foo' . $DS . 'bar' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz' . $DS . '..' . $DS . 'file')->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'baz' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . '..' . $DS . 'baz' . $DS)->__toString());
+        self::assertSame($DS . 'baz' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS)->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz' . $DS . '..')->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS . 'baz' . $DS . '..' . $DS . 'file')->__toString());
     }
 
     /**
@@ -116,9 +118,9 @@ class FilePathTest extends PHPUnit_Framework_TestCase
 
         $filePath = FilePath::parse('foo' . $DS . 'bar' . $DS . '..' . $DS . '..' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS . 'file.html');
 
-        $this->assertSame('..' . $DS . '..' . $DS . 'baz' . $DS . 'file.html', $filePath->__toString());
-        $this->assertTrue($filePath->isRelative());
-        $this->assertSame(['..', '..', 'baz'], $filePath->getDirectoryParts());
+        self::assertSame('..' . $DS . '..' . $DS . 'baz' . $DS . 'file.html', $filePath->__toString());
+        self::assertTrue($filePath->isRelative());
+        self::assertSame(['..', '..', 'baz'], $filePath->getDirectoryParts());
     }
 
     /**
@@ -135,7 +137,7 @@ class FilePathTest extends PHPUnit_Framework_TestCase
             $exceptionMessage = $e->getMessage();
         }
 
-        $this->assertSame('File path "' . $DS . 'foo' . $DS . "\0" . 'bar' . $DS . '" is invalid: Part of directory "' . "\0" . 'bar" contains invalid character "' . "\0" . '".', $exceptionMessage);
+        self::assertSame('File path "' . $DS . 'foo' . $DS . "\0" . 'bar' . $DS . '" is invalid: Part of directory "' . "\0" . 'bar" contains invalid character "' . "\0" . '".', $exceptionMessage);
     }
 
     /**
@@ -143,8 +145,8 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testPathWithInvalidWindowsCharacterInDirectoryIsInvalidInWindows()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Windows NT');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
         $exceptionMessage = '';
@@ -155,7 +157,7 @@ class FilePathTest extends PHPUnit_Framework_TestCase
             $exceptionMessage = $e->getMessage();
         }
 
-        $this->assertSame('File path "' . $DS . 'foo' . $DS . '<bar' . $DS . '" is invalid: Part of directory "<bar" contains invalid character "<".', $exceptionMessage);
+        self::assertSame('File path "' . $DS . 'foo' . $DS . '<bar' . $DS . '" is invalid: Part of directory "<bar" contains invalid character "<".', $exceptionMessage);
     }
 
     /**
@@ -163,12 +165,12 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testPathWithInvalidWindowsCharacterInDirectoryIsValidInOther()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Other');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Other');
 
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame($DS . 'foo' . $DS . '<bar' . $DS, FilePath::parse($DS . 'foo' . $DS . '<bar' . $DS)->__toString());
+        self::assertSame($DS . 'foo' . $DS . '<bar' . $DS, FilePath::parse($DS . 'foo' . $DS . '<bar' . $DS)->__toString());
     }
 
     /**
@@ -185,7 +187,7 @@ class FilePathTest extends PHPUnit_Framework_TestCase
             $exceptionMessage = $e->getMessage();
         }
 
-        $this->assertSame('File path "' . $DS . 'foo' . $DS . "\0" . 'bar" is invalid: Filename "' . "\0" . 'bar" contains invalid character "' . "\0" . '".', $exceptionMessage);
+        self::assertSame('File path "' . $DS . 'foo' . $DS . "\0" . 'bar" is invalid: Filename "' . "\0" . 'bar" contains invalid character "' . "\0" . '".', $exceptionMessage);
     }
 
     /**
@@ -193,8 +195,8 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testPathWithInvalidWindowsCharacterInFilenameIsInvalidInWindows()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Windows NT');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
         $exceptionMessage = '';
@@ -205,7 +207,7 @@ class FilePathTest extends PHPUnit_Framework_TestCase
             $exceptionMessage = $e->getMessage();
         }
 
-        $this->assertSame('File path "' . $DS . 'foo' . $DS . '|bar" is invalid: Filename "|bar" contains invalid character "|".', $exceptionMessage);
+        self::assertSame('File path "' . $DS . 'foo' . $DS . '|bar" is invalid: Filename "|bar" contains invalid character "|".', $exceptionMessage);
     }
 
     /**
@@ -213,12 +215,12 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testPathWithInvalidWindowsCharacterInFilenameIsValidInOther()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Other');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Other');
 
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame($DS . 'foo' . $DS . '|bar' . $DS, FilePath::parse($DS . 'foo' . $DS . '|bar' . $DS)->__toString());
+        self::assertSame($DS . 'foo' . $DS . '|bar' . $DS, FilePath::parse($DS . 'foo' . $DS . '|bar' . $DS)->__toString());
     }
 
     /**
@@ -235,7 +237,7 @@ class FilePathTest extends PHPUnit_Framework_TestCase
             $exceptionMessage = $e->getMessage();
         }
 
-        $this->assertSame('File path "' . $DS . 'foo' . $DS . '..' . $DS . '..' . $DS . '" is invalid: Absolute path is above root level.', $exceptionMessage);
+        self::assertSame('File path "' . $DS . 'foo' . $DS . '..' . $DS . '..' . $DS . '" is invalid: Absolute path is above root level.', $exceptionMessage);
     }
 
     /**
@@ -256,10 +258,10 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame('', FilePath::tryParse('')->__toString());
-        $this->assertSame('foo' . $DS . 'bar' . $DS . 'baz.html', FilePath::tryParse('foo' . $DS . 'bar' . $DS . 'baz.html')->__toString());
-        $this->assertNull(FilePath::tryParse($DS . 'foo' . "\0" . 'bar' . $DS));
-        $this->assertNull(FilePath::tryParse($DS . 'foo' . $DS . '..' . $DS . '..' . $DS));
+        self::assertSame('', FilePath::tryParse('')->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS . 'baz.html', FilePath::tryParse('foo' . $DS . 'bar' . $DS . 'baz.html')->__toString());
+        self::assertNull(FilePath::tryParse($DS . 'foo' . "\0" . 'bar' . $DS));
+        self::assertNull(FilePath::tryParse($DS . 'foo' . $DS . '..' . $DS . '..' . $DS));
     }
 
     /**
@@ -280,10 +282,10 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertTrue(FilePath::isValid(''));
-        $this->assertTrue(FilePath::isValid('foo' . $DS . 'bar' . $DS . 'baz.html'));
-        $this->assertFalse(FilePath::isValid($DS . 'foo' . "\0" . 'bar' . $DS));
-        $this->assertFalse(FilePath::isValid($DS . 'foo' . $DS . '..' . $DS . '..' . $DS));
+        self::assertTrue(FilePath::isValid(''));
+        self::assertTrue(FilePath::isValid('foo' . $DS . 'bar' . $DS . 'baz.html'));
+        self::assertFalse(FilePath::isValid($DS . 'foo' . "\0" . 'bar' . $DS));
+        self::assertFalse(FilePath::isValid($DS . 'foo' . $DS . '..' . $DS . '..' . $DS));
     }
 
     /**
@@ -304,14 +306,14 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertFalse(FilePath::parse('')->isFile());
-        $this->assertFalse(FilePath::parse($DS)->isFile());
-        $this->assertTrue(FilePath::parse('foo')->isFile());
-        $this->assertTrue(FilePath::parse($DS . 'foo')->isFile());
-        $this->assertFalse(FilePath::parse('foo' . $DS)->isFile());
-        $this->assertFalse(FilePath::parse($DS . 'foo' . $DS)->isFile());
-        $this->assertTrue(FilePath::parse('foo' . $DS . 'bar')->isFile());
-        $this->assertTrue(FilePath::parse($DS . 'foo' . $DS . 'bar')->isFile());
+        self::assertFalse(FilePath::parse('')->isFile());
+        self::assertFalse(FilePath::parse($DS)->isFile());
+        self::assertTrue(FilePath::parse('foo')->isFile());
+        self::assertTrue(FilePath::parse($DS . 'foo')->isFile());
+        self::assertFalse(FilePath::parse('foo' . $DS)->isFile());
+        self::assertFalse(FilePath::parse($DS . 'foo' . $DS)->isFile());
+        self::assertTrue(FilePath::parse('foo' . $DS . 'bar')->isFile());
+        self::assertTrue(FilePath::parse($DS . 'foo' . $DS . 'bar')->isFile());
     }
 
     /**
@@ -321,14 +323,14 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertTrue(FilePath::parse('')->isDirectory());
-        $this->assertTrue(FilePath::parse($DS)->isDirectory());
-        $this->assertFalse(FilePath::parse('foo')->isDirectory());
-        $this->assertFalse(FilePath::parse($DS . 'foo')->isDirectory());
-        $this->assertTrue(FilePath::parse('foo' . $DS)->isDirectory());
-        $this->assertTrue(FilePath::parse($DS . 'foo' . $DS)->isDirectory());
-        $this->assertFalse(FilePath::parse('foo' . $DS . 'bar')->isDirectory());
-        $this->assertFalse(FilePath::parse($DS . 'foo' . $DS . 'bar')->isDirectory());
+        self::assertTrue(FilePath::parse('')->isDirectory());
+        self::assertTrue(FilePath::parse($DS)->isDirectory());
+        self::assertFalse(FilePath::parse('foo')->isDirectory());
+        self::assertFalse(FilePath::parse($DS . 'foo')->isDirectory());
+        self::assertTrue(FilePath::parse('foo' . $DS)->isDirectory());
+        self::assertTrue(FilePath::parse($DS . 'foo' . $DS)->isDirectory());
+        self::assertFalse(FilePath::parse('foo' . $DS . 'bar')->isDirectory());
+        self::assertFalse(FilePath::parse($DS . 'foo' . $DS . 'bar')->isDirectory());
     }
 
     /**
@@ -338,17 +340,17 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame('', FilePath::parse('')->getDirectory()->__toString());
-        $this->assertSame($DS, FilePath::parse($DS)->getDirectory()->__toString());
-        $this->assertSame('', FilePath::parse('foo')->getDirectory()->__toString());
-        $this->assertSame($DS, FilePath::parse($DS . 'foo')->getDirectory()->__toString());
-        $this->assertSame('foo' . $DS, FilePath::parse('foo' . $DS)->getDirectory()->__toString());
-        $this->assertSame($DS . 'foo' . $DS, FilePath::parse($DS . 'foo' . $DS)->getDirectory()->__toString());
-        $this->assertSame('foo' . $DS, FilePath::parse('foo' . $DS . 'bar')->getDirectory()->__toString());
-        $this->assertSame($DS . 'foo' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar')->getDirectory()->__toString());
-        $this->assertSame('..' . $DS, FilePath::parse('..' . $DS . 'foo')->getDirectory()->__toString());
-        $this->assertSame('..' . $DS . 'foo' . $DS, FilePath::parse('..' . $DS . 'foo' . $DS)->getDirectory()->__toString());
-        $this->assertSame('..' . $DS . 'foo' . $DS, FilePath::parse('..' . $DS . 'foo' . $DS . 'bar')->getDirectory()->__toString());
+        self::assertSame('', FilePath::parse('')->getDirectory()->__toString());
+        self::assertSame($DS, FilePath::parse($DS)->getDirectory()->__toString());
+        self::assertSame('', FilePath::parse('foo')->getDirectory()->__toString());
+        self::assertSame($DS, FilePath::parse($DS . 'foo')->getDirectory()->__toString());
+        self::assertSame('foo' . $DS, FilePath::parse('foo' . $DS)->getDirectory()->__toString());
+        self::assertSame($DS . 'foo' . $DS, FilePath::parse($DS . 'foo' . $DS)->getDirectory()->__toString());
+        self::assertSame('foo' . $DS, FilePath::parse('foo' . $DS . 'bar')->getDirectory()->__toString());
+        self::assertSame($DS . 'foo' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar')->getDirectory()->__toString());
+        self::assertSame('..' . $DS, FilePath::parse('..' . $DS . 'foo')->getDirectory()->__toString());
+        self::assertSame('..' . $DS . 'foo' . $DS, FilePath::parse('..' . $DS . 'foo' . $DS)->getDirectory()->__toString());
+        self::assertSame('..' . $DS . 'foo' . $DS, FilePath::parse('..' . $DS . 'foo' . $DS . 'bar')->getDirectory()->__toString());
     }
 
     /**
@@ -358,20 +360,20 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame(0, FilePath::parse('')->getDepth());
-        $this->assertSame(0, FilePath::parse($DS)->getDepth());
-        $this->assertSame(0, FilePath::parse('foo')->getDepth());
-        $this->assertSame(0, FilePath::parse($DS . 'foo')->getDepth());
-        $this->assertSame(1, FilePath::parse('foo' . $DS)->getDepth());
-        $this->assertSame(1, FilePath::parse($DS . 'foo' . $DS)->getDepth());
-        $this->assertSame(1, FilePath::parse('foo' . $DS . 'bar')->getDepth());
-        $this->assertSame(1, FilePath::parse($DS . 'foo' . $DS . 'bar')->getDepth());
-        $this->assertSame(2, FilePath::parse('foo' . $DS . 'bar' . $DS)->getDepth());
-        $this->assertSame(2, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->getDepth());
-        $this->assertSame(-1, FilePath::parse('..' . $DS)->getDepth());
-        $this->assertSame(-1, FilePath::parse('..' . $DS . 'foo')->getDepth());
-        $this->assertSame(-2, FilePath::parse('..' . $DS . '..' . $DS . 'foo')->getDepth());
-        $this->assertSame(-1, FilePath::parse('..' . $DS . '..' . $DS . 'foo' . $DS)->getDepth());
+        self::assertSame(0, FilePath::parse('')->getDepth());
+        self::assertSame(0, FilePath::parse($DS)->getDepth());
+        self::assertSame(0, FilePath::parse('foo')->getDepth());
+        self::assertSame(0, FilePath::parse($DS . 'foo')->getDepth());
+        self::assertSame(1, FilePath::parse('foo' . $DS)->getDepth());
+        self::assertSame(1, FilePath::parse($DS . 'foo' . $DS)->getDepth());
+        self::assertSame(1, FilePath::parse('foo' . $DS . 'bar')->getDepth());
+        self::assertSame(1, FilePath::parse($DS . 'foo' . $DS . 'bar')->getDepth());
+        self::assertSame(2, FilePath::parse('foo' . $DS . 'bar' . $DS)->getDepth());
+        self::assertSame(2, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->getDepth());
+        self::assertSame(-1, FilePath::parse('..' . $DS)->getDepth());
+        self::assertSame(-1, FilePath::parse('..' . $DS . 'foo')->getDepth());
+        self::assertSame(-2, FilePath::parse('..' . $DS . '..' . $DS . 'foo')->getDepth());
+        self::assertSame(-1, FilePath::parse('..' . $DS . '..' . $DS . 'foo' . $DS)->getDepth());
     }
 
     /**
@@ -381,12 +383,12 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame('', FilePath::parse('')->toRelative()->__toString());
-        $this->assertSame('', FilePath::parse($DS)->toRelative()->__toString());
-        $this->assertSame('foo', FilePath::parse('foo')->toRelative()->__toString());
-        $this->assertSame('foo', FilePath::parse($DS . 'foo')->toRelative()->__toString());
-        $this->assertSame('foo' . $DS . 'bar', FilePath::parse('foo' . $DS . 'bar')->toRelative()->__toString());
-        $this->assertSame('foo' . $DS . 'bar', FilePath::parse($DS . 'foo' . $DS . 'bar')->toRelative()->__toString());
+        self::assertSame('', FilePath::parse('')->toRelative()->__toString());
+        self::assertSame('', FilePath::parse($DS)->toRelative()->__toString());
+        self::assertSame('foo', FilePath::parse('foo')->toRelative()->__toString());
+        self::assertSame('foo', FilePath::parse($DS . 'foo')->toRelative()->__toString());
+        self::assertSame('foo' . $DS . 'bar', FilePath::parse('foo' . $DS . 'bar')->toRelative()->__toString());
+        self::assertSame('foo' . $DS . 'bar', FilePath::parse($DS . 'foo' . $DS . 'bar')->toRelative()->__toString());
     }
 
     /**
@@ -394,13 +396,13 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testToRelativeWithDrive()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Windows NT');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame('', FilePath::parse('C:' . $DS)->toRelative()->__toString());
-        $this->assertSame('foo' . $DS . 'bar', FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->toRelative()->__toString());
+        self::assertSame('', FilePath::parse('C:' . $DS)->toRelative()->__toString());
+        self::assertSame('foo' . $DS . 'bar', FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->toRelative()->__toString());
     }
 
     /**
@@ -410,12 +412,12 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame($DS, FilePath::parse('')->toAbsolute()->__toString());
-        $this->assertSame($DS, FilePath::parse($DS)->toAbsolute()->__toString());
-        $this->assertSame($DS . 'foo', FilePath::parse('foo')->toAbsolute()->__toString());
-        $this->assertSame($DS . 'foo', FilePath::parse($DS . 'foo')->toAbsolute()->__toString());
-        $this->assertSame($DS . 'foo' . $DS . 'bar', FilePath::parse('foo' . $DS . 'bar')->toAbsolute()->__toString());
-        $this->assertSame($DS . 'foo' . $DS . 'bar', FilePath::parse($DS . 'foo' . $DS . 'bar')->toAbsolute()->__toString());
+        self::assertSame($DS, FilePath::parse('')->toAbsolute()->__toString());
+        self::assertSame($DS, FilePath::parse($DS)->toAbsolute()->__toString());
+        self::assertSame($DS . 'foo', FilePath::parse('foo')->toAbsolute()->__toString());
+        self::assertSame($DS . 'foo', FilePath::parse($DS . 'foo')->toAbsolute()->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar', FilePath::parse('foo' . $DS . 'bar')->toAbsolute()->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar', FilePath::parse($DS . 'foo' . $DS . 'bar')->toAbsolute()->__toString());
     }
 
     /**
@@ -432,7 +434,7 @@ class FilePathTest extends PHPUnit_Framework_TestCase
             $exceptionMessage = $e->getMessage();
         }
 
-        $this->assertSame('File path "..' . $DS . '" can not be made absolute: Relative path is above base level.', $exceptionMessage);
+        self::assertSame('File path "..' . $DS . '" can not be made absolute: Relative path is above base level.', $exceptionMessage);
     }
 
     /**
@@ -442,32 +444,32 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame($DS . 'bar', FilePath::parse($DS . 'foo')->withFilePath(FilePath::parse($DS . 'bar'))->__toString());
-        $this->assertSame($DS . 'bar', FilePath::parse('foo')->withFilePath(FilePath::parse($DS . 'bar'))->__toString());
-        $this->assertSame($DS . 'bar' . $DS . 'baz', FilePath::parse($DS . 'foo')->withFilePath(FilePath::parse($DS . 'bar' . $DS . 'baz'))->__toString());
-        $this->assertSame($DS . 'bar' . $DS . 'baz', FilePath::parse('foo')->withFilePath(FilePath::parse($DS . 'bar' . $DS . 'baz'))->__toString());
-        $this->assertSame('', FilePath::parse('')->withFilePath(FilePath::parse(''))->__toString());
-        $this->assertSame($DS, FilePath::parse('')->withFilePath(FilePath::parse($DS))->__toString());
-        $this->assertSame($DS . 'foo' . $DS . 'bar', FilePath::parse($DS . 'foo' . $DS)->withFilePath(FilePath::parse('bar'))->__toString());
-        $this->assertSame($DS . 'foo' . $DS . 'baz', FilePath::parse($DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse('baz'))->__toString());
-        $this->assertSame('foo' . $DS . 'bar', FilePath::parse('foo' . $DS)->withFilePath(FilePath::parse('bar'))->__toString());
-        $this->assertSame('foo' . $DS . 'baz', FilePath::parse('foo' . $DS . 'bar')->withFilePath(FilePath::parse('baz'))->__toString());
-        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS, FilePath::parse($DS . 'foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS))->__toString());
-        $this->assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS))->__toString());
-        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS, FilePath::parse($DS . 'foo' . $DS . 'baz')->withFilePath(FilePath::parse('bar' . $DS))->__toString());
-        $this->assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('foo' . $DS . 'baz')->withFilePath(FilePath::parse('bar' . $DS))->__toString());
-        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz', FilePath::parse($DS . 'foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS . 'baz'))->__toString());
-        $this->assertSame('foo' . $DS . 'bar' . $DS . 'baz', FilePath::parse('foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS . 'baz'))->__toString());
-        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz' . $DS, FilePath::parse($DS . 'foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS . 'baz' . $DS))->__toString());
-        $this->assertSame('foo' . $DS . 'bar' . $DS . 'baz' . $DS, FilePath::parse('foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS . 'baz' . $DS))->__toString());
-        $this->assertSame($DS . 'foo' . $DS . 'baz' . $DS . 'file', FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . 'baz' . $DS . 'file'))->__toString());
-        $this->assertSame('foo' . $DS . 'baz' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . 'baz' . $DS . 'file'))->__toString());
-        $this->assertSame('..' . $DS . 'foo' . $DS . 'baz' . $DS . 'file', FilePath::parse('..' . $DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . 'baz' . $DS . 'file'))->__toString());
-        $this->assertSame($DS . 'baz' . $DS . 'file', FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
-        $this->assertSame('baz' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
-        $this->assertSame('..' . $DS . 'baz' . $DS . 'file', FilePath::parse('..' . $DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
-        $this->assertSame('..' . $DS . 'baz' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
-        $this->assertSame('..' . $DS . '..' . $DS . 'baz' . $DS . 'file', FilePath::parse('..' . $DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        self::assertSame($DS . 'bar', FilePath::parse($DS . 'foo')->withFilePath(FilePath::parse($DS . 'bar'))->__toString());
+        self::assertSame($DS . 'bar', FilePath::parse('foo')->withFilePath(FilePath::parse($DS . 'bar'))->__toString());
+        self::assertSame($DS . 'bar' . $DS . 'baz', FilePath::parse($DS . 'foo')->withFilePath(FilePath::parse($DS . 'bar' . $DS . 'baz'))->__toString());
+        self::assertSame($DS . 'bar' . $DS . 'baz', FilePath::parse('foo')->withFilePath(FilePath::parse($DS . 'bar' . $DS . 'baz'))->__toString());
+        self::assertSame('', FilePath::parse('')->withFilePath(FilePath::parse(''))->__toString());
+        self::assertSame($DS, FilePath::parse('')->withFilePath(FilePath::parse($DS))->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar', FilePath::parse($DS . 'foo' . $DS)->withFilePath(FilePath::parse('bar'))->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'baz', FilePath::parse($DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse('baz'))->__toString());
+        self::assertSame('foo' . $DS . 'bar', FilePath::parse('foo' . $DS)->withFilePath(FilePath::parse('bar'))->__toString());
+        self::assertSame('foo' . $DS . 'baz', FilePath::parse('foo' . $DS . 'bar')->withFilePath(FilePath::parse('baz'))->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar' . $DS, FilePath::parse($DS . 'foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS))->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS))->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar' . $DS, FilePath::parse($DS . 'foo' . $DS . 'baz')->withFilePath(FilePath::parse('bar' . $DS))->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS, FilePath::parse('foo' . $DS . 'baz')->withFilePath(FilePath::parse('bar' . $DS))->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz', FilePath::parse($DS . 'foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS . 'baz'))->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS . 'baz', FilePath::parse('foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS . 'baz'))->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz' . $DS, FilePath::parse($DS . 'foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS . 'baz' . $DS))->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS . 'baz' . $DS, FilePath::parse('foo' . $DS)->withFilePath(FilePath::parse('bar' . $DS . 'baz' . $DS))->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'baz' . $DS . 'file', FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        self::assertSame('foo' . $DS . 'baz' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        self::assertSame('..' . $DS . 'foo' . $DS . 'baz' . $DS . 'file', FilePath::parse('..' . $DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        self::assertSame($DS . 'baz' . $DS . 'file', FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        self::assertSame('baz' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        self::assertSame('..' . $DS . 'baz' . $DS . 'file', FilePath::parse('..' . $DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        self::assertSame('..' . $DS . 'baz' . $DS . 'file', FilePath::parse('foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
+        self::assertSame('..' . $DS . '..' . $DS . 'baz' . $DS . 'file', FilePath::parse('..' . $DS . 'foo' . $DS . 'bar' . $DS)->withFilePath(FilePath::parse('..' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS . 'file'))->__toString());
     }
 
     /**
@@ -484,7 +486,7 @@ class FilePathTest extends PHPUnit_Framework_TestCase
             $exceptionMessage = $e->getMessage();
         }
 
-        $this->assertSame('File path "' . $DS . 'foo' . $DS . 'bar' . $DS . '" can not be combined with file path "..' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS . 'file": Absolute path is above root level.', $exceptionMessage);
+        self::assertSame('File path "' . $DS . 'foo' . $DS . 'bar' . $DS . '" can not be combined with file path "..' . $DS . '..' . $DS . '..' . $DS . 'baz' . $DS . 'file": Absolute path is above root level.', $exceptionMessage);
     }
 
     /**
@@ -492,18 +494,18 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testParseWithVolumeInWindows()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Windows NT');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
 
         $filePath = FilePath::parse('C:' . $DS . 'path' . $DS . 'file');
 
-        $this->assertSame('C', $filePath->getDrive());
-        $this->assertSame(['path'], $filePath->getDirectoryParts());
-        $this->assertSame('file', $filePath->getFilename());
-        $this->assertSame('C:' . $DS . 'path' . $DS . 'file', $filePath->__toString());
-        $this->assertTrue($filePath->isAbsolute());
+        self::assertSame('C', $filePath->getDrive());
+        self::assertSame(['path'], $filePath->getDirectoryParts());
+        self::assertSame('file', $filePath->getFilename());
+        self::assertSame('C:' . $DS . 'path' . $DS . 'file', $filePath->__toString());
+        self::assertTrue($filePath->isAbsolute());
     }
 
     /**
@@ -511,18 +513,18 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testParseWithLowerCaseVolumeInWindows()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Windows NT');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
 
         $filePath = FilePath::parse('c:' . $DS . 'path' . $DS . 'file');
 
-        $this->assertSame('C', $filePath->getDrive());
-        $this->assertSame(['path'], $filePath->getDirectoryParts());
-        $this->assertSame('file', $filePath->getFilename());
-        $this->assertSame('C:' . $DS . 'path' . $DS . 'file', $filePath->__toString());
-        $this->assertTrue($filePath->isAbsolute());
+        self::assertSame('C', $filePath->getDrive());
+        self::assertSame(['path'], $filePath->getDirectoryParts());
+        self::assertSame('file', $filePath->getFilename());
+        self::assertSame('C:' . $DS . 'path' . $DS . 'file', $filePath->__toString());
+        self::assertTrue($filePath->isAbsolute());
     }
 
     /**
@@ -530,18 +532,18 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testParseWithVolumeInOther()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Other');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Other');
 
         $DS = DIRECTORY_SEPARATOR;
 
         $filePath = FilePath::parse('C:' . $DS . 'path' . $DS . 'file');
 
-        $this->assertNull($filePath->getDrive());
-        $this->assertSame(['C:', 'path'], $filePath->getDirectoryParts());
-        $this->assertSame('file', $filePath->getFilename());
-        $this->assertSame('C:' . $DS . 'path' . $DS . 'file', $filePath->__toString());
-        $this->assertFalse($filePath->isAbsolute());
+        self::assertNull($filePath->getDrive());
+        self::assertSame(['C:', 'path'], $filePath->getDirectoryParts());
+        self::assertSame('file', $filePath->getFilename());
+        self::assertSame('C:' . $DS . 'path' . $DS . 'file', $filePath->__toString());
+        self::assertFalse($filePath->isAbsolute());
     }
 
     /**
@@ -549,18 +551,18 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testParseWithLowerCaseVolumeInOther()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Other');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Other');
 
         $DS = DIRECTORY_SEPARATOR;
 
         $filePath = FilePath::parse('c:' . $DS . 'path' . $DS . 'file');
 
-        $this->assertNull($filePath->getDrive());
-        $this->assertSame(['c:', 'path'], $filePath->getDirectoryParts());
-        $this->assertSame('file', $filePath->getFilename());
-        $this->assertSame('c:' . $DS . 'path' . $DS . 'file', $filePath->__toString());
-        $this->assertFalse($filePath->isAbsolute());
+        self::assertNull($filePath->getDrive());
+        self::assertSame(['c:', 'path'], $filePath->getDirectoryParts());
+        self::assertSame('file', $filePath->getFilename());
+        self::assertSame('c:' . $DS . 'path' . $DS . 'file', $filePath->__toString());
+        self::assertFalse($filePath->isAbsolute());
     }
 
     /**
@@ -568,8 +570,8 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testParseWithDriveAndRelativePathIsInvalid()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Windows NT');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
         $exceptionMessage = '';
@@ -580,7 +582,7 @@ class FilePathTest extends PHPUnit_Framework_TestCase
             $exceptionMessage = $e->getMessage();
         }
 
-        $this->assertSame('File path "C:foo' . $DS . 'bar" is invalid: Path can not contain drive "C" and non-absolute path "foo' . $DS . 'bar".', $exceptionMessage);
+        self::assertSame('File path "C:foo' . $DS . 'bar" is invalid: Path can not contain drive "C" and non-absolute path "foo' . $DS . 'bar".', $exceptionMessage);
     }
 
     /**
@@ -588,8 +590,8 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testParseWithInvalidDriveIsInvalid()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Windows NT');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
         $exceptionMessage = '';
@@ -600,7 +602,7 @@ class FilePathTest extends PHPUnit_Framework_TestCase
             $exceptionMessage = $e->getMessage();
         }
 
-        $this->assertSame('File path "2:' . $DS . 'foo' . $DS . 'bar" is invalid: Drive "2" is invalid.', $exceptionMessage);
+        self::assertSame('File path "2:' . $DS . 'foo' . $DS . 'bar" is invalid: Drive "2" is invalid.', $exceptionMessage);
     }
 
     /**
@@ -612,9 +614,9 @@ class FilePathTest extends PHPUnit_Framework_TestCase
 
         $filePath = FilePath::parse('/foo/bar/baz');
 
-        $this->assertSame(['foo', 'bar'], $filePath->getDirectoryParts());
-        $this->assertSame('baz', $filePath->getFilename());
-        $this->assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz', $filePath->__toString());
+        self::assertSame(['foo', 'bar'], $filePath->getDirectoryParts());
+        self::assertSame('baz', $filePath->getFilename());
+        self::assertSame($DS . 'foo' . $DS . 'bar' . $DS . 'baz', $filePath->__toString());
     }
 
     /**
@@ -622,16 +624,16 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testWithFilePathWithDriveInFilePath()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Windows NT');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame('C:' . $DS . 'baz', FilePath::parse('foo' . $DS . 'bar')->withFilePath(FilePath::parse('C:' . $DS . 'baz'))->__toString());
-        $this->assertSame('C:' . $DS . 'baz', FilePath::parse($DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse('C:' . $DS . 'baz'))->__toString());
-        $this->assertSame('C:' . $DS . 'foo' . $DS . 'baz', FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse('baz'))->__toString());
-        $this->assertSame('C:' . $DS . 'baz', FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse($DS . 'baz'))->__toString());
-        $this->assertSame('D:' . $DS . 'baz', FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse('D:' . $DS . 'baz'))->__toString());
+        self::assertSame('C:' . $DS . 'baz', FilePath::parse('foo' . $DS . 'bar')->withFilePath(FilePath::parse('C:' . $DS . 'baz'))->__toString());
+        self::assertSame('C:' . $DS . 'baz', FilePath::parse($DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse('C:' . $DS . 'baz'))->__toString());
+        self::assertSame('C:' . $DS . 'foo' . $DS . 'baz', FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse('baz'))->__toString());
+        self::assertSame('C:' . $DS . 'baz', FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse($DS . 'baz'))->__toString());
+        self::assertSame('D:' . $DS . 'baz', FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->withFilePath(FilePath::parse('D:' . $DS . 'baz'))->__toString());
     }
 
     /**
@@ -641,20 +643,20 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertTrue(FilePath::parse('')->hasParentDirectory());
-        $this->assertFalse(FilePath::parse($DS)->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('foo')->hasParentDirectory());
-        $this->assertFalse(FilePath::parse($DS . 'foo')->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('foo' . $DS)->hasParentDirectory());
-        $this->assertTrue(FilePath::parse($DS . 'foo' . $DS)->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('foo' . $DS . 'bar')->hasParentDirectory());
-        $this->assertTrue(FilePath::parse($DS . 'foo' . $DS . 'bar')->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('foo' . $DS . 'bar' . $DS)->hasParentDirectory());
-        $this->assertTrue(FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('..' . $DS)->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('..' . $DS . 'foo')->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('..' . $DS . '..' . $DS . 'foo')->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('..' . $DS . '..' . $DS . 'foo' . $DS)->hasParentDirectory());
+        self::assertTrue(FilePath::parse('')->hasParentDirectory());
+        self::assertFalse(FilePath::parse($DS)->hasParentDirectory());
+        self::assertTrue(FilePath::parse('foo')->hasParentDirectory());
+        self::assertFalse(FilePath::parse($DS . 'foo')->hasParentDirectory());
+        self::assertTrue(FilePath::parse('foo' . $DS)->hasParentDirectory());
+        self::assertTrue(FilePath::parse($DS . 'foo' . $DS)->hasParentDirectory());
+        self::assertTrue(FilePath::parse('foo' . $DS . 'bar')->hasParentDirectory());
+        self::assertTrue(FilePath::parse($DS . 'foo' . $DS . 'bar')->hasParentDirectory());
+        self::assertTrue(FilePath::parse('foo' . $DS . 'bar' . $DS)->hasParentDirectory());
+        self::assertTrue(FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->hasParentDirectory());
+        self::assertTrue(FilePath::parse('..' . $DS)->hasParentDirectory());
+        self::assertTrue(FilePath::parse('..' . $DS . 'foo')->hasParentDirectory());
+        self::assertTrue(FilePath::parse('..' . $DS . '..' . $DS . 'foo')->hasParentDirectory());
+        self::assertTrue(FilePath::parse('..' . $DS . '..' . $DS . 'foo' . $DS)->hasParentDirectory());
     }
 
     /**
@@ -662,17 +664,17 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testHasParentDirectoryWithDriveInWindows()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Windows NT');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertFalse(FilePath::parse('C:' . $DS)->hasParentDirectory());
-        $this->assertFalse(FilePath::parse('C:' . $DS . 'foo')->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS)->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS . 'baz')->hasParentDirectory());
+        self::assertFalse(FilePath::parse('C:' . $DS)->hasParentDirectory());
+        self::assertFalse(FilePath::parse('C:' . $DS . 'foo')->hasParentDirectory());
+        self::assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS)->hasParentDirectory());
+        self::assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->hasParentDirectory());
+        self::assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->hasParentDirectory());
+        self::assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS . 'baz')->hasParentDirectory());
     }
 
     /**
@@ -680,17 +682,17 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testHasParentDirectoryWithDriveInOther()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Other');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Other');
 
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertTrue(FilePath::parse('C:' . $DS)->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo')->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS)->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->hasParentDirectory());
-        $this->assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS . 'baz')->hasParentDirectory());
+        self::assertTrue(FilePath::parse('C:' . $DS)->hasParentDirectory());
+        self::assertTrue(FilePath::parse('C:' . $DS . 'foo')->hasParentDirectory());
+        self::assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS)->hasParentDirectory());
+        self::assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->hasParentDirectory());
+        self::assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->hasParentDirectory());
+        self::assertTrue(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS . 'baz')->hasParentDirectory());
     }
 
     /**
@@ -700,20 +702,20 @@ class FilePathTest extends PHPUnit_Framework_TestCase
     {
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame('..' . $DS, FilePath::parse('')->getParentDirectory()->__toString());
-        $this->assertNull(FilePath::parse($DS)->getParentDirectory());
-        $this->assertSame('..' . $DS, FilePath::parse('foo')->getParentDirectory()->__toString());
-        $this->assertNull(FilePath::parse($DS . 'foo')->getParentDirectory());
-        $this->assertSame('', FilePath::parse('foo' . $DS)->getParentDirectory()->__toString());
-        $this->assertSame($DS, FilePath::parse($DS . 'foo' . $DS)->getParentDirectory()->__toString());
-        $this->assertSame('', FilePath::parse('foo' . $DS . 'bar')->getParentDirectory()->__toString());
-        $this->assertSame($DS, FilePath::parse($DS . 'foo' . $DS . 'bar')->getParentDirectory()->__toString());
-        $this->assertSame('foo' . $DS, FilePath::parse('foo' . $DS . 'bar' . $DS)->getParentDirectory()->__toString());
-        $this->assertSame($DS . 'foo' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->getParentDirectory()->__toString());
-        $this->assertSame('..' . $DS . '..' . $DS, FilePath::parse('..' . $DS)->getParentDirectory()->__toString());
-        $this->assertSame('..' . $DS . '..' . $DS, FilePath::parse('..' . $DS . 'foo')->getParentDirectory()->__toString());
-        $this->assertSame('..' . $DS . '..' . $DS . '..' . $DS, FilePath::parse('..' . $DS . '..' . $DS . 'foo')->getParentDirectory()->__toString());
-        $this->assertSame('..' . $DS . '..' . $DS, FilePath::parse('..' . $DS . '..' . $DS . 'foo' . $DS)->getParentDirectory()->__toString());
+        self::assertSame('..' . $DS, FilePath::parse('')->getParentDirectory()->__toString());
+        self::assertNull(FilePath::parse($DS)->getParentDirectory());
+        self::assertSame('..' . $DS, FilePath::parse('foo')->getParentDirectory()->__toString());
+        self::assertNull(FilePath::parse($DS . 'foo')->getParentDirectory());
+        self::assertSame('', FilePath::parse('foo' . $DS)->getParentDirectory()->__toString());
+        self::assertSame($DS, FilePath::parse($DS . 'foo' . $DS)->getParentDirectory()->__toString());
+        self::assertSame('', FilePath::parse('foo' . $DS . 'bar')->getParentDirectory()->__toString());
+        self::assertSame($DS, FilePath::parse($DS . 'foo' . $DS . 'bar')->getParentDirectory()->__toString());
+        self::assertSame('foo' . $DS, FilePath::parse('foo' . $DS . 'bar' . $DS)->getParentDirectory()->__toString());
+        self::assertSame($DS . 'foo' . $DS, FilePath::parse($DS . 'foo' . $DS . 'bar' . $DS)->getParentDirectory()->__toString());
+        self::assertSame('..' . $DS . '..' . $DS, FilePath::parse('..' . $DS)->getParentDirectory()->__toString());
+        self::assertSame('..' . $DS . '..' . $DS, FilePath::parse('..' . $DS . 'foo')->getParentDirectory()->__toString());
+        self::assertSame('..' . $DS . '..' . $DS . '..' . $DS, FilePath::parse('..' . $DS . '..' . $DS . 'foo')->getParentDirectory()->__toString());
+        self::assertSame('..' . $DS . '..' . $DS, FilePath::parse('..' . $DS . '..' . $DS . 'foo' . $DS)->getParentDirectory()->__toString());
     }
 
     /**
@@ -721,17 +723,17 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testGetParentDirectoryWithDriveInWindows()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Windows NT');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertNull(FilePath::parse('C:' . $DS)->getParentDirectory());
-        $this->assertNull(FilePath::parse('C:' . $DS . 'foo')->getParentDirectory());
-        $this->assertSame('C:' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS)->getParentDirectory()->__toString());
-        $this->assertSame('C:' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->getParentDirectory()->__toString());
-        $this->assertSame('C:' . $DS . 'foo' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->getParentDirectory()->__toString());
-        $this->assertSame('C:' . $DS . 'foo' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS . 'baz')->getParentDirectory()->__toString());
+        self::assertNull(FilePath::parse('C:' . $DS)->getParentDirectory());
+        self::assertNull(FilePath::parse('C:' . $DS . 'foo')->getParentDirectory());
+        self::assertSame('C:' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS)->getParentDirectory()->__toString());
+        self::assertSame('C:' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->getParentDirectory()->__toString());
+        self::assertSame('C:' . $DS . 'foo' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->getParentDirectory()->__toString());
+        self::assertSame('C:' . $DS . 'foo' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS . 'baz')->getParentDirectory()->__toString());
     }
 
     /**
@@ -739,17 +741,17 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function testGetParentDirectoryWithDriveInOther()
     {
-        FakePhpUname::enable();
-        FakePhpUname::setOsName('Other');
+        \FakePhpUname::enable();
+        \FakePhpUname::setOsName('Other');
 
         $DS = DIRECTORY_SEPARATOR;
 
-        $this->assertSame('', FilePath::parse('C:' . $DS)->getParentDirectory()->__toString());
-        $this->assertSame('', FilePath::parse('C:' . $DS . 'foo')->getParentDirectory()->__toString());
-        $this->assertSame('C:' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS)->getParentDirectory()->__toString());
-        $this->assertSame('C:' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->getParentDirectory()->__toString());
-        $this->assertSame('C:' . $DS . 'foo' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->getParentDirectory()->__toString());
-        $this->assertSame('C:' . $DS . 'foo' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS . 'baz')->getParentDirectory()->__toString());
+        self::assertSame('', FilePath::parse('C:' . $DS)->getParentDirectory()->__toString());
+        self::assertSame('', FilePath::parse('C:' . $DS . 'foo')->getParentDirectory()->__toString());
+        self::assertSame('C:' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS)->getParentDirectory()->__toString());
+        self::assertSame('C:' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->getParentDirectory()->__toString());
+        self::assertSame('C:' . $DS . 'foo' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->getParentDirectory()->__toString());
+        self::assertSame('C:' . $DS . 'foo' . $DS, FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar' . $DS . 'baz')->getParentDirectory()->__toString());
     }
 
     /**
@@ -757,6 +759,6 @@ class FilePathTest extends PHPUnit_Framework_TestCase
      */
     public function tearDown()
     {
-        FakePhpUname::disable();
+        \FakePhpUname::disable();
     }
 }

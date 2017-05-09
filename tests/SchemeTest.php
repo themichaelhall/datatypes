@@ -1,25 +1,27 @@
 <?php
 
+namespace DataTypes\Tests;
+
 use DataTypes\Scheme;
 
 /**
  * Test Scheme class.
  */
-class SchemeTest extends PHPUnit_Framework_TestCase
+class SchemeTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test __toString method.
      */
     public function testToString()
     {
-        $this->assertSame('http', Scheme::parse('http')->__toString());
-        $this->assertSame('https', Scheme::parse('https')->__toString());
+        self::assertSame('http', Scheme::parse('http')->__toString());
+        self::assertSame('https', Scheme::parse('https')->__toString());
     }
 
     /**
      * Test that empty scheme is invalid.
      *
-     * @expectedException DataTypes\Exceptions\SchemeInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\SchemeInvalidArgumentException
      * @expectedExceptionMessage Scheme "" is empty.
      */
     public function testEmptySchemeIsInvalid()
@@ -30,7 +32,7 @@ class SchemeTest extends PHPUnit_Framework_TestCase
     /**
      * Test that invalid scheme is invalid.
      *
-     * @expectedException DataTypes\Exceptions\SchemeInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\SchemeInvalidArgumentException
      * @expectedExceptionMessage Scheme "foobar" is invalid: Scheme must be "http" or "https".
      */
     public function testInvalidSchemeIsInvalid()
@@ -46,6 +48,7 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testParseWithInvalidArgumentType()
     {
+        /** @noinspection PhpParamsInspection */
         Scheme::parse(['https']);
     }
 
@@ -54,11 +57,11 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testIsValid()
     {
-        $this->assertFalse(Scheme::isValid(''));
-        $this->assertFalse(Scheme::isValid('foo'));
-        $this->assertTrue(Scheme::isValid('http'));
-        $this->assertTrue(Scheme::isValid('https'));
-        $this->assertTrue(Scheme::isValid('HTTPS'));
+        self::assertFalse(Scheme::isValid(''));
+        self::assertFalse(Scheme::isValid('foo'));
+        self::assertTrue(Scheme::isValid('http'));
+        self::assertTrue(Scheme::isValid('https'));
+        self::assertTrue(Scheme::isValid('HTTPS'));
     }
 
     /**
@@ -77,11 +80,11 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testTryParse()
     {
-        $this->assertNull(Scheme::tryParse(''));
-        $this->assertNull(Scheme::tryParse('foo'));
-        $this->assertSame('http', Scheme::tryParse('http')->__toString());
-        $this->assertSame('https', Scheme::tryParse('https')->__toString());
-        $this->assertSame('https', Scheme::tryParse('HTTPS')->__toString());
+        self::assertNull(Scheme::tryParse(''));
+        self::assertNull(Scheme::tryParse('foo'));
+        self::assertSame('http', Scheme::tryParse('http')->__toString());
+        self::assertSame('https', Scheme::tryParse('https')->__toString());
+        self::assertSame('https', Scheme::tryParse('HTTPS')->__toString());
     }
 
     /**
@@ -100,8 +103,8 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testGetType()
     {
-        $this->assertSame(Scheme::TYPE_HTTP, Scheme::parse('http')->getType());
-        $this->assertSame(Scheme::TYPE_HTTPS, Scheme::parse('https')->getType());
+        self::assertSame(Scheme::TYPE_HTTP, Scheme::parse('http')->getType());
+        self::assertSame(Scheme::TYPE_HTTPS, Scheme::parse('https')->getType());
     }
 
     /**
@@ -109,7 +112,7 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testSchemeIsLowerCase()
     {
-        $this->assertSame('http', Scheme::parse('HTTP')->__toString());
+        self::assertSame('http', Scheme::parse('HTTP')->__toString());
     }
 
     /**
@@ -117,8 +120,8 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDefaultPort()
     {
-        $this->assertSame(80, Scheme::parse('http')->getDefaultPort());
-        $this->assertSame(443, Scheme::parse('https')->getDefaultPort());
+        self::assertSame(80, Scheme::parse('http')->getDefaultPort());
+        self::assertSame(443, Scheme::parse('https')->getDefaultPort());
     }
 
     /**
@@ -126,8 +129,8 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testIsHttp()
     {
-        $this->assertTrue(Scheme::parse('http')->isHttp());
-        $this->assertFalse(Scheme::parse('https')->isHttp());
+        self::assertTrue(Scheme::parse('http')->isHttp());
+        self::assertFalse(Scheme::parse('https')->isHttp());
     }
 
     /**
@@ -135,7 +138,7 @@ class SchemeTest extends PHPUnit_Framework_TestCase
      */
     public function testIsHttps()
     {
-        $this->assertFalse(Scheme::parse('http')->isHttps());
-        $this->assertTrue(Scheme::parse('https')->isHttps());
+        self::assertFalse(Scheme::parse('http')->isHttps());
+        self::assertTrue(Scheme::parse('https')->isHttps());
     }
 }

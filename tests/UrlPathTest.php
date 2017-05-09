@@ -1,21 +1,23 @@
 <?php
 
+namespace DataTypes\Tests;
+
 use DataTypes\UrlPath;
 
 /**
  * Test UrlPath class.
  */
-class UrlPathTest extends PHPUnit_Framework_TestCase
+class UrlPathTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test __toString method.
      */
     public function testToString()
     {
-        $this->assertSame('/', UrlPath::parse('/')->__toString());
-        $this->assertSame('/foo/bar/', UrlPath::parse('/foo/bar/')->__toString());
-        $this->assertSame('/foo/bar/baz.html', UrlPath::parse('/foo/bar/baz.html')->__toString());
-        $this->assertSame('foo/bar/baz.html', UrlPath::parse('foo/bar/baz.html')->__toString());
+        self::assertSame('/', UrlPath::parse('/')->__toString());
+        self::assertSame('/foo/bar/', UrlPath::parse('/foo/bar/')->__toString());
+        self::assertSame('/foo/bar/baz.html', UrlPath::parse('/foo/bar/baz.html')->__toString());
+        self::assertSame('foo/bar/baz.html', UrlPath::parse('foo/bar/baz.html')->__toString());
     }
 
     /**
@@ -23,12 +25,12 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDirectoryParts()
     {
-        $this->assertSame([], UrlPath::parse('/')->getDirectoryParts());
-        $this->assertSame(['foo'], UrlPath::parse('/foo/')->getDirectoryParts());
-        $this->assertSame(['foo', 'bar'], UrlPath::parse('/foo/bar/baz.html')->getDirectoryParts());
-        $this->assertSame(['foo', 'bar'], UrlPath::parse('//foo/bar/baz.html')->getDirectoryParts());
-        $this->assertSame(['foo', 'bar'], UrlPath::parse('foo/bar/baz.html')->getDirectoryParts());
-        $this->assertSame(['foo', 'bar'], UrlPath::parse('foo/bar//baz.html')->getDirectoryParts());
+        self::assertSame([], UrlPath::parse('/')->getDirectoryParts());
+        self::assertSame(['foo'], UrlPath::parse('/foo/')->getDirectoryParts());
+        self::assertSame(['foo', 'bar'], UrlPath::parse('/foo/bar/baz.html')->getDirectoryParts());
+        self::assertSame(['foo', 'bar'], UrlPath::parse('//foo/bar/baz.html')->getDirectoryParts());
+        self::assertSame(['foo', 'bar'], UrlPath::parse('foo/bar/baz.html')->getDirectoryParts());
+        self::assertSame(['foo', 'bar'], UrlPath::parse('foo/bar//baz.html')->getDirectoryParts());
     }
 
     /**
@@ -36,9 +38,9 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testGetFilename()
     {
-        $this->assertNull(UrlPath::parse('/')->getFilename());
-        $this->assertSame('foo.html', UrlPath::parse('foo.html')->getFilename());
-        $this->assertSame('baz', UrlPath::parse('/foo/bar/baz')->getFilename());
+        self::assertNull(UrlPath::parse('/')->getFilename());
+        self::assertSame('foo.html', UrlPath::parse('foo.html')->getFilename());
+        self::assertSame('baz', UrlPath::parse('/foo/bar/baz')->getFilename());
     }
 
     /**
@@ -46,12 +48,12 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testIsAbsolute()
     {
-        $this->assertFalse(UrlPath::parse('')->isAbsolute());
-        $this->assertTrue(UrlPath::parse('/')->isAbsolute());
-        $this->assertFalse(UrlPath::parse('foo')->isAbsolute());
-        $this->assertTrue(UrlPath::parse('/foo')->isAbsolute());
-        $this->assertFalse(UrlPath::parse('foo/bar/baz')->isAbsolute());
-        $this->assertTrue(UrlPath::parse('/foo/bar/baz')->isAbsolute());
+        self::assertFalse(UrlPath::parse('')->isAbsolute());
+        self::assertTrue(UrlPath::parse('/')->isAbsolute());
+        self::assertFalse(UrlPath::parse('foo')->isAbsolute());
+        self::assertTrue(UrlPath::parse('/foo')->isAbsolute());
+        self::assertFalse(UrlPath::parse('foo/bar/baz')->isAbsolute());
+        self::assertTrue(UrlPath::parse('/foo/bar/baz')->isAbsolute());
     }
 
     /**
@@ -59,12 +61,12 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testIsRelative()
     {
-        $this->assertTrue(UrlPath::parse('')->isRelative());
-        $this->assertFalse(UrlPath::parse('/')->isRelative());
-        $this->assertTrue(UrlPath::parse('foo')->isRelative());
-        $this->assertFalse(UrlPath::parse('/foo')->isRelative());
-        $this->assertTrue(UrlPath::parse('foo/bar/baz')->isRelative());
-        $this->assertFalse(UrlPath::parse('/foo/bar/baz')->isRelative());
+        self::assertTrue(UrlPath::parse('')->isRelative());
+        self::assertFalse(UrlPath::parse('/')->isRelative());
+        self::assertTrue(UrlPath::parse('foo')->isRelative());
+        self::assertFalse(UrlPath::parse('/foo')->isRelative());
+        self::assertTrue(UrlPath::parse('foo/bar/baz')->isRelative());
+        self::assertFalse(UrlPath::parse('/foo/bar/baz')->isRelative());
     }
 
     /**
@@ -72,10 +74,10 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testWithCurrentDirectoryParts()
     {
-        $this->assertSame('/foo/bar/baz/', UrlPath::parse('/foo/bar/./baz/')->__toString());
-        $this->assertSame('foo/bar/', UrlPath::parse('foo/bar/./')->__toString());
-        $this->assertSame('foo/bar/', UrlPath::parse('./foo/bar/')->__toString());
-        $this->assertSame('foo/bar/file', UrlPath::parse('foo/bar/./file')->__toString());
+        self::assertSame('/foo/bar/baz/', UrlPath::parse('/foo/bar/./baz/')->__toString());
+        self::assertSame('foo/bar/', UrlPath::parse('foo/bar/./')->__toString());
+        self::assertSame('foo/bar/', UrlPath::parse('./foo/bar/')->__toString());
+        self::assertSame('foo/bar/file', UrlPath::parse('foo/bar/./file')->__toString());
     }
 
     /**
@@ -83,10 +85,10 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testWithParentDirectoryParts()
     {
-        $this->assertSame('/foo/baz/', UrlPath::parse('/foo/bar/../baz/')->__toString());
-        $this->assertSame('/baz/', UrlPath::parse('/foo/bar/../../baz/')->__toString());
-        $this->assertSame('foo/bar/', UrlPath::parse('foo/bar/baz/..')->__toString());
-        $this->assertSame('foo/bar/file', UrlPath::parse('foo/bar/baz/../file')->__toString());
+        self::assertSame('/foo/baz/', UrlPath::parse('/foo/bar/../baz/')->__toString());
+        self::assertSame('/baz/', UrlPath::parse('/foo/bar/../../baz/')->__toString());
+        self::assertSame('foo/bar/', UrlPath::parse('foo/bar/baz/..')->__toString());
+        self::assertSame('foo/bar/file', UrlPath::parse('foo/bar/baz/../file')->__toString());
     }
 
     /**
@@ -96,15 +98,15 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
     {
         $urlPath = UrlPath::parse('foo/bar/../../../../baz/file.html');
 
-        $this->assertSame('../../baz/file.html', $urlPath->__toString());
-        $this->assertTrue($urlPath->isRelative());
-        $this->assertSame(['..', '..', 'baz'], $urlPath->getDirectoryParts());
+        self::assertSame('../../baz/file.html', $urlPath->__toString());
+        self::assertTrue($urlPath->isRelative());
+        self::assertSame(['..', '..', 'baz'], $urlPath->getDirectoryParts());
     }
 
     /**
      * Test that url path with invalid character in directory is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlPathInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlPathInvalidArgumentException
      * @expectedExceptionMessage Url path "/foo/{bar}/" is invalid: Part of directory "{bar}" contains invalid character "{".
      */
     public function testPathWithInvalidCharacterInDirectoryIsInvalid()
@@ -115,7 +117,7 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
     /**
      * Test that url path with invalid character in filename is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlPathInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlPathInvalidArgumentException
      * @expectedExceptionMessage Url path "/foo/bar?html" is invalid: Filename "bar?html" contains invalid character "?".
      */
     public function testPathWithInvalidCharacterInFilenameIsInvalid()
@@ -130,15 +132,15 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
     {
         $urlPath = UrlPath::parse('/path%3f!/file%3f!');
 
-        $this->assertSame('/path%3F%21/file%3F%21', $urlPath->__toString());
-        $this->assertSame(['path?!'], $urlPath->getDirectoryParts());
-        $this->assertSame('file?!', $urlPath->getFilename());
+        self::assertSame('/path%3F%21/file%3F%21', $urlPath->__toString());
+        self::assertSame(['path?!'], $urlPath->getDirectoryParts());
+        self::assertSame('file?!', $urlPath->getFilename());
     }
 
     /**
      * Test that absolute url path above root level is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlPathInvalidArgumentException
+     * @expectedException \DataTypes\Exceptions\UrlPathInvalidArgumentException
      * @expectedExceptionMessage Url path "/foo/../../" is invalid: Absolute path is above root level.
      */
     public function testAbsoluteUrlPathAboveRootLevelIsInvalid()
@@ -162,11 +164,11 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testTryParse()
     {
-        $this->assertSame('', UrlPath::tryParse('')->__toString());
-        $this->assertSame('foo/bar/baz.html', UrlPath::tryParse('foo/bar/baz.html')->__toString());
-        $this->assertNull(UrlPath::tryParse('/foo/{bar}/'));
-        $this->assertNull(UrlPath::tryParse('/foo/../../'));
-        $this->assertSame('/path%3F%21/file%3F%21', UrlPath::tryParse('/path%3f!/file%3f!')->__toString());
+        self::assertSame('', UrlPath::tryParse('')->__toString());
+        self::assertSame('foo/bar/baz.html', UrlPath::tryParse('foo/bar/baz.html')->__toString());
+        self::assertNull(UrlPath::tryParse('/foo/{bar}/'));
+        self::assertNull(UrlPath::tryParse('/foo/../../'));
+        self::assertSame('/path%3F%21/file%3F%21', UrlPath::tryParse('/path%3f!/file%3f!')->__toString());
     }
 
     /**
@@ -185,10 +187,10 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testIsValid()
     {
-        $this->assertTrue(UrlPath::isValid(''));
-        $this->assertTrue(UrlPath::isValid('foo/bar/baz.html'));
-        $this->assertFalse(UrlPath::isValid('/foo/{bar}/'));
-        $this->assertFalse(UrlPath::isValid('/foo/../../'));
+        self::assertTrue(UrlPath::isValid(''));
+        self::assertTrue(UrlPath::isValid('foo/bar/baz.html'));
+        self::assertFalse(UrlPath::isValid('/foo/{bar}/'));
+        self::assertFalse(UrlPath::isValid('/foo/../../'));
     }
 
     /**
@@ -207,14 +209,14 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testIsFile()
     {
-        $this->assertFalse(UrlPath::parse('')->isFile());
-        $this->assertFalse(UrlPath::parse('/')->isFile());
-        $this->assertTrue(UrlPath::parse('foo')->isFile());
-        $this->assertTrue(UrlPath::parse('/foo')->isFile());
-        $this->assertFalse(UrlPath::parse('foo/')->isFile());
-        $this->assertFalse(UrlPath::parse('/foo/')->isFile());
-        $this->assertTrue(UrlPath::parse('foo/bar')->isFile());
-        $this->assertTrue(UrlPath::parse('/foo/bar')->isFile());
+        self::assertFalse(UrlPath::parse('')->isFile());
+        self::assertFalse(UrlPath::parse('/')->isFile());
+        self::assertTrue(UrlPath::parse('foo')->isFile());
+        self::assertTrue(UrlPath::parse('/foo')->isFile());
+        self::assertFalse(UrlPath::parse('foo/')->isFile());
+        self::assertFalse(UrlPath::parse('/foo/')->isFile());
+        self::assertTrue(UrlPath::parse('foo/bar')->isFile());
+        self::assertTrue(UrlPath::parse('/foo/bar')->isFile());
     }
 
     /**
@@ -222,14 +224,14 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testIsDirectory()
     {
-        $this->assertTrue(UrlPath::parse('')->isDirectory());
-        $this->assertTrue(UrlPath::parse('/')->isDirectory());
-        $this->assertFalse(UrlPath::parse('foo')->isDirectory());
-        $this->assertFalse(UrlPath::parse('/foo')->isDirectory());
-        $this->assertTrue(UrlPath::parse('foo/')->isDirectory());
-        $this->assertTrue(UrlPath::parse('/foo/')->isDirectory());
-        $this->assertFalse(UrlPath::parse('foo/bar')->isDirectory());
-        $this->assertFalse(UrlPath::parse('/foo/bar')->isDirectory());
+        self::assertTrue(UrlPath::parse('')->isDirectory());
+        self::assertTrue(UrlPath::parse('/')->isDirectory());
+        self::assertFalse(UrlPath::parse('foo')->isDirectory());
+        self::assertFalse(UrlPath::parse('/foo')->isDirectory());
+        self::assertTrue(UrlPath::parse('foo/')->isDirectory());
+        self::assertTrue(UrlPath::parse('/foo/')->isDirectory());
+        self::assertFalse(UrlPath::parse('foo/bar')->isDirectory());
+        self::assertFalse(UrlPath::parse('/foo/bar')->isDirectory());
     }
 
     /**
@@ -237,17 +239,17 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDirectory()
     {
-        $this->assertSame('', UrlPath::parse('')->getDirectory()->__toString());
-        $this->assertSame('/', UrlPath::parse('/')->getDirectory()->__toString());
-        $this->assertSame('', UrlPath::parse('foo')->getDirectory()->__toString());
-        $this->assertSame('/', UrlPath::parse('/foo')->getDirectory()->__toString());
-        $this->assertSame('foo/', UrlPath::parse('foo/')->getDirectory()->__toString());
-        $this->assertSame('/foo/', UrlPath::parse('/foo/')->getDirectory()->__toString());
-        $this->assertSame('foo/', UrlPath::parse('foo/bar')->getDirectory()->__toString());
-        $this->assertSame('/foo/', UrlPath::parse('/foo/bar')->getDirectory()->__toString());
-        $this->assertSame('../', UrlPath::parse('../foo')->getDirectory()->__toString());
-        $this->assertSame('../foo/', UrlPath::parse('../foo/')->getDirectory()->__toString());
-        $this->assertSame('../foo/', UrlPath::parse('../foo/bar')->getDirectory()->__toString());
+        self::assertSame('', UrlPath::parse('')->getDirectory()->__toString());
+        self::assertSame('/', UrlPath::parse('/')->getDirectory()->__toString());
+        self::assertSame('', UrlPath::parse('foo')->getDirectory()->__toString());
+        self::assertSame('/', UrlPath::parse('/foo')->getDirectory()->__toString());
+        self::assertSame('foo/', UrlPath::parse('foo/')->getDirectory()->__toString());
+        self::assertSame('/foo/', UrlPath::parse('/foo/')->getDirectory()->__toString());
+        self::assertSame('foo/', UrlPath::parse('foo/bar')->getDirectory()->__toString());
+        self::assertSame('/foo/', UrlPath::parse('/foo/bar')->getDirectory()->__toString());
+        self::assertSame('../', UrlPath::parse('../foo')->getDirectory()->__toString());
+        self::assertSame('../foo/', UrlPath::parse('../foo/')->getDirectory()->__toString());
+        self::assertSame('../foo/', UrlPath::parse('../foo/bar')->getDirectory()->__toString());
     }
 
     /**
@@ -255,20 +257,20 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDepth()
     {
-        $this->assertSame(0, UrlPath::parse('')->getDepth());
-        $this->assertSame(0, UrlPath::parse('/')->getDepth());
-        $this->assertSame(0, UrlPath::parse('foo')->getDepth());
-        $this->assertSame(0, UrlPath::parse('/foo')->getDepth());
-        $this->assertSame(1, UrlPath::parse('foo/')->getDepth());
-        $this->assertSame(1, UrlPath::parse('/foo/')->getDepth());
-        $this->assertSame(1, UrlPath::parse('foo/bar')->getDepth());
-        $this->assertSame(1, UrlPath::parse('/foo/bar')->getDepth());
-        $this->assertSame(2, UrlPath::parse('foo/bar/')->getDepth());
-        $this->assertSame(2, UrlPath::parse('/foo/bar/')->getDepth());
-        $this->assertSame(-1, UrlPath::parse('../')->getDepth());
-        $this->assertSame(-1, UrlPath::parse('../foo')->getDepth());
-        $this->assertSame(-2, UrlPath::parse('../../foo')->getDepth());
-        $this->assertSame(-1, UrlPath::parse('../../foo/')->getDepth());
+        self::assertSame(0, UrlPath::parse('')->getDepth());
+        self::assertSame(0, UrlPath::parse('/')->getDepth());
+        self::assertSame(0, UrlPath::parse('foo')->getDepth());
+        self::assertSame(0, UrlPath::parse('/foo')->getDepth());
+        self::assertSame(1, UrlPath::parse('foo/')->getDepth());
+        self::assertSame(1, UrlPath::parse('/foo/')->getDepth());
+        self::assertSame(1, UrlPath::parse('foo/bar')->getDepth());
+        self::assertSame(1, UrlPath::parse('/foo/bar')->getDepth());
+        self::assertSame(2, UrlPath::parse('foo/bar/')->getDepth());
+        self::assertSame(2, UrlPath::parse('/foo/bar/')->getDepth());
+        self::assertSame(-1, UrlPath::parse('../')->getDepth());
+        self::assertSame(-1, UrlPath::parse('../foo')->getDepth());
+        self::assertSame(-2, UrlPath::parse('../../foo')->getDepth());
+        self::assertSame(-1, UrlPath::parse('../../foo/')->getDepth());
     }
 
     /**
@@ -276,12 +278,12 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testToRelative()
     {
-        $this->assertSame('', UrlPath::parse('')->toRelative()->__toString());
-        $this->assertSame('', UrlPath::parse('/')->toRelative()->__toString());
-        $this->assertSame('foo', UrlPath::parse('foo')->toRelative()->__toString());
-        $this->assertSame('foo', UrlPath::parse('/foo')->toRelative()->__toString());
-        $this->assertSame('foo/bar', UrlPath::parse('foo/bar')->toRelative()->__toString());
-        $this->assertSame('foo/bar', UrlPath::parse('/foo/bar')->toRelative()->__toString());
+        self::assertSame('', UrlPath::parse('')->toRelative()->__toString());
+        self::assertSame('', UrlPath::parse('/')->toRelative()->__toString());
+        self::assertSame('foo', UrlPath::parse('foo')->toRelative()->__toString());
+        self::assertSame('foo', UrlPath::parse('/foo')->toRelative()->__toString());
+        self::assertSame('foo/bar', UrlPath::parse('foo/bar')->toRelative()->__toString());
+        self::assertSame('foo/bar', UrlPath::parse('/foo/bar')->toRelative()->__toString());
     }
 
     /**
@@ -289,18 +291,18 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testToAbsolute()
     {
-        $this->assertSame('/', UrlPath::parse('')->toAbsolute()->__toString());
-        $this->assertSame('/', UrlPath::parse('/')->toAbsolute()->__toString());
-        $this->assertSame('/foo', UrlPath::parse('foo')->toAbsolute()->__toString());
-        $this->assertSame('/foo', UrlPath::parse('/foo')->toAbsolute()->__toString());
-        $this->assertSame('/foo/bar', UrlPath::parse('foo/bar')->toAbsolute()->__toString());
-        $this->assertSame('/foo/bar', UrlPath::parse('/foo/bar')->toAbsolute()->__toString());
+        self::assertSame('/', UrlPath::parse('')->toAbsolute()->__toString());
+        self::assertSame('/', UrlPath::parse('/')->toAbsolute()->__toString());
+        self::assertSame('/foo', UrlPath::parse('foo')->toAbsolute()->__toString());
+        self::assertSame('/foo', UrlPath::parse('/foo')->toAbsolute()->__toString());
+        self::assertSame('/foo/bar', UrlPath::parse('foo/bar')->toAbsolute()->__toString());
+        self::assertSame('/foo/bar', UrlPath::parse('/foo/bar')->toAbsolute()->__toString());
     }
 
     /**
      * Test that attempting to make an absolute path for a url path above root is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlPathLogicException
+     * @expectedException \DataTypes\Exceptions\UrlPathLogicException
      * @expectedExceptionMessage Url path "../" can not be made absolute: Relative path is above base level.
      */
     public function testToAbsoluteForUrlPathAboveRootIsInvalid()
@@ -313,38 +315,38 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testWithUrlPath()
     {
-        $this->assertSame('/bar', UrlPath::parse('/foo')->withUrlPath(UrlPath::parse('/bar'))->__toString());
-        $this->assertSame('/bar', UrlPath::parse('foo')->withUrlPath(UrlPath::parse('/bar'))->__toString());
-        $this->assertSame('/bar/baz', UrlPath::parse('/foo')->withUrlPath(UrlPath::parse('/bar/baz'))->__toString());
-        $this->assertSame('/bar/baz', UrlPath::parse('foo')->withUrlPath(UrlPath::parse('/bar/baz'))->__toString());
-        $this->assertSame('', UrlPath::parse('')->withUrlPath(UrlPath::parse(''))->__toString());
-        $this->assertSame('/', UrlPath::parse('')->withUrlPath(UrlPath::parse('/'))->__toString());
-        $this->assertSame('/foo/bar', UrlPath::parse('/foo/')->withUrlPath(UrlPath::parse('bar'))->__toString());
-        $this->assertSame('/foo/baz', UrlPath::parse('/foo/bar')->withUrlPath(UrlPath::parse('baz'))->__toString());
-        $this->assertSame('foo/bar', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar'))->__toString());
-        $this->assertSame('foo/baz', UrlPath::parse('foo/bar')->withUrlPath(UrlPath::parse('baz'))->__toString());
-        $this->assertSame('/foo/bar/', UrlPath::parse('/foo/')->withUrlPath(UrlPath::parse('bar/'))->__toString());
-        $this->assertSame('foo/bar/', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar/'))->__toString());
-        $this->assertSame('/foo/bar/', UrlPath::parse('/foo/baz')->withUrlPath(UrlPath::parse('bar/'))->__toString());
-        $this->assertSame('foo/bar/', UrlPath::parse('foo/baz')->withUrlPath(UrlPath::parse('bar/'))->__toString());
-        $this->assertSame('/foo/bar/baz', UrlPath::parse('/foo/')->withUrlPath(UrlPath::parse('bar/baz'))->__toString());
-        $this->assertSame('foo/bar/baz', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar/baz'))->__toString());
-        $this->assertSame('/foo/bar/baz/', UrlPath::parse('/foo/')->withUrlPath(UrlPath::parse('bar/baz/'))->__toString());
-        $this->assertSame('foo/bar/baz/', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar/baz/'))->__toString());
-        $this->assertSame('/foo/baz/file', UrlPath::parse('/foo/bar/')->withUrlPath(UrlPath::parse('../baz/file'))->__toString());
-        $this->assertSame('foo/baz/file', UrlPath::parse('foo/bar/')->withUrlPath(UrlPath::parse('../baz/file'))->__toString());
-        $this->assertSame('../foo/baz/file', UrlPath::parse('../foo/bar/')->withUrlPath(UrlPath::parse('../baz/file'))->__toString());
-        $this->assertSame('/baz/file', UrlPath::parse('/foo/bar/')->withUrlPath(UrlPath::parse('../../baz/file'))->__toString());
-        $this->assertSame('baz/file', UrlPath::parse('foo/bar/')->withUrlPath(UrlPath::parse('../../baz/file'))->__toString());
-        $this->assertSame('../baz/file', UrlPath::parse('../foo/bar/')->withUrlPath(UrlPath::parse('../../baz/file'))->__toString());
-        $this->assertSame('../baz/file', UrlPath::parse('foo/bar/')->withUrlPath(UrlPath::parse('../../../baz/file'))->__toString());
-        $this->assertSame('../../baz/file', UrlPath::parse('../foo/bar/')->withUrlPath(UrlPath::parse('../../../baz/file'))->__toString());
+        self::assertSame('/bar', UrlPath::parse('/foo')->withUrlPath(UrlPath::parse('/bar'))->__toString());
+        self::assertSame('/bar', UrlPath::parse('foo')->withUrlPath(UrlPath::parse('/bar'))->__toString());
+        self::assertSame('/bar/baz', UrlPath::parse('/foo')->withUrlPath(UrlPath::parse('/bar/baz'))->__toString());
+        self::assertSame('/bar/baz', UrlPath::parse('foo')->withUrlPath(UrlPath::parse('/bar/baz'))->__toString());
+        self::assertSame('', UrlPath::parse('')->withUrlPath(UrlPath::parse(''))->__toString());
+        self::assertSame('/', UrlPath::parse('')->withUrlPath(UrlPath::parse('/'))->__toString());
+        self::assertSame('/foo/bar', UrlPath::parse('/foo/')->withUrlPath(UrlPath::parse('bar'))->__toString());
+        self::assertSame('/foo/baz', UrlPath::parse('/foo/bar')->withUrlPath(UrlPath::parse('baz'))->__toString());
+        self::assertSame('foo/bar', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar'))->__toString());
+        self::assertSame('foo/baz', UrlPath::parse('foo/bar')->withUrlPath(UrlPath::parse('baz'))->__toString());
+        self::assertSame('/foo/bar/', UrlPath::parse('/foo/')->withUrlPath(UrlPath::parse('bar/'))->__toString());
+        self::assertSame('foo/bar/', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar/'))->__toString());
+        self::assertSame('/foo/bar/', UrlPath::parse('/foo/baz')->withUrlPath(UrlPath::parse('bar/'))->__toString());
+        self::assertSame('foo/bar/', UrlPath::parse('foo/baz')->withUrlPath(UrlPath::parse('bar/'))->__toString());
+        self::assertSame('/foo/bar/baz', UrlPath::parse('/foo/')->withUrlPath(UrlPath::parse('bar/baz'))->__toString());
+        self::assertSame('foo/bar/baz', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar/baz'))->__toString());
+        self::assertSame('/foo/bar/baz/', UrlPath::parse('/foo/')->withUrlPath(UrlPath::parse('bar/baz/'))->__toString());
+        self::assertSame('foo/bar/baz/', UrlPath::parse('foo/')->withUrlPath(UrlPath::parse('bar/baz/'))->__toString());
+        self::assertSame('/foo/baz/file', UrlPath::parse('/foo/bar/')->withUrlPath(UrlPath::parse('../baz/file'))->__toString());
+        self::assertSame('foo/baz/file', UrlPath::parse('foo/bar/')->withUrlPath(UrlPath::parse('../baz/file'))->__toString());
+        self::assertSame('../foo/baz/file', UrlPath::parse('../foo/bar/')->withUrlPath(UrlPath::parse('../baz/file'))->__toString());
+        self::assertSame('/baz/file', UrlPath::parse('/foo/bar/')->withUrlPath(UrlPath::parse('../../baz/file'))->__toString());
+        self::assertSame('baz/file', UrlPath::parse('foo/bar/')->withUrlPath(UrlPath::parse('../../baz/file'))->__toString());
+        self::assertSame('../baz/file', UrlPath::parse('../foo/bar/')->withUrlPath(UrlPath::parse('../../baz/file'))->__toString());
+        self::assertSame('../baz/file', UrlPath::parse('foo/bar/')->withUrlPath(UrlPath::parse('../../../baz/file'))->__toString());
+        self::assertSame('../../baz/file', UrlPath::parse('../foo/bar/')->withUrlPath(UrlPath::parse('../../../baz/file'))->__toString());
     }
 
     /**
      * Test that combining an absolute url path with an url path that results in a path above root level is invalid.
      *
-     * @expectedException DataTypes\Exceptions\UrlPathLogicException
+     * @expectedException \DataTypes\Exceptions\UrlPathLogicException
      * @expectedExceptionMessage Url path "/foo/bar/" can not be combined with url path "../../../baz/file": Absolute path is above root level.
      */
     public function testAbsoluteUrlPathWithUrlPathAboveRootLevelIsInvalid()
@@ -357,20 +359,20 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testHasParentDirectory()
     {
-        $this->assertTrue(UrlPath::parse('')->hasParentDirectory());
-        $this->assertFalse(UrlPath::parse('/')->hasParentDirectory());
-        $this->assertTrue(UrlPath::parse('foo')->hasParentDirectory());
-        $this->assertFalse(UrlPath::parse('/foo')->hasParentDirectory());
-        $this->assertTrue(UrlPath::parse('foo/')->hasParentDirectory());
-        $this->assertTrue(UrlPath::parse('/foo/')->hasParentDirectory());
-        $this->assertTrue(UrlPath::parse('foo/bar')->hasParentDirectory());
-        $this->assertTrue(UrlPath::parse('/foo/bar')->hasParentDirectory());
-        $this->assertTrue(UrlPath::parse('foo/bar/')->hasParentDirectory());
-        $this->assertTrue(UrlPath::parse('/foo/bar/')->hasParentDirectory());
-        $this->assertTrue(UrlPath::parse('../')->hasParentDirectory());
-        $this->assertTrue(UrlPath::parse('../foo')->hasParentDirectory());
-        $this->assertTrue(UrlPath::parse('../../foo')->hasParentDirectory());
-        $this->assertTrue(UrlPath::parse('../../foo/')->hasParentDirectory());
+        self::assertTrue(UrlPath::parse('')->hasParentDirectory());
+        self::assertFalse(UrlPath::parse('/')->hasParentDirectory());
+        self::assertTrue(UrlPath::parse('foo')->hasParentDirectory());
+        self::assertFalse(UrlPath::parse('/foo')->hasParentDirectory());
+        self::assertTrue(UrlPath::parse('foo/')->hasParentDirectory());
+        self::assertTrue(UrlPath::parse('/foo/')->hasParentDirectory());
+        self::assertTrue(UrlPath::parse('foo/bar')->hasParentDirectory());
+        self::assertTrue(UrlPath::parse('/foo/bar')->hasParentDirectory());
+        self::assertTrue(UrlPath::parse('foo/bar/')->hasParentDirectory());
+        self::assertTrue(UrlPath::parse('/foo/bar/')->hasParentDirectory());
+        self::assertTrue(UrlPath::parse('../')->hasParentDirectory());
+        self::assertTrue(UrlPath::parse('../foo')->hasParentDirectory());
+        self::assertTrue(UrlPath::parse('../../foo')->hasParentDirectory());
+        self::assertTrue(UrlPath::parse('../../foo/')->hasParentDirectory());
     }
 
     /**
@@ -378,19 +380,19 @@ class UrlPathTest extends PHPUnit_Framework_TestCase
      */
     public function testGetParentDirectory()
     {
-        $this->assertSame('../', UrlPath::parse('')->getParentDirectory()->__toString());
-        $this->assertNull(UrlPath::parse('/')->getParentDirectory());
-        $this->assertSame('../', UrlPath::parse('foo')->getParentDirectory()->__toString());
-        $this->assertNull(UrlPath::parse('/foo')->getParentDirectory());
-        $this->assertSame('', UrlPath::parse('foo/')->getParentDirectory()->__toString());
-        $this->assertSame('/', UrlPath::parse('/foo/')->getParentDirectory()->__toString());
-        $this->assertSame('', UrlPath::parse('foo/bar')->getParentDirectory()->__toString());
-        $this->assertSame('/', UrlPath::parse('/foo/bar')->getParentDirectory()->__toString());
-        $this->assertSame('foo/', UrlPath::parse('foo/bar/')->getParentDirectory()->__toString());
-        $this->assertSame('/foo/', UrlPath::parse('/foo/bar/')->getParentDirectory()->__toString());
-        $this->assertSame('../../', UrlPath::parse('../')->getParentDirectory()->__toString());
-        $this->assertSame('../../', UrlPath::parse('../foo')->getParentDirectory()->__toString());
-        $this->assertSame('../../../', UrlPath::parse('../../foo')->getParentDirectory()->__toString());
-        $this->assertSame('../../', UrlPath::parse('../../foo/')->getParentDirectory()->__toString());
+        self::assertSame('../', UrlPath::parse('')->getParentDirectory()->__toString());
+        self::assertNull(UrlPath::parse('/')->getParentDirectory());
+        self::assertSame('../', UrlPath::parse('foo')->getParentDirectory()->__toString());
+        self::assertNull(UrlPath::parse('/foo')->getParentDirectory());
+        self::assertSame('', UrlPath::parse('foo/')->getParentDirectory()->__toString());
+        self::assertSame('/', UrlPath::parse('/foo/')->getParentDirectory()->__toString());
+        self::assertSame('', UrlPath::parse('foo/bar')->getParentDirectory()->__toString());
+        self::assertSame('/', UrlPath::parse('/foo/bar')->getParentDirectory()->__toString());
+        self::assertSame('foo/', UrlPath::parse('foo/bar/')->getParentDirectory()->__toString());
+        self::assertSame('/foo/', UrlPath::parse('/foo/bar/')->getParentDirectory()->__toString());
+        self::assertSame('../../', UrlPath::parse('../')->getParentDirectory()->__toString());
+        self::assertSame('../../', UrlPath::parse('../foo')->getParentDirectory()->__toString());
+        self::assertSame('../../../', UrlPath::parse('../../foo')->getParentDirectory()->__toString());
+        self::assertSame('../../', UrlPath::parse('../../foo/')->getParentDirectory()->__toString());
     }
 }
