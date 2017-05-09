@@ -120,7 +120,7 @@ class Url implements UrlInterface
      *
      * @param int $port The port.
      *
-     * @throws \InvalidArgumentException If the $port parameter is not an integer.
+     * @throws \InvalidArgumentException   If the $port parameter is not an integer.
      * @throws UrlInvalidArgumentException If the port is out of range.
      *
      * @return UrlInterface The Url instance.
@@ -159,7 +159,7 @@ class Url implements UrlInterface
      *
      * @param string|null $queryString The query string or null for no query string.
      *
-     * @throws \InvalidArgumentException If the $queryString parameter is not a string or null.
+     * @throws \InvalidArgumentException   If the $queryString parameter is not a string or null.
      * @throws UrlInvalidArgumentException If the query parameter is invalid.
      *
      * @return UrlInterface The url instance.
