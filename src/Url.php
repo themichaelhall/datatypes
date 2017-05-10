@@ -387,7 +387,7 @@ class Url implements UrlInterface
      */
     private static function myParse(UrlInterface $baseUrl = null, $url, $validateOnly, SchemeInterface &$scheme = null, HostInterface &$host = null, &$port = null, UrlPathInterface &$path = null, &$queryString = null, &$error = null)
     {
-        if ($url === '') {
+        if ($baseUrl === null && $url === '') {
             $error = 'Url "" is empty.';
 
             return false;
@@ -580,6 +580,8 @@ class Url implements UrlInterface
     private static function myParsePath(UrlInterface $baseUrl = null, $pathString, $validateOnly, UrlPathInterface &$path = null, &$queryString = null, &$error = null)
     {
         $parts = explode('?', $pathString, 2);
+
+        $pathString = $parts[0];
         $queryString = count($parts) === 2 ? $parts[1] : null;
 
         // Validate query string if it is set.
@@ -587,13 +589,21 @@ class Url implements UrlInterface
             return false;
         }
 
+        // If path is empty and there is a base url, use the path from base url.
+        if ($pathString === '' && $baseUrl !== null) {
+            $path = $baseUrl->getPath();
+            $queryString = $queryString ?: $baseUrl->getQueryString();
+
+            return true;
+        }
+
         // Validate or try parse path.
         if ($validateOnly) {
-            return UrlPath::isValid($parts[0]);
+            return UrlPath::isValid($pathString);
         }
 
         try {
-            $path = UrlPath::parse($parts[0]);
+            $path = UrlPath::parse($pathString);
         } catch (UrlPathInvalidArgumentException $e) {
             $error = $e->getMessage();
 

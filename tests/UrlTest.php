@@ -25,6 +25,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         self::assertSame('http://www.domain.com/foo/Bar?', Url::parse('http://www.domain.com/foo/Bar?')->__toString());
         self::assertSame('http://www.domain.com/foo/Bar?Baz', Url::parse('http://www.domain.com/foo/Bar?Baz')->__toString());
         self::assertSame('http://www.domain.com/foo/Bar?F%7Baz%7D', Url::parse('http://www.domain.com/foo/Bar?F%7Baz%7D')->__toString());
+        self::assertSame('http://www.domain.com/?foo', Url::parse('http://www.domain.com/?foo')->__toString());
     }
 
     /**
@@ -336,6 +337,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         self::assertFalse(Url::isValid('http://domain.com:1234/{foo}'));
         self::assertTrue(Url::isValid('http://domain.com/foo?bar'));
         self::assertFalse(Url::isValid('http://domain.com/foo?{bar}'));
+        self::assertTrue(Url::isValid('http://domain.com/?bar'));
         // fixme: More tests
     }
 
@@ -366,6 +368,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         self::assertNull(Url::tryParse('http://domain.com:1234/{foo}'));
         self::assertSame('http://domain.com/foo?bar', Url::tryParse('http://domain.com/foo?bar')->__toString());
         self::assertNull(Url::tryParse('http://domain.com/foo?{bar}'));
+        self::assertSame('http://domain.com/?bar', Url::tryParse('http://domain.com/?bar')->__toString());
         // fixme: More tests
     }
 
@@ -381,8 +384,10 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         self::assertSame('http://foo.com:8080/new-path/new-file?new-query', Url::parseRelative('/new-path/new-file?new-query', $url)->__toString());
         self::assertSame('http://foo.com:8080/path/new-file?new-query', Url::parseRelative('new-file?new-query', $url)->__toString());
         self::assertSame('http://foo.com:8080/new-file?new-query', Url::parseRelative('../new-file?new-query', $url)->__toString());
-        // fixme: Query string
-        // fixme: Empty url
+        self::assertSame('http://foo.com:8080/path/file?new-query', Url::parseRelative('?new-query', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/new-file', Url::parseRelative('new-file', $url)->__toString());
+        // fixme: fragment
+        self::assertSame('http://foo.com:8080/path/file?query', Url::parseRelative('', $url)->__toString());
     }
 
     /**
