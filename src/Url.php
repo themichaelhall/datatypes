@@ -110,7 +110,7 @@ class Url implements UrlInterface
      */
     public function withHost(HostInterface $host)
     {
-        return new self($this->myScheme, $host, $this->myPort, $this->myPath, $this->myQueryString);
+        return new self($this->myScheme, $host, $this->myPort, $this->myPath, $this->myQueryString, $this->myFragment);
     }
 
     /**
@@ -135,7 +135,7 @@ class Url implements UrlInterface
             throw new UrlInvalidArgumentException($error);
         }
 
-        return new self($this->myScheme, $this->myHost, $port, $this->myPath, $this->myQueryString);
+        return new self($this->myScheme, $this->myHost, $port, $this->myPath, $this->myQueryString, $this->myFragment);
     }
 
     /**
@@ -149,7 +149,7 @@ class Url implements UrlInterface
      */
     public function withPath(UrlPathInterface $path)
     {
-        return new self($this->myScheme, $this->myHost, $this->myPort, $this->myPath->withUrlPath($path), $this->myQueryString);
+        return new self($this->myScheme, $this->myHost, $this->myPort, $this->myPath->withUrlPath($path), $this->myQueryString, $this->myFragment);
     }
 
     /**
@@ -174,7 +174,7 @@ class Url implements UrlInterface
             throw new UrlInvalidArgumentException($error);
         }
 
-        return new self($this->myScheme, $this->myHost, $this->myPort, $this->myPath, $queryString);
+        return new self($this->myScheme, $this->myHost, $this->myPort, $this->myPath, $queryString, $this->myFragment);
     }
 
     /**
@@ -189,7 +189,7 @@ class Url implements UrlInterface
      */
     public function withScheme(SchemeInterface $scheme, $keepDefaultPort = true)
     {
-        return new self($scheme, $this->myHost, ($keepDefaultPort && $this->myPort === $this->myScheme->getDefaultPort() ? $scheme->getDefaultPort() : $this->myPort), $this->myPath, $this->myQueryString);
+        return new self($scheme, $this->myHost, ($keepDefaultPort && $this->myPort === $this->myScheme->getDefaultPort() ? $scheme->getDefaultPort() : $this->myPort), $this->myPath, $this->myQueryString, $this->myFragment);
     }
 
     /**
@@ -201,7 +201,7 @@ class Url implements UrlInterface
      */
     public function __toString()
     {
-        return $this->myScheme . '://' . $this->getHostAndPort() . $this->myPath . ($this->myQueryString !== null ? '?' . $this->myQueryString : '');
+        return $this->myScheme . '://' . $this->getHostAndPort() . $this->myPath . ($this->myQueryString !== null ? '?' . $this->myQueryString : '') . ($this->myFragment !== null ? '#' . $this->myFragment : '');
     }
 
     /**
@@ -214,13 +214,14 @@ class Url implements UrlInterface
      * @param int|null              $port        The port or null if default port for the scheme should be used.
      * @param UrlPathInterface|null $urlPath     The url path or null if root path should be used.
      * @param string|null           $queryString The query string or null if no query string should be used.
+     * @param string|null           $fragment    The fragment or null if no fragment should be used.
      *
      * @throws \InvalidArgumentException   If any of the parameters are of invalid type.
      * @throws UrlInvalidArgumentException If any of the parameters are invalid.
      *
      * @return UrlInterface The url.
      */
-    public static function fromParts(SchemeInterface $scheme, HostInterface $host, $port = null, UrlPathInterface $urlPath = null, $queryString = null)
+    public static function fromParts(SchemeInterface $scheme, HostInterface $host, $port = null, UrlPathInterface $urlPath = null, $queryString = null, $fragment = null)
     {
         if (!is_int($port) && !is_null($port)) {
             throw new \InvalidArgumentException('$port parameter is not an integer or null.');
@@ -254,7 +255,9 @@ class Url implements UrlInterface
             throw new UrlInvalidArgumentException($error);
         }
 
-        return new self($scheme, $host, $port, $urlPath, $queryString);
+        // fixme: validate fragment
+
+        return new self($scheme, $host, $port, $urlPath, $queryString, $fragment);
     }
 
     /**
@@ -295,11 +298,11 @@ class Url implements UrlInterface
             throw new \InvalidArgumentException('$url parameter is not a string.');
         }
 
-        if (!self::myParse(null, $url, false, $scheme, $host, $port, $path, $queryString, $error)) {
+        if (!self::myParse(null, $url, false, $scheme, $host, $port, $path, $queryString, $fragment, $error)) {
             throw new UrlInvalidArgumentException($error);
         }
 
-        return new self($scheme, $host, $port, $path, $queryString);
+        return new self($scheme, $host, $port, $path, $queryString, $fragment);
     }
 
     /**
@@ -321,11 +324,11 @@ class Url implements UrlInterface
             throw new \InvalidArgumentException('$url parameter is not a string.');
         }
 
-        if (!self::myParse($baseUrl, $url, false, $scheme, $host, $port, $path, $queryString, $error)) {
+        if (!self::myParse($baseUrl, $url, false, $scheme, $host, $port, $path, $queryString, $fragment, $error)) {
             throw new UrlInvalidArgumentException($error);
         }
 
-        return new self($scheme, $host, $port, $path, $queryString);
+        return new self($scheme, $host, $port, $path, $queryString, $fragment);
     }
 
     /**
@@ -345,11 +348,11 @@ class Url implements UrlInterface
             throw new \InvalidArgumentException('$url parameter is not a string.');
         }
 
-        if (!self::myParse(null, $url, false, $scheme, $host, $port, $path, $queryString)) {
+        if (!self::myParse(null, $url, false, $scheme, $host, $port, $path, $queryString, $fragment)) {
             return null;
         }
 
-        return new self($scheme, $host, $port, $path, $queryString);
+        return new self($scheme, $host, $port, $path, $queryString, $fragment);
     }
 
     /**
@@ -360,14 +363,16 @@ class Url implements UrlInterface
      * @param int              $port        The port.
      * @param UrlPathInterface $path        The path.
      * @param string|null      $queryString The query string.
+     * @param string|null      $fragment    The fragment.
      */
-    private function __construct(SchemeInterface $scheme, HostInterface $host, $port, UrlPathInterface $path, $queryString = null)
+    private function __construct(SchemeInterface $scheme, HostInterface $host, $port, UrlPathInterface $path, $queryString = null, $fragment = null)
     {
         $this->myScheme = $scheme;
         $this->myHost = $host;
         $this->myPort = $port;
         $this->myPath = $path;
         $this->myQueryString = $queryString;
+        $this->myFragment = $fragment;
     }
 
     /**
@@ -381,11 +386,12 @@ class Url implements UrlInterface
      * @param int|null              $port         The port if parsing was successful, undefined otherwise.
      * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
      * @param string|null           $queryString  The query string if parsing was successful, undefined otherwise.
+     * @param string|null           $fragment     The fragment if parsing was successful, undefined otherwise.
      * @param string|null           $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse(UrlInterface $baseUrl = null, $url, $validateOnly, SchemeInterface &$scheme = null, HostInterface &$host = null, &$port = null, UrlPathInterface &$path = null, &$queryString = null, &$error = null)
+    private static function myParse(UrlInterface $baseUrl = null, $url, $validateOnly, SchemeInterface &$scheme = null, HostInterface &$host = null, &$port = null, UrlPathInterface &$path = null, &$queryString = null, &$fragment = null, &$error = null)
     {
         if ($baseUrl === null && $url === '') {
             $error = 'Url "" is empty.';
@@ -418,8 +424,7 @@ class Url implements UrlInterface
         }
 
         // Parse path.
-        // fixme: Fragment
-        if (!self::myParsePath($baseUrl, $pathString, $validateOnly, $path, $queryString, $error)) {
+        if (!self::myParsePath($baseUrl, $pathString, $validateOnly, $path, $queryString, $fragment, $error)) {
             $error = 'Url "' . $url . '" is invalid: ' . $error;
 
             return false;
@@ -573,12 +578,20 @@ class Url implements UrlInterface
      * @param bool                  $validateOnly If true only validation is performed, if false parse results are returned.
      * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
      * @param string|null           $queryString  The query string if parsing was successful, undefined otherwise.
+     * @param string|null           $fragment     The fragment if parsing was successful, undefined otherwise.
      * @param string|null           $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParsePath(UrlInterface $baseUrl = null, $pathString, $validateOnly, UrlPathInterface &$path = null, &$queryString = null, &$error = null)
+    private static function myParsePath(UrlInterface $baseUrl = null, $pathString, $validateOnly, UrlPathInterface &$path = null, &$queryString = null, &$fragment = null, &$error = null)
     {
+        $parts = explode('#', $pathString, 2);
+        if (count($parts) > 1) {
+            // fixme: validate fragment
+            $fragment = $parts[1];
+            $pathString = $parts[0];
+        }
+
         $parts = explode('?', $pathString, 2);
 
         $pathString = $parts[0];
@@ -687,4 +700,9 @@ class Url implements UrlInterface
      * @var string|null My query string.
      */
     private $myQueryString;
+
+    /**
+     * @var string|null My fragment.
+     */
+    private $myFragment;
 }
