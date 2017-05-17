@@ -390,17 +390,20 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseRelative()
     {
-        $url = Url::parse('http://foo.com:8080/path/file?query');
+        $url = Url::parse('http://foo.com:8080/path/file?query#fragment');
 
-        self::assertSame('https://bar.com/new-path/new-file?new-query', Url::parseRelative('https://bar.com/new-path/new-file?new-query', $url)->__toString());
-        self::assertSame('http://bar.com/new-path/new-file?new-query', Url::parseRelative('//bar.com/new-path/new-file?new-query', $url)->__toString());
-        self::assertSame('http://foo.com:8080/new-path/new-file?new-query', Url::parseRelative('/new-path/new-file?new-query', $url)->__toString());
-        self::assertSame('http://foo.com:8080/path/new-file?new-query', Url::parseRelative('new-file?new-query', $url)->__toString());
-        self::assertSame('http://foo.com:8080/new-file?new-query', Url::parseRelative('../new-file?new-query', $url)->__toString());
+        self::assertSame('https://bar.com/new-path/new-file?new-query#new-fragment', Url::parseRelative('https://bar.com/new-path/new-file?new-query#new-fragment', $url)->__toString());
+        self::assertSame('http://bar.com/new-path/new-file?new-query#new-fragment', Url::parseRelative('//bar.com/new-path/new-file?new-query#new-fragment', $url)->__toString());
+        self::assertSame('http://foo.com:8080/new-path/new-file?new-query#new-fragment', Url::parseRelative('/new-path/new-file?new-query#new-fragment', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/new-file?new-query#new-fragment', Url::parseRelative('new-file?new-query#new-fragment', $url)->__toString());
+        self::assertSame('http://foo.com:8080/new-file?new-query#new-fragment', Url::parseRelative('../new-file?new-query#new-fragment', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/file?new-query#new-fragment', Url::parseRelative('?new-query#new-fragment', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/file?query#new-fragment', Url::parseRelative('#new-fragment', $url)->__toString());
         self::assertSame('http://foo.com:8080/path/file?new-query', Url::parseRelative('?new-query', $url)->__toString());
         self::assertSame('http://foo.com:8080/path/new-file', Url::parseRelative('new-file', $url)->__toString());
-        // fixme: fragment
-        self::assertSame('http://foo.com:8080/path/file?query', Url::parseRelative('', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/new-file#new-fragment', Url::parseRelative('new-file#new-fragment', $url)->__toString());
+        self::assertSame('http://foo.com:8080/new-path/', Url::parseRelative('/new-path/', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/file?query#fragment', Url::parseRelative('', $url)->__toString());
     }
 
     /**

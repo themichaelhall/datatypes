@@ -15,6 +15,15 @@ namespace DataTypes\Interfaces;
 interface UrlInterface extends DataTypeInterface
 {
     /**
+     * Returns the fragment of the url or null if the url has no fragment.
+     *
+     * @since 1.0.0
+     *
+     * @return string|null The fragment of the url or null if the url has no fragment.
+     */
+    public function getFragment();
+
+    /**
      * Returns the host of the url.
      *
      * @since 1.0.0

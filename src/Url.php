@@ -24,6 +24,18 @@ use DataTypes\Interfaces\UrlPathInterface;
 class Url implements UrlInterface
 {
     /**
+     * Returns the fragment of the url or null if the url has no fragment.
+     *
+     * @since 1.0.0
+     *
+     * @return string|null The fragment of the url or null if the url has no fragment.
+     */
+    public function getFragment()
+    {
+        return $this->myFragment;
+    }
+
+    /**
      * Returns the host of the url.
      *
      * @since 1.0.0
@@ -586,16 +598,13 @@ class Url implements UrlInterface
     private static function myParsePath(UrlInterface $baseUrl = null, $pathString, $validateOnly, UrlPathInterface &$path = null, &$queryString = null, &$fragment = null, &$error = null)
     {
         $parts = explode('#', $pathString, 2);
-        if (count($parts) > 1) {
-            // fixme: validate fragment
-            $fragment = $parts[1];
-            $pathString = $parts[0];
-        }
+        $pathString = $parts[0];
+        $fragment = count($parts) > 1 ? $parts[1] : null;
+        // fixme: validate fragment if set
 
         $parts = explode('?', $pathString, 2);
-
         $pathString = $parts[0];
-        $queryString = count($parts) === 2 ? $parts[1] : null;
+        $queryString = count($parts) > 1 ? $parts[1] : null;
 
         // Validate query string if it is set.
         if ($queryString !== null && !self::myValidateQueryString($queryString, $error)) {
@@ -605,7 +614,11 @@ class Url implements UrlInterface
         // If path is empty and there is a base url, use the path from base url.
         if ($pathString === '' && $baseUrl !== null) {
             $path = $baseUrl->getPath();
-            $queryString = $queryString ?: $baseUrl->getQueryString();
+
+            if ($queryString === null) {
+                $queryString = $baseUrl->getQueryString();
+                $fragment = $fragment ?: $baseUrl->getFragment();
+            }
 
             return true;
         }
