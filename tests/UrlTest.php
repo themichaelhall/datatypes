@@ -229,6 +229,17 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parse url with invalid query fragment.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "https://domain.com:1000/foo#{bar}" is invalid: Fragment "{bar}" contains invalid character "{".
+     */
+    public function testParseWithInvalidFragment()
+    {
+        Url::parse('https://domain.com:1000/foo#{bar}');
+    }
+
+    /**
      * Test parse method with invalid argument type.
      *
      * @expectedException \InvalidArgumentException
@@ -248,6 +259,17 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         self::assertSame('', Url::parse('http://domain.com/foo?')->getQueryString());
         self::assertSame('bar=baz', Url::parse('http://domain.com/foo?bar=baz')->getQueryString());
         self::assertSame('F%7Baz%7D', Url::parse('http://domain.com/foo?F%7Baz%7D')->getQueryString());
+    }
+
+    /**
+     * Test getFragment method.
+     */
+    public function testGetFragment()
+    {
+        self::assertNull(Url::parse('http://domain.com/foo')->getFragment());
+        self::assertSame('', Url::parse('http://domain.com/foo#')->getFragment());
+        self::assertSame('bar=baz', Url::parse('http://domain.com/foo#bar=baz')->getFragment());
+        self::assertSame('F%7Baz%7D', Url::parse('http://domain.com/foo#F%7Baz%7D')->getFragment());
     }
 
     /**
@@ -332,6 +354,28 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test fromParts method with invalid fragment.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Fragment ">bar" contains invalid character ">".
+     */
+    public function testFromPartsWithInvalidFragment()
+    {
+        Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), null, UrlPath::parse('/'), 'foo', '>bar');
+    }
+
+    /**
+     * Test fromParts method with invalid fragment argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $fragment parameter is not a string or null.
+     */
+    public function testFromPartsWithInvalidFragmentArgumentType()
+    {
+        Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), null, UrlPath::parse('/'), null, ['foo']);
+    }
+
+    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -349,7 +393,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         self::assertTrue(Url::isValid('http://domain.com/?bar'));
         self::assertTrue(Url::isValid('http://domain.com/#bar'));
         self::assertTrue(Url::isValid('http://domain.com/?foo#bar'));
-        // fixme: More tests
+        self::assertFalse(Url::isValid('http://domain.com/?foo#>bar'));
+        self::assertFalse(Url::isValid('http://domain.com/#bar<'));
     }
 
     /**
@@ -382,7 +427,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         self::assertSame('http://domain.com/?bar', Url::tryParse('http://domain.com/?bar')->__toString());
         self::assertSame('http://domain.com/#bar', Url::tryParse('http://domain.com/#bar')->__toString());
         self::assertSame('http://domain.com/?foo#bar', Url::tryParse('http://domain.com/?foo#bar')->__toString());
-        // fixme: More tests
+        self::assertNull(Url::tryParse('http://domain.com/?foo#>bar'));
+        self::assertNull(Url::tryParse('http://domain.com/#bar<'));
     }
 
     /**
