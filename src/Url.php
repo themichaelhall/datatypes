@@ -112,6 +112,31 @@ class Url implements UrlInterface
     }
 
     /**
+     * Returns a copy of the Url instance with the specified fragment.
+     *
+     * @since 1.0.0
+     *
+     * @param string|null $fragment The fragment or null for no fragment.
+     *
+     * @throws \InvalidArgumentException   If the $fragment parameter is not a string or null.
+     * @throws UrlInvalidArgumentException If the fragment parameter is invalid.
+     *
+     * @return UrlInterface The url instance.
+     */
+    public function withFragment($fragment = null)
+    {
+        if (!is_string($fragment) && !is_null($fragment)) {
+            throw new \InvalidArgumentException('$fragment parameter is not a string or null.');
+        }
+
+        if (!self::myValidateFragment($fragment, $error)) {
+            throw new UrlInvalidArgumentException($error);
+        }
+
+        return new self($this->myScheme, $this->myHost, $this->myPort, $this->myPath, $this->myQueryString, $fragment);
+    }
+
+    /**
      * Returns a copy of the Url instance with the specified host.
      *
      * @since 1.0.0

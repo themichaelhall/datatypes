@@ -628,4 +628,39 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     {
         Url::parse('https://domain.com/')->withQueryString('{foo}');
     }
+
+    /**
+     * Test withFragment method.
+     */
+    public function testWithFragment()
+    {
+        self::assertSame('https://domain.com/foo#bar', Url::parse('https://domain.com/foo')->withFragment('bar')->__toString());
+        self::assertSame('https://domain.com/foo#baz', Url::parse('https://domain.com/foo#bar')->withFragment('baz')->__toString());
+        self::assertSame('https://domain.com/foo?bar#baz', Url::parse('https://domain.com/foo?bar#fragment')->withFragment('baz')->__toString());
+        self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo')->withFragment(null)->__toString());
+        self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo#bar')->withFragment(null)->__toString());
+        self::assertSame('https://domain.com/foo?bar', Url::parse('https://domain.com/foo?bar#fragment')->withFragment(null)->__toString());
+    }
+
+    /**
+     * Test withFragment method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $fragment parameter is not a string or null.
+     */
+    public function testWithFragmentWithInvalidArgumentType()
+    {
+        Url::parse('https://domain.com/')->withFragment(false);
+    }
+
+    /**
+     * Test withFragment method with invalid fragment.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Fragment "{foo}" contains invalid character "{".
+     */
+    public function testWithFragmentWithInvalidFragment()
+    {
+        Url::parse('https://domain.com/')->withFragment('{foo}');
+    }
 }

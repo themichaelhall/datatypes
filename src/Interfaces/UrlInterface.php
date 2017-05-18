@@ -78,6 +78,17 @@ interface UrlInterface extends DataTypeInterface
     public function getScheme();
 
     /**
+     * Returns a copy of the Url instance with the specified fragment.
+     *
+     * @since 1.0.0
+     *
+     * @param string|null $fragment The fragment or null for no fragment.
+     *
+     * @return UrlInterface The url instance.
+     */
+    public function withFragment($fragment = null);
+
+    /**
      * Returns a copy of the Url instance with the specified host.
      *
      * @since 1.0.0
