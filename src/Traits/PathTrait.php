@@ -227,8 +227,8 @@ trait PathTrait
      * @param string        $directorySeparator The directory separator.
      * @param string        $path               The path.
      * @param callable      $partValidator      The part validator.
-     * @param callable      $stringDecoder      The string decoding function or null if parts should not be decoded.
-     * @param bool|null     $isAbsolute         Whether the path is absolute or relative is parsing was successful, undefined otherwise.
+     * @param callable|null $stringDecoder      The string decoding function or null if parts should not be decoded.
+     * @param bool|null     $isAbsolute         Whether the path is absolute or relative if parsing was successful, undefined otherwise.
      * @param int|null      $aboveBaseLevel     The number of directory parts above base level if parsing was successful, undefined otherwise.
      * @param string[]|null $directoryParts     The directory parts if parsing was successful, undefined otherwise.
      * @param string|null   $filename           The file if parsing was not successful, undefined otherwise.
@@ -246,7 +246,7 @@ trait PathTrait
         $isAbsolute = false;
         $aboveBaseLevel = 0;
 
-        // Parse the directories
+        // Go through all parts.
         for ($i = 0; $i < $partsCount; ++$i) {
             $part = $parts[$i];
 
@@ -257,59 +257,120 @@ trait PathTrait
                 continue;
             }
 
-            // If part is empty, the path contains continuous directory separators and should be skipped.
+            // Skip empty parts.
             if ($part === '') {
                 continue;
             }
 
-            // Handle "current directory"-part.
+            // Handle current directory-part.
             if ($part === '.') {
                 continue;
             }
 
-            // Handle "parent directory"-part.
+            // Handle parent directory-part.
             if ($part === '..') {
-                if (count($directoryParts) === 0) {
-                    if ($isAbsolute) {
-                        $error = 'Absolute path is above root level.';
-
-                        return false;
-                    }
-
-                    ++$aboveBaseLevel;
-                } else {
-                    array_pop($directoryParts);
+                if (!self::myHandleParentDirectoryPart($isAbsolute, $aboveBaseLevel, $directoryParts, $error)) {
+                    return false;
                 }
 
                 continue;
             }
 
+            // Handle last (i.e. filename) part.
             if ($i === $partsCount - 1) {
-                // This is the last part (i.e. the filename part).
-                if ($part !== '') {
-                    if (!$partValidator($part, false, $error)) {
-                        return false;
-                    }
-
-                    if ($stringDecoder !== null) {
-                        $part = $stringDecoder($part);
-                    }
-
-                    $filename = $part;
-                }
-            } else {
-                // This is a directory part.
-                if (!$partValidator($part, true, $error)) {
+                if (!self::myHandleFilenamePart($part, $partValidator, $stringDecoder, $filename, $error)) {
                     return false;
                 }
 
-                if ($stringDecoder !== null) {
-                    $part = $stringDecoder($part);
-                }
+                continue;
+            }
 
-                $directoryParts[] = $part;
+            // Handle directory part.
+            if (!self::myHandleDirectoryPart($part, $partValidator, $stringDecoder, $directoryParts, $error)) {
+                return false;
             }
         }
+
+        return true;
+    }
+
+    /**
+     * Handles a parent directory part.
+     *
+     * @param bool        $isAbsolute     Whether the path is absolute or relative.
+     * @param int         $aboveBaseLevel The number of directory parts above base level.
+     * @param array       $directoryParts The directory parts.
+     * @param string|null $error          The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if parsing was successful, false otherwise.
+     */
+    private static function myHandleParentDirectoryPart($isAbsolute, &$aboveBaseLevel, array &$directoryParts, &$error = null)
+    {
+        if (count($directoryParts) > 0) {
+            array_pop($directoryParts);
+
+            return true;
+        }
+
+        if ($isAbsolute) {
+            $error = 'Absolute path is above root level.';
+
+            return false;
+        }
+
+        ++$aboveBaseLevel;
+
+        return true;
+    }
+
+    /**
+     * Handles the file name part.
+     *
+     * @param string        $part          The file name part.
+     * @param callable      $partValidator The part validator.
+     * @param callable|null $stringDecoder The string decoding function or null if parts should not be decoded.
+     * @param string|null   $filename      The file if parsing was not successful, undefined otherwise.
+     * @param string|null   $error         The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if parsing was successful, false otherwise.
+     */
+    private static function myHandleFilenamePart($part, callable $partValidator, callable $stringDecoder = null, &$filename = null, &$error = null)
+    {
+        if (!$partValidator($part, false, $error)) {
+            return false;
+        }
+
+        if ($stringDecoder !== null) {
+            $part = $stringDecoder($part);
+        }
+
+        $filename = $part;
+
+        return true;
+    }
+
+    /**
+     * Handles the directory part.
+     *
+     * @param string        $part           The file name part.
+     * @param callable      $partValidator  The part validator.
+     * @param callable|null $stringDecoder  The string decoding function or null if parts should not be decoded.
+     * @param array         $directoryParts The directory parts.
+     * @param string|null   $error          The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if parsing was successful, false otherwise.
+     */
+    private static function myHandleDirectoryPart($part, callable $partValidator, callable $stringDecoder = null, array &$directoryParts, &$error = null)
+    {
+        if (!$partValidator($part, true, $error)) {
+            return false;
+        }
+
+        if ($stringDecoder !== null) {
+            $part = $stringDecoder($part);
+        }
+
+        $directoryParts[] = $part;
 
         return true;
     }
