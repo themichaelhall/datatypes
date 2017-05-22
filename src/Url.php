@@ -297,7 +297,7 @@ class Url implements UrlInterface
         }
 
         // Validate fragment.
-        if ($fragment !== null && !self::myValidateFragment($fragment, $error)) {
+        if (!self::myValidateFragment($fragment, $error)) {
             throw new UrlInvalidArgumentException($error);
         }
 
@@ -634,7 +634,7 @@ class Url implements UrlInterface
         $pathString = $parts[0];
         $fragment = count($parts) > 1 ? $parts[1] : null;
 
-        if ($fragment !== null && !self::myValidateFragment($fragment, $error)) {
+        if (!self::myValidateFragment($fragment, $error)) {
             return false;
         }
 
@@ -739,6 +739,10 @@ class Url implements UrlInterface
      */
     private static function myValidateFragment($fragment, &$error)
     {
+        if ($fragment === null) {
+            return true;
+        }
+
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]\/\?%-]/', $fragment, $matches)) {
             $error = 'Fragment "' . $fragment . '" contains invalid character "' . $matches[0] . '".';
 
