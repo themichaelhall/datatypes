@@ -260,18 +260,6 @@ class Url implements UrlInterface
      */
     public static function fromParts(SchemeInterface $scheme, HostInterface $host, $port = null, UrlPathInterface $urlPath = null, $queryString = null, $fragment = null)
     {
-        if (!is_int($port) && !is_null($port)) {
-            throw new \InvalidArgumentException('$port parameter is not an integer or null.');
-        }
-
-        if (!is_string($queryString) && !is_null($queryString)) {
-            throw new \InvalidArgumentException('$queryString parameter is not a string or null.');
-        }
-
-        if (!is_string($fragment) && !is_null($fragment)) {
-            throw new \InvalidArgumentException('$fragment parameter is not a string or null.');
-        }
-
         // Default values.
         if ($port === null) {
             $port = $scheme->getDefaultPort();
@@ -708,10 +696,16 @@ class Url implements UrlInterface
      * @param int    $port  The port.
      * @param string $error The error text if validation was not successful, undefined otherwise.
      *
+     * @throws \InvalidArgumentException If the $port parameter is not an integer.
+     *
      * @return bool True if validation was successful, false otherwise.
      */
     private static function myValidatePort($port, &$error)
     {
+        if (!is_int($port)) {
+            throw new \InvalidArgumentException('$port parameter is not an integer or null.');
+        }
+
         // Port below 0 is invalid.
         if ($port < 0) {
             $error = 'Port ' . $port . ' is out of range: Minimum port number is 0.';
@@ -735,10 +729,16 @@ class Url implements UrlInterface
      * @param string $queryString The query string.
      * @param string $error       The error text if validation was not successful, undefined otherwise.
      *
+     * @throws \InvalidArgumentException If the $queryString parameter is not a string.
+     *
      * @return bool True if validation was successful, false otherwise.
      */
     private static function myValidateQueryString($queryString, &$error)
     {
+        if (!is_string($queryString) && !is_null($queryString)) {
+            throw new \InvalidArgumentException('$queryString parameter is not a string or null.');
+        }
+
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]\/\?%-]/', $queryString, $matches)) {
             $error = 'Query string "' . $queryString . '" contains invalid character "' . $matches[0] . '".';
 
@@ -754,10 +754,16 @@ class Url implements UrlInterface
      * @param string $fragment The fragment.
      * @param string $error    The error text if validation was not successful, undefined otherwise.
      *
+     * @throws \InvalidArgumentException If the $fragment parameter is not a string.
+     *
      * @return bool True if validation was successful, false otherwise.
      */
     private static function myValidateFragment($fragment, &$error)
     {
+        if (!is_string($fragment) && !is_null($fragment)) {
+            throw new \InvalidArgumentException('$fragment parameter is not a string or null.');
+        }
+
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]\/\?%-]/', $fragment, $matches)) {
             $error = 'Fragment "' . $fragment . '" contains invalid character "' . $matches[0] . '".';
 
