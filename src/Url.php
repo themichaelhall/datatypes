@@ -281,23 +281,8 @@ class Url implements UrlInterface
             $urlPath = UrlPath::parse('/');
         }
 
-        // Validate port.
-        if (!self::myValidatePort($port, $error)) {
-            throw new UrlInvalidArgumentException($error);
-        }
-
-        // Url path can not be relative.
-        if ($urlPath->isRelative()) {
-            throw new UrlInvalidArgumentException('Url path "' . $urlPath . '" is relative.');
-        }
-
-        // Validate query string.
-        if (!self::myValidateQueryString($queryString, $error)) {
-            throw new UrlInvalidArgumentException($error);
-        }
-
-        // Validate fragment.
-        if (!self::myValidateFragment($fragment, $error)) {
+        // Validate parts.
+        if (!self::myValidateParts($port, $urlPath, $queryString, $fragment, $error)) {
             throw new UrlInvalidArgumentException($error);
         }
 
@@ -674,6 +659,44 @@ class Url implements UrlInterface
 
         if ($baseUrl !== null) {
             $path = $baseUrl->getPath()->withUrlPath($path);
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates parts of url.
+     *
+     * @param int              $port        The port.
+     * @param UrlPathInterface $urlPath     The url path.
+     * @param string|null      $queryString The query string or null if no query string should be used.
+     * @param string|null      $fragment    The fragment or null if no fragment should be used.
+     * @param string|null      $error       The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    private static function myValidateParts($port, UrlPathInterface $urlPath, $queryString, $fragment, &$error)
+    {
+        // Validate port.
+        if (!self::myValidatePort($port, $error)) {
+            return false;
+        }
+
+        // Url path can not be relative.
+        if ($urlPath->isRelative()) {
+            $error = 'Url path "' . $urlPath . '" is relative.';
+
+            return false;
+        }
+
+        // Validate query string.
+        if (!self::myValidateQueryString($queryString, $error)) {
+            return false;
+        }
+
+        // Validate fragment.
+        if (!self::myValidateFragment($fragment, $error)) {
+            return false;
         }
 
         return true;
