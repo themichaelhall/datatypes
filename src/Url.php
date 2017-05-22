@@ -292,7 +292,7 @@ class Url implements UrlInterface
         }
 
         // Validate query string.
-        if ($queryString !== null && !self::myValidateQueryString($queryString, $error)) {
+        if (!self::myValidateQueryString($queryString, $error)) {
             throw new UrlInvalidArgumentException($error);
         }
 
@@ -643,7 +643,7 @@ class Url implements UrlInterface
         $pathString = $parts[0];
         $queryString = count($parts) > 1 ? $parts[1] : null;
 
-        if ($queryString !== null && !self::myValidateQueryString($queryString, $error)) {
+        if (!self::myValidateQueryString($queryString, $error)) {
             return false;
         }
 
@@ -716,6 +716,10 @@ class Url implements UrlInterface
      */
     private static function myValidateQueryString($queryString, &$error)
     {
+        if ($queryString === null) {
+            return true;
+        }
+
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]\/\?%-]/', $queryString, $matches)) {
             $error = 'Query string "' . $queryString . '" contains invalid character "' . $matches[0] . '".';
 
