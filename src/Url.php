@@ -716,10 +716,6 @@ class Url implements UrlInterface
      */
     private static function myValidateQueryString($queryString, &$error)
     {
-        if ($queryString === null) {
-            return true;
-        }
-
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]\/\?%-]/', $queryString, $matches)) {
             $error = 'Query string "' . $queryString . '" contains invalid character "' . $matches[0] . '".';
 
@@ -739,10 +735,6 @@ class Url implements UrlInterface
      */
     private static function myValidateFragment($fragment, &$error)
     {
-        if ($fragment === null) {
-            return true;
-        }
-
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]\/\?%-]/', $fragment, $matches)) {
             $error = 'Fragment "' . $fragment . '" contains invalid character "' . $matches[0] . '".';
 
