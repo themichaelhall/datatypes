@@ -122,26 +122,58 @@ trait PathTrait
      */
     private function myToString($directorySeparator, callable $stringEncoder = null)
     {
-        // If above base level (for relative path), append the required number of "../".
-        $result = $this->myAboveBaseLevel > 0 ? str_repeat('..' . $directorySeparator, $this->myAboveBaseLevel) : '';
+        return $this->myDirectoryToString($directorySeparator, $stringEncoder) . $this->myFilenameToString($stringEncoder);
+    }
 
-        // Directory parts.
-        $result .= $this->myIsAbsolute ? $directorySeparator : '';
-        if ($stringEncoder !== null) {
-            $result .= implode($directorySeparator, array_map($stringEncoder, $this->myDirectoryParts));
-        } else {
-            $result .= implode($directorySeparator, $this->myDirectoryParts);
+    /**
+     * Returns the directory as a string.
+     *
+     * @param string        $directorySeparator The directory separator.
+     * @param callable|null $stringEncoder      The string encoding function or null if parts should not be encoded.
+     *
+     * @return string The directory as a string.
+     */
+    private function myDirectoryToString($directorySeparator, callable $stringEncoder = null)
+    {
+        $result = '';
+
+        if ($this->myAboveBaseLevel > 0) {
+            $result .= str_repeat('..' . $directorySeparator, $this->myAboveBaseLevel);
         }
-        $result .= count($this->myDirectoryParts) > 0 ? $directorySeparator : '';
 
-        // File part.
-        if ($stringEncoder !== null) {
-            $result .= ($this->myFilename !== null ? $stringEncoder($this->myFilename) : '');
-        } else {
-            $result .= ($this->myFilename !== null ? $this->myFilename : '');
+        if ($this->myIsAbsolute) {
+            $result .= $directorySeparator;
+        }
+
+        $result .= implode($directorySeparator, $stringEncoder !== null ?
+            array_map($stringEncoder, $this->myDirectoryParts) :
+            $this->myDirectoryParts);
+
+        if (count($this->myDirectoryParts) > 0) {
+            $result .= $directorySeparator;
         }
 
         return $result;
+    }
+
+    /**
+     * Returns the filename as a string.
+     *
+     * @param callable|null $stringEncoder The string encoding function or null if parts should not be encoded.
+     *
+     * @return string The filename as a string.
+     */
+    private function myFilenameToString(callable $stringEncoder = null)
+    {
+        if ($this->myFilename === null) {
+            return '';
+        }
+
+        if ($stringEncoder !== null) {
+            return $stringEncoder($this->myFilename);
+        }
+
+        return $this->myFilename;
     }
 
     /**
