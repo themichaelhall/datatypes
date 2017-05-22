@@ -277,53 +277,58 @@ trait PathTrait
         $filename = null;
         $isAbsolute = false;
         $aboveBaseLevel = 0;
+        $i = 0;
+
+        // If the first part is empty and other parts follow, the path begins with directory separator and is therefore absolute.
+        if ($partsCount > 1 && $parts[0] === '') {
+            $isAbsolute = true;
+            ++$i;
+        }
 
         // Go through all parts.
-        for ($i = 0; $i < $partsCount; ++$i) {
-            $part = $parts[$i];
-
-            // If the first part is empty and other parts follow, the path begins with directory separator and is therefore absolute.
-            if ($i === 0 && $part === '' && $partsCount > 1) {
-                $isAbsolute = true;
-
-                continue;
-            }
-
-            // Skip empty parts.
-            if ($part === '') {
-                continue;
-            }
-
-            // Handle current directory-part.
-            if ($part === '.') {
-                continue;
-            }
-
-            // Handle parent directory-part.
-            if ($part === '..') {
-                if (!self::myHandleParentDirectoryPart($isAbsolute, $aboveBaseLevel, $directoryParts, $error)) {
-                    return false;
-                }
-
-                continue;
-            }
-
-            // Handle last (i.e. filename) part.
-            if ($i === $partsCount - 1) {
-                if (!self::myHandleFilenamePart($part, $partValidator, $stringDecoder, $filename, $error)) {
-                    return false;
-                }
-
-                continue;
-            }
-
-            // Handle directory part.
-            if (!self::myHandleDirectoryPart($part, $partValidator, $stringDecoder, $directoryParts, $error)) {
+        for (; $i < $partsCount; ++$i) {
+            if (!self::myParsePart($parts[$i], $i === $partsCount - 1, $partValidator, $stringDecoder, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Tries to parse a part of a path and returns the result or error text.
+     *
+     * @param string        $part           The part of the path.
+     * @param bool          $isLastPart     True if this is the last part, false otherwise.
+     * @param callable      $partValidator  The part validator.
+     * @param callable|null $stringDecoder  The string decoding function or null if parts should not be decoded.
+     * @param bool|null     $isAbsolute     Whether the path is absolute or relative if parsing was successful, undefined otherwise.
+     * @param int|null      $aboveBaseLevel The number of directory parts above base level if parsing was successful, undefined otherwise.
+     * @param string[]|null $directoryParts The directory parts if parsing was successful, undefined otherwise.
+     * @param string|null   $filename       The file if parsing was not successful, undefined otherwise.
+     * @param string|null   $error          The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if parsing was successful, false otherwise.
+     */
+    private static function myParsePart($part, $isLastPart, callable $partValidator, callable $stringDecoder = null, $isAbsolute, &$aboveBaseLevel, array &$directoryParts = null, &$filename = null, &$error = null)
+    {
+        // Skip empty and current directory parts.
+        if ($part === '' || $part === '.') {
+            return true;
+        }
+
+        // Handle parent directory-part.
+        if ($part === '..') {
+            return self::myHandleParentDirectoryPart($isAbsolute, $aboveBaseLevel, $directoryParts, $error);
+        }
+
+        // Handle directory part.
+        if (!$isLastPart) {
+            return self::myHandleDirectoryPart($part, $partValidator, $stringDecoder, $directoryParts, $error);
+        }
+
+        // Handle last (i.e. filename) part.
+        return self::myHandleFilenamePart($part, $partValidator, $stringDecoder, $filename, $error);
     }
 
     /**
