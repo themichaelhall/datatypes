@@ -206,22 +206,45 @@ trait PathTrait
         $filename = $other->getFilename();
 
         foreach ($other->getDirectoryParts() as $otherDirectoryPart) {
-            if ($otherDirectoryPart === '..') {
-                if (count($directoryParts) === 0) {
-                    if ($this->myIsAbsolute) {
-                        $error = 'Absolute path is above root level.';
-
-                        return false;
-                    }
-
-                    ++$aboveBaseLevel;
-                } else {
-                    array_pop($directoryParts);
-                }
-            } else {
-                $directoryParts[] = $otherDirectoryPart;
+            if (!$this->myCombineDirectoryPart($otherDirectoryPart, $aboveBaseLevel, $directoryParts, $error)) {
+                return false;
             }
         }
+
+        return true;
+    }
+
+    /**
+     * Tries to combine a directory part with another path.
+     *
+     * @param string        $part           The part.
+     * @param int|null      $aboveBaseLevel The number of directory parts above base level if combining was successful, undefined otherwise.
+     * @param string[]|null $directoryParts The directory parts if combining was successful, undefined otherwise.
+     * @param string|null   $error          The error text if combining was not successful, undefined otherwise.
+     *
+     * @return bool True if combining was successful, false otherwise.
+     */
+    private function myCombineDirectoryPart($part, &$aboveBaseLevel = null, array &$directoryParts = null, &$error = null)
+    {
+        if ($part === '..') {
+            if (count($directoryParts) === 0) {
+                if ($this->myIsAbsolute) {
+                    $error = 'Absolute path is above root level.';
+
+                    return false;
+                }
+
+                ++$aboveBaseLevel;
+
+                return true;
+            }
+
+            array_pop($directoryParts);
+
+            return true;
+        }
+
+        $directoryParts[] = $part;
 
         return true;
     }
@@ -277,17 +300,17 @@ trait PathTrait
         $filename = null;
         $isAbsolute = false;
         $aboveBaseLevel = 0;
-        $i = 0;
+        $index = 0;
 
         // If the first part is empty and other parts follow, the path begins with directory separator and is therefore absolute.
         if ($partsCount > 1 && $parts[0] === '') {
             $isAbsolute = true;
-            ++$i;
+            ++$index;
         }
 
         // Go through all parts.
-        for (; $i < $partsCount; ++$i) {
-            if (!self::myParsePart($parts[$i], $i === $partsCount - 1, $partValidator, $stringDecoder, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+        for (; $index < $partsCount; ++$index) {
+            if (!self::myParsePart($parts[$index], $index === $partsCount - 1, $partValidator, $stringDecoder, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
                 return false;
             }
         }
