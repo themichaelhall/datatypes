@@ -485,11 +485,60 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         Url::parseRelative('baz://domain.com/', Url::parse('http://foo.com:8080/path/file?query'));
     }
 
-    // fixme: Test parse relative with invalid host
-    // fixme: Test parse relative with invalid port
-    // fixme: Test parse relative with invalid path
-    // fixme: Test parse relative with invalid query string
-    // fixme: Test parse relative with invalid fragment
+    /**
+     * Test parseRelative method with invalid host.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "http://[domain].com/" is invalid: Host "[domain].com" is invalid: Hostname "[domain].com" is invalid: Part of domain "[domain]" contains invalid character "[".
+     */
+    public function testParseRelativeWithInvalidHost()
+    {
+        Url::parseRelative('http://[domain].com/', Url::parse('http://foo.com:8080/path/file?query'));
+    }
+
+    /**
+     * Test parseRelative method with invalid port.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "http://domain.com:foo/" is invalid: Port "foo" contains invalid character "f".
+     */
+    public function testParseRelativeWithInvalidPort()
+    {
+        Url::parseRelative('http://domain.com:foo/', Url::parse('http://foo.com:8080/path/file?query'));
+    }
+
+    /**
+     * Test parseRelative method with invalid path.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "http://domain.com/{path}" is invalid: Url path "/{path}" is invalid: Filename "{path}" contains invalid character "{".
+     */
+    public function testParseRelativeWithInvalidPath()
+    {
+        Url::parseRelative('http://domain.com/{path}', Url::parse('http://foo.com:8080/path/file?query'));
+    }
+
+    /**
+     * Test parseRelative method with invalid query string.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "http://domain.com/path?{query}" is invalid: Query string "{query}" contains invalid character "{".
+     */
+    public function testParseRelativeWithInvalidQueryString()
+    {
+        Url::parseRelative('http://domain.com/path?{query}', Url::parse('http://foo.com:8080/path/file?query'));
+    }
+
+    /**
+     * Test parseRelative method with invalid fragment.
+     *
+     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
+     * @expectedExceptionMessage Url "http://domain.com/path#{fragment}" is invalid: Fragment "{fragment}" contains invalid character "{".
+     */
+    public function testParseRelativeWithInvalidFragment()
+    {
+        Url::parseRelative('http://domain.com/path#{fragment}', Url::parse('http://foo.com:8080/path/file?query'));
+    }
 
     /**
      * Test parse relative path with path that resolves above root level.
