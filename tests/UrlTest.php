@@ -712,4 +712,44 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     {
         Url::parse('https://domain.com/')->withFragment('{foo}');
     }
+
+    /**
+     * Test tryParseRelative method.
+     */
+    public function testTryParseRelative()
+    {
+        $url = Url::parse('http://foo.com:8080/path/file?query#fragment');
+
+        self::assertSame('https://bar.com/new-path/new-file?new-query#new-fragment', Url::tryParseRelative('https://bar.com/new-path/new-file?new-query#new-fragment', $url)->__toString());
+        self::assertSame('http://bar.com/new-path/new-file?new-query#new-fragment', Url::tryParseRelative('//bar.com/new-path/new-file?new-query#new-fragment', $url)->__toString());
+        self::assertSame('http://foo.com:8080/new-path/new-file?new-query#new-fragment', Url::tryParseRelative('/new-path/new-file?new-query#new-fragment', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/new-file?new-query#new-fragment', Url::tryParseRelative('new-file?new-query#new-fragment', $url)->__toString());
+        self::assertSame('http://foo.com:8080/new-file?new-query#new-fragment', Url::tryParseRelative('../new-file?new-query#new-fragment', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/file?new-query#new-fragment', Url::tryParseRelative('?new-query#new-fragment', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/file?query#new-fragment', Url::tryParseRelative('#new-fragment', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/file?new-query', Url::tryParseRelative('?new-query', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/new-file', Url::tryParseRelative('new-file', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/new-file#new-fragment', Url::tryParseRelative('new-file#new-fragment', $url)->__toString());
+        self::assertSame('http://foo.com:8080/new-path/', Url::tryParseRelative('/new-path/', $url)->__toString());
+        self::assertSame('http://foo.com:8080/path/file?query#fragment', Url::tryParseRelative('', $url)->__toString());
+        self::assertNull(Url::tryParseRelative('://domain.com/', $url));
+        self::assertNull(Url::tryParseRelative('baz://domain.com/', $url));
+        self::assertNull(Url::tryParseRelative('http://[domain].com/', $url));
+        self::assertNull(Url::tryParseRelative('http://domain.com:foo/', $url));
+        self::assertNull(Url::tryParseRelative('http://domain.com/{path}', $url));
+        self::assertNull(Url::tryParseRelative('http://domain.com/path?{query}', $url));
+        self::assertNull(Url::tryParseRelative('http://domain.com/path#{fragment}', $url));
+        self::assertNull(Url::tryParseRelative('../../', $url));
+    }
+
+    /**
+     * Test parseRelative method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $url parameter is not a string.
+     */
+    public function testTryParseRelativeWithInvalidArgumentType()
+    {
+        Url::tryParseRelative(null, Url::parse('http://domain.com/'));
+    }
 }

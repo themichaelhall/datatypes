@@ -11,6 +11,7 @@ use DataTypes\Exceptions\HostInvalidArgumentException;
 use DataTypes\Exceptions\SchemeInvalidArgumentException;
 use DataTypes\Exceptions\UrlInvalidArgumentException;
 use DataTypes\Exceptions\UrlPathInvalidArgumentException;
+use DataTypes\Exceptions\UrlPathLogicException;
 use DataTypes\Interfaces\HostInterface;
 use DataTypes\Interfaces\SchemeInterface;
 use DataTypes\Interfaces\UrlInterface;
@@ -378,6 +379,35 @@ class Url implements UrlInterface
         }
 
         if (!self::myParse(null, $url, false, $scheme, $host, $port, $path, $queryString, $fragment)) {
+            return null;
+        }
+
+        return new self($scheme, $host, $port, $path, $queryString, $fragment);
+    }
+
+    /**
+     * Parses a relative url and combines it with a base url.
+     *
+     * @since 1.0.0
+     *
+     * @param string       $url     The url.
+     * @param UrlInterface $baseUrl The base url.
+     *
+     * @throws \InvalidArgumentException If the $url parameter is not a string.
+     *
+     * @return UrlInterface|null The Url instance if the $url parameter is a valid url, null otherwise.
+     */
+    public static function tryParseRelative($url, UrlInterface $baseUrl)
+    {
+        if (!is_string($url)) {
+            throw new \InvalidArgumentException('$url parameter is not a string.');
+        }
+
+        try {
+            if (!self::myParse($baseUrl, $url, false, $scheme, $host, $port, $path, $queryString, $fragment)) {
+                return null;
+            }
+        } catch (UrlPathLogicException $exception) {
             return null;
         }
 
