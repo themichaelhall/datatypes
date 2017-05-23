@@ -752,4 +752,44 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     {
         Url::tryParseRelative(null, Url::parse('http://domain.com/'));
     }
+
+    /**
+     * Test isValidRelative method.
+     */
+    public function testIsValidRelative()
+    {
+        $url = Url::parse('http://foo.com:8080/path/file?query#fragment');
+
+        self::assertTrue(Url::isValidRelative('https://bar.com/new-path/new-file?new-query#new-fragment', $url));
+        self::assertTrue(Url::isValidRelative('//bar.com/new-path/new-file?new-query#new-fragment', $url));
+        self::assertTrue(Url::isValidRelative('/new-path/new-file?new-query#new-fragment', $url));
+        self::assertTrue(Url::isValidRelative('new-file?new-query#new-fragment', $url));
+        self::assertTrue(Url::isValidRelative('../new-file?new-query#new-fragment', $url));
+        self::assertTrue(Url::isValidRelative('?new-query#new-fragment', $url));
+        self::assertTrue(Url::isValidRelative('#new-fragment', $url));
+        self::assertTrue(Url::isValidRelative('?new-query', $url));
+        self::assertTrue(Url::isValidRelative('new-file', $url));
+        self::assertTrue(Url::isValidRelative('new-file#new-fragment', $url));
+        self::assertTrue(Url::isValidRelative('/new-path/', $url));
+        self::assertTrue(Url::isValidRelative('', $url));
+        self::assertFalse(Url::isValidRelative('://domain.com/', $url));
+        self::assertFalse(Url::isValidRelative('baz://domain.com/', $url));
+        self::assertFalse(Url::isValidRelative('http://[domain].com/', $url));
+        self::assertFalse(Url::isValidRelative('http://domain.com:foo/', $url));
+        self::assertFalse(Url::isValidRelative('http://domain.com/{path}', $url));
+        self::assertFalse(Url::isValidRelative('http://domain.com/path?{query}', $url));
+        self::assertFalse(Url::isValidRelative('http://domain.com/path#{fragment}', $url));
+        self::assertFalse(Url::isValidRelative('../../', $url));
+    }
+
+    /**
+     * Test isValidRelative method with invalid argument type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $url parameter is not a string.
+     */
+    public function testIsValidRelativeWithInvalidArgumentType()
+    {
+        Url::isValidRelative(null, Url::parse('http://domain.com/'));
+    }
 }

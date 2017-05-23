@@ -311,6 +311,31 @@ class Url implements UrlInterface
     }
 
     /**
+     * Checks if a relative url is valid.
+     *
+     * @since 1.0.0
+     *
+     * @param string       $url     The url.
+     * @param UrlInterface $baseUrl The base url.
+     *
+     * @throws \InvalidArgumentException If the $url parameter is not a string.
+     *
+     * @return bool True if the $url parameter is a valid url, false otherwise.
+     */
+    public static function isValidRelative($url, UrlInterface $baseUrl)
+    {
+        if (!is_string($url)) {
+            throw new \InvalidArgumentException('$url parameter is not a string.');
+        }
+
+        try {
+            return self::myParse($baseUrl, $url, true);
+        } catch (UrlPathLogicException $exception) {
+            return false;
+        }
+    }
+
+    /**
      * Parses a url.
      *
      * @since 1.0.0
@@ -469,8 +494,6 @@ class Url implements UrlInterface
         }
 
         // Parse authority.
-        // fixme: User
-        // fixme: Password
         if (!self::myParseAuthority($baseUrl, $authorityString, $validateOnly, $host, $port, $error)) {
             $error = 'Url "' . $url . '" is invalid: ' . $error;
 
@@ -674,8 +697,8 @@ class Url implements UrlInterface
             return true;
         }
 
-        // Validate or try parse path.
-        if (!self::myValidateOrParsePath($pathString, $validateOnly, $path, $error)) {
+        // Try parse url path.
+        if (!self::myParseUrlPath($baseUrl, $pathString, $validateOnly, $path, $error)) {
             return false;
         }
 
@@ -689,6 +712,7 @@ class Url implements UrlInterface
     /**
      * Try to validate or parse path.
      *
+     * @param UrlInterface|null     $baseUrl      The base url or null if no base url is present.
      * @param string                $pathString   The path that is to be parsed.
      * @param bool                  $validateOnly If true only validation is performed, if false parse results are returned.
      * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
@@ -696,9 +720,9 @@ class Url implements UrlInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myValidateOrParsePath($pathString, $validateOnly, UrlPathInterface &$path = null, &$error = null)
+    private static function myParseUrlPath(UrlInterface $baseUrl = null, $pathString, $validateOnly, UrlPathInterface &$path = null, &$error = null)
     {
-        if ($validateOnly) {
+        if ($baseUrl === null && $validateOnly) {
             return UrlPath::isValid($pathString);
         }
 
