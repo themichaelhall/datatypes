@@ -685,25 +685,15 @@ class Url implements UrlInterface
             return false;
         }
 
-        // If path is empty and there is a base url, use the path from base url.
-        if ($pathString === '' && $baseUrl !== null) {
-            $path = $baseUrl->getPath();
-
-            if ($queryString === null) {
-                $queryString = $baseUrl->getQueryString();
-                $fragment = $fragment ?: $baseUrl->getFragment();
-            }
-
-            return true;
-        }
-
         // Try parse url path.
         if (!self::myParseUrlPath($baseUrl, $pathString, $validateOnly, $path, $error)) {
             return false;
         }
 
-        if ($baseUrl !== null) {
-            $path = $baseUrl->getPath()->withUrlPath($path);
+        // If path is empty and there is a base url, handle query string and fragment.
+        if ($pathString === '' && $baseUrl !== null && $queryString === null) {
+            $queryString = $baseUrl->getQueryString();
+            $fragment = $fragment ?: $baseUrl->getFragment();
         }
 
         return true;
@@ -722,16 +712,30 @@ class Url implements UrlInterface
      */
     private static function myParseUrlPath(UrlInterface $baseUrl = null, $pathString, $validateOnly, UrlPathInterface &$path = null, &$error = null)
     {
+        // Just validation and no base url to combine with.
         if ($baseUrl === null && $validateOnly) {
             return UrlPath::isValid($pathString);
         }
 
+        // If path is empty and there is a base url, use the path from base url.
+        if ($baseUrl !== null && $pathString === '') {
+            $path = $baseUrl->getPath();
+
+            return true;
+        }
+
+        // Parse path.
         try {
             $path = UrlPath::parse($pathString);
         } catch (UrlPathInvalidArgumentException $e) {
             $error = $e->getMessage();
 
             return false;
+        }
+
+        // If there is a base url, paths should be combined.
+        if ($baseUrl !== null) {
+            $path = $baseUrl->getPath()->withUrlPath($path);
         }
 
         return true;
