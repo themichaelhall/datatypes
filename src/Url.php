@@ -260,6 +260,18 @@ class Url implements UrlInterface
      */
     public static function fromParts(SchemeInterface $scheme, HostInterface $host, $port = null, UrlPathInterface $urlPath = null, $queryString = null, $fragment = null)
     {
+        if (!is_int($port) && !is_null($port)) {
+            throw new \InvalidArgumentException('$port parameter is not an integer or null.');
+        }
+
+        if (!is_string($queryString) && !is_null($queryString)) {
+            throw new \InvalidArgumentException('$queryString parameter is not a string or null.');
+        }
+
+        if (!is_string($fragment) && !is_null($fragment)) {
+            throw new \InvalidArgumentException('$fragment parameter is not a string or null.');
+        }
+
         // Default values.
         if ($port === null) {
             $port = $scheme->getDefaultPort();
@@ -633,6 +645,29 @@ class Url implements UrlInterface
         }
 
         // Validate or try parse path.
+        if (!self::myValidateOrParsePath($pathString, $validateOnly, $path, $error)) {
+            return false;
+        }
+
+        if ($baseUrl !== null) {
+            $path = $baseUrl->getPath()->withUrlPath($path);
+        }
+
+        return true;
+    }
+
+    /**
+     * Try to validate or parse path.
+     *
+     * @param string                $pathString   The path that is to be parsed.
+     * @param bool                  $validateOnly If true only validation is performed, if false parse results are returned.
+     * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
+     * @param string|null           $error        The error text if parsing was not successful, undefined otherwise.
+     *
+     * @return bool True if parsing was successful, false otherwise.
+     */
+    private static function myValidateOrParsePath($pathString, $validateOnly, UrlPathInterface &$path = null, &$error = null)
+    {
         if ($validateOnly) {
             return UrlPath::isValid($pathString);
         }
@@ -643,10 +678,6 @@ class Url implements UrlInterface
             $error = $e->getMessage();
 
             return false;
-        }
-
-        if ($baseUrl !== null) {
-            $path = $baseUrl->getPath()->withUrlPath($path);
         }
 
         return true;
@@ -702,10 +733,6 @@ class Url implements UrlInterface
      */
     private static function myValidatePort($port, &$error)
     {
-        if (!is_int($port)) {
-            throw new \InvalidArgumentException('$port parameter is not an integer or null.');
-        }
-
         // Port below 0 is invalid.
         if ($port < 0) {
             $error = 'Port ' . $port . ' is out of range: Minimum port number is 0.';
@@ -735,10 +762,6 @@ class Url implements UrlInterface
      */
     private static function myValidateQueryString($queryString, &$error)
     {
-        if (!is_string($queryString) && !is_null($queryString)) {
-            throw new \InvalidArgumentException('$queryString parameter is not a string or null.');
-        }
-
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]\/\?%-]/', $queryString, $matches)) {
             $error = 'Query string "' . $queryString . '" contains invalid character "' . $matches[0] . '".';
 
@@ -760,10 +783,6 @@ class Url implements UrlInterface
      */
     private static function myValidateFragment($fragment, &$error)
     {
-        if (!is_string($fragment) && !is_null($fragment)) {
-            throw new \InvalidArgumentException('$fragment parameter is not a string or null.');
-        }
-
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]\/\?%-]/', $fragment, $matches)) {
             $error = 'Fragment "' . $fragment . '" contains invalid character "' . $matches[0] . '".';
 
