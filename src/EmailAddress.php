@@ -7,14 +7,14 @@
 
 namespace DataTypes;
 
-use DataTypes\Interfaces\DataTypeInterface;
+use DataTypes\Interfaces\EmailAddressInterface;
 
 /**
  * Class representing an email address.
  *
  * @since 1.1.0
  */
-class EmailAddress implements DataTypeInterface
+class EmailAddress implements EmailAddressInterface
 {
     /**
      * Returns the email address as a string.
@@ -35,7 +35,7 @@ class EmailAddress implements DataTypeInterface
      *
      * @param string $emailAddress The email address.
      *
-     * @return EmailAddress The EmailAddress instance.
+     * @return EmailAddressInterface The EmailAddress instance.
      */
     public static function parse($emailAddress)
     {
