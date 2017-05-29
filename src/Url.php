@@ -616,6 +616,12 @@ class Url implements UrlInterface
             return true;
         }
 
+        // Throw away username and password if present.
+        $parts = explode('@', $authorityString, 2);
+        if (count($parts) > 1) {
+            $authorityString = $parts[1];
+        }
+
         $parts = explode(':', $authorityString, 2);
         $port = null;
 
