@@ -30,6 +30,22 @@ class EmailAddress implements EmailAddressInterface
     }
 
     /**
+     * Checks if an email address is valid.
+     *
+     * @since 1.1.0
+     *
+     * @param string $emailAddress The email address.
+     *
+     * @throws \InvalidArgumentException If the $emailAddress parameter is not a string.
+     *
+     * @return bool True if the $emailAddress parameter is a valid email address, false otherwise.
+     */
+    public static function isValid($emailAddress)
+    {
+        return self::myParse($emailAddress);
+    }
+
+    /**
      * Parses an email address.
      *
      * @since 1.1.0

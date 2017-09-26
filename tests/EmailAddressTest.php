@@ -61,4 +61,26 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
     {
         EmailAddress::tryParse(false);
     }
+
+    /**
+     * Test isValid method.
+     */
+    public function testIsValid()
+    {
+        self::assertTrue(EmailAddress::isValid('foo@domain.com'));
+        self::assertTrue(EmailAddress::isValid('foo.bar@baz.domain.com'));
+        self::assertFalse(EmailAddress::isValid(''));
+        // fixme: more tests
+    }
+
+    /**
+     * Test isValid method with invalid parameter type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $emailAddress parameter is not a string.
+     */
+    public function testIsValidWithInvalidParameterType()
+    {
+        EmailAddress::isValid(false);
+    }
 }
