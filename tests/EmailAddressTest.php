@@ -17,4 +17,15 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
         self::assertSame('foo@domain.com', EmailAddress::parse('foo@domain.com')->__toString());
         self::assertSame('foo.bar@baz.domain.com', EmailAddress::parse('foo.bar@baz.domain.com')->__toString());
     }
+
+    /**
+     * Test that empty EmailAddress is invalid.
+     *
+     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
+     * @expectedExceptionMessage Email address "" is empty.
+     */
+    public function testEmptyEmailIsInvalid()
+    {
+        EmailAddress::parse('');
+    }
 }

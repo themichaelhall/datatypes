@@ -7,6 +7,7 @@
 
 namespace DataTypes;
 
+use DataTypes\Exceptions\EmailAddressInvalidArgumentException;
 use DataTypes\Interfaces\EmailAddressInterface;
 
 /**
@@ -35,10 +36,16 @@ class EmailAddress implements EmailAddressInterface
      *
      * @param string $emailAddress The email address.
      *
+     * @throws EmailAddressInvalidArgumentException If the $emailAddress parameter is not a valid email address.
+     *
      * @return EmailAddressInterface The EmailAddress instance.
      */
     public static function parse($emailAddress)
     {
+        if ($emailAddress === '') {
+            throw new EmailAddressInvalidArgumentException('Email address "" is empty.');
+        }
+
         return new self($emailAddress);
     }
 
