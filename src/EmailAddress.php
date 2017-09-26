@@ -36,14 +36,35 @@ class EmailAddress implements EmailAddressInterface
      *
      * @param string $emailAddress The email address.
      *
+     * @throws \InvalidArgumentException            If the $emailAddress parameter is not a string.
      * @throws EmailAddressInvalidArgumentException If the $emailAddress parameter is not a valid email address.
      *
      * @return EmailAddressInterface The EmailAddress instance.
      */
     public static function parse($emailAddress)
     {
-        if ($emailAddress === '') {
-            throw new EmailAddressInvalidArgumentException('Email address "" is empty.');
+        if (!self::myParse($emailAddress, $error)) {
+            throw new EmailAddressInvalidArgumentException($error);
+        }
+
+        return new self($emailAddress);
+    }
+
+    /**
+     * Parses an email address.
+     *
+     * @since 1.1.0
+     *
+     * @param string|null $emailAddress The email address.
+     *
+     * @throws \InvalidArgumentException If the $emailAddress parameter is not a string.
+     *
+     * @return EmailAddressInterface The EmailAddress instance if the $emailAddress parameter is a valid email address, false otherwise.
+     */
+    public static function tryParse($emailAddress)
+    {
+        if (!self::myParse($emailAddress, $error)) {
+            return null;
         }
 
         return new self($emailAddress);
@@ -57,6 +78,33 @@ class EmailAddress implements EmailAddressInterface
     private function __construct($emailAddress)
     {
         $this->myEmailAddress = $emailAddress;
+    }
+
+    /**
+     * Tries to parse an email address and returns the result or error text.
+     *
+     * @param string      $emailAddress The email address.
+     * @param string|null $error        The error text if parsing was not successful, undefined otherwise.
+     *
+     * @throws \InvalidArgumentException If the $emailAddress parameter is not a string.
+     *
+     * @return bool True if parsing was successful, false otherwise.
+     */
+    private static function myParse($emailAddress, &$error = null)
+    {
+        if (!is_string($emailAddress)) {
+            throw new \InvalidArgumentException('$emailAddress parameter is not a string.');
+        }
+
+        if ($emailAddress === '') {
+            $error = 'Email address "" is empty.';
+
+            return false;
+        }
+
+        // fixme: more validation.
+
+        return true;
     }
 
     /**
