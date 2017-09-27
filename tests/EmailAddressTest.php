@@ -35,9 +35,42 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
      * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
      * @expectedExceptionMessage Email address "" is empty.
      */
-    public function testEmptyEmailIsInvalid()
+    public function testEmptyEmailAddressIsInvalid()
     {
         EmailAddress::parse('');
+    }
+
+    /**
+     * Test that empty EmailAddress with missing @ is invalid.
+     *
+     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
+     * @expectedExceptionMessage Email address "foo" is invalid: Character "@" is missing.
+     */
+    public function testEmailAddressWithMissingAtIsInvalid()
+    {
+        EmailAddress::parse('foo');
+    }
+
+    /**
+     * Test that empty EmailAddress with empty host is invalid.
+     *
+     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
+     * @expectedExceptionMessage Email address "foo@" is invalid: Hostname "" is empty.
+     */
+    public function testEmailAddressWithEmptyHostIsInvalid()
+    {
+        EmailAddress::parse('foo@');
+    }
+
+    /**
+     * Test that empty EmailAddress with invalid host is invalid.
+     *
+     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
+     * @expectedExceptionMessage Email address "foo@bar@baz" is invalid: Hostname "bar@baz" is invalid: Part of domain "bar@baz" contains invalid character "@".
+     */
+    public function testEmailAddressWithInvalidHostIsInvalid()
+    {
+        EmailAddress::parse('foo@bar@baz');
     }
 
     /**
@@ -48,6 +81,10 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
         self::assertSame('foo@domain.com', EmailAddress::tryParse('foo@domain.com')->__toString());
         self::assertSame('foo.bar@baz.domain.com', EmailAddress::tryParse('foo.bar@baz.domain.com')->__toString());
         self::assertNull(EmailAddress::tryParse(''));
+        self::assertNull(EmailAddress::tryParse('foobar'));
+        self::assertNull(EmailAddress::tryParse('foo.bar'));
+        self::assertNull(EmailAddress::tryParse('foo.bar@'));
+        self::assertNull(EmailAddress::tryParse('foo@bar@baz.com'));
         // fixme: more tests
     }
 
@@ -70,6 +107,9 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
         self::assertTrue(EmailAddress::isValid('foo@domain.com'));
         self::assertTrue(EmailAddress::isValid('foo.bar@baz.domain.com'));
         self::assertFalse(EmailAddress::isValid(''));
+        self::assertFalse(EmailAddress::isValid('foo.bar'));
+        self::assertFalse(EmailAddress::isValid('foo.bar@'));
+        self::assertFalse(EmailAddress::isValid('foo@bar@baz.com'));
         // fixme: more tests
     }
 

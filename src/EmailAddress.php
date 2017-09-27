@@ -8,6 +8,7 @@
 namespace DataTypes;
 
 use DataTypes\Exceptions\EmailAddressInvalidArgumentException;
+use DataTypes\Exceptions\HostnameInvalidArgumentException;
 use DataTypes\Interfaces\EmailAddressInterface;
 
 /**
@@ -118,7 +119,23 @@ class EmailAddress implements EmailAddressInterface
             return false;
         }
 
-        // fixme: more validation.
+        $parts = explode('@', $emailAddress, 2);
+        if (count($parts) < 2) {
+            $error = 'Email address "' . $emailAddress . '" is invalid: Character "@" is missing.';
+
+            return false;
+        }
+
+        // Validate host.
+        try {
+            Hostname::parse($parts[1]);
+        } catch (HostnameInvalidArgumentException $exception) {
+            $error = 'Email address "' . $emailAddress . '" is invalid: ' . $exception->getMessage();
+
+            return false;
+        }
+
+        // fixme: validate user
 
         return true;
     }
