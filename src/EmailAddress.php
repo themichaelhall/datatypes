@@ -32,6 +32,18 @@ class EmailAddress implements EmailAddressInterface
     }
 
     /**
+     * Returns the username of the email address.
+     *
+     * @since 1.1.0
+     *
+     * @return string The username of the email address.
+     */
+    public function getUsername()
+    {
+        return $this->myUsername;
+    }
+
+    /**
      * Returns the email address as a string.
      *
      * @since 1.1.0
@@ -40,7 +52,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public function __toString()
     {
-        return $this->myEmailAddress;
+        return $this->myUsername . '@' . $this->myHost->__toString();
     }
 
     /**
@@ -73,11 +85,11 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function parse($emailAddress)
     {
-        if (!self::myParse($emailAddress, false, $host, $error)) {
+        if (!self::myParse($emailAddress, false, $username, $host, $error)) {
             throw new EmailAddressInvalidArgumentException($error);
         }
 
-        return new self($emailAddress, $host);
+        return new self($username, $host);
     }
 
     /**
@@ -93,22 +105,22 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function tryParse($emailAddress)
     {
-        if (!self::myParse($emailAddress, false, $host)) {
+        if (!self::myParse($emailAddress, false, $username, $host)) {
             return null;
         }
 
-        return new self($emailAddress, $host);
+        return new self($username, $host);
     }
 
     /**
-     * Constructs an email address from a host.
+     * Constructs an email address from a username and a host.
      *
-     * @param string        $emailAddress The email address.
-     * @param HostInterface $host         The host.
+     * @param string        $username The username.
+     * @param HostInterface $host     The host.
      */
-    private function __construct($emailAddress, HostInterface $host)
+    private function __construct($username, HostInterface $host)
     {
-        $this->myEmailAddress = $emailAddress;
+        $this->myUsername = $username;
         $this->myHost = $host;
     }
 
@@ -117,6 +129,7 @@ class EmailAddress implements EmailAddressInterface
      *
      * @param string             $emailAddress The email address.
      * @param bool               $validateOnly If true only validation is performed, if false parse results are returned.
+     * @param string|null        $username     The username if parsing was successful, undefined otherwise.
      * @param HostInterface|null $host         The host if parsing was successful, undefined otherwise.
      * @param string|null        $error        The error text if parsing was not successful, undefined otherwise.
      *
@@ -124,7 +137,7 @@ class EmailAddress implements EmailAddressInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($emailAddress, $validateOnly, HostInterface &$host = null, &$error = null)
+    private static function myParse($emailAddress, $validateOnly, &$username = null, HostInterface &$host = null, &$error = null)
     {
         if (!is_string($emailAddress)) {
             throw new \InvalidArgumentException('$emailAddress parameter is not a string.');
@@ -143,28 +156,55 @@ class EmailAddress implements EmailAddressInterface
             return false;
         }
 
+        $username = $parts[0];
+        $hostname = $parts[1];
+
         if ($validateOnly) {
-            return Hostname::isValid($parts[1]);
+            return self::myValidateUsername($username) && Hostname::isValid($hostname);
         }
 
-        // Get host.
+        if (!self::myValidateUsername($username, $error)) {
+            $error = 'Email address "' . $emailAddress . '" is invalid: ' . $error;
+
+            return false;
+        }
+
         try {
-            $host = Host::fromHostname(Hostname::parse($parts[1]));
+            $host = Host::fromHostname(Hostname::parse($hostname));
         } catch (HostnameInvalidArgumentException $exception) {
             $error = 'Email address "' . $emailAddress . '" is invalid: ' . $exception->getMessage();
 
             return false;
         }
 
-        // fixme: validate user
+        return true;
+    }
+
+    /**
+     * Validates the username.
+     *
+     * @param string      $username The username.
+     * @param string|null $error    The error text if validation was not successful, undefined otherwise.
+     *
+     * @return bool True if validation was successful, false otherwise.
+     */
+    private static function myValidateUsername($username, &$error = null)
+    {
+        if ($username === '') {
+            $error = 'Username "" is empty.';
+
+            return false;
+        }
+
+        // fixme: validate username
 
         return true;
     }
 
     /**
-     * @var string My email address. fixme: remove
+     * @var string My username.
      */
-    private $myEmailAddress;
+    private $myUsername;
 
     /**
      * @var HostInterface My host.

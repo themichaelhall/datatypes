@@ -74,6 +74,17 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test that empty EmailAddress with empty username is invalid.
+     *
+     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
+     * @expectedExceptionMessage Email address "@bar.com" is invalid: Username "" is empty.
+     */
+    public function testEmailAddressWithEmptyUsernameIsInvalid()
+    {
+        EmailAddress::parse('@bar.com');
+    }
+
+    /**
      * Test tryParse method.
      */
     public function testTryParse()
@@ -85,6 +96,7 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
         self::assertNull(EmailAddress::tryParse('foo.bar'));
         self::assertNull(EmailAddress::tryParse('foo.bar@'));
         self::assertNull(EmailAddress::tryParse('foo@bar@baz.com'));
+        self::assertNull(EmailAddress::tryParse('@baz.com'));
         // fixme: more tests
     }
 
@@ -110,6 +122,7 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
         self::assertFalse(EmailAddress::isValid('foo.bar'));
         self::assertFalse(EmailAddress::isValid('foo.bar@'));
         self::assertFalse(EmailAddress::isValid('foo@bar@baz.com'));
+        self::assertFalse(EmailAddress::isValid('@baz.com'));
         // fixme: more tests
     }
 
@@ -132,5 +145,15 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
         $emailAddress = EmailAddress::parse('foo.bar@example.com');
 
         self::assertSame('example.com', $emailAddress->getHost()->__toString());
+    }
+
+    /**
+     * Test getUsername method.
+     */
+    public function testGetUsername()
+    {
+        $emailAddress = EmailAddress::parse('foo.bar@example.com');
+
+        self::assertSame('foo.bar', $emailAddress->getUsername());
     }
 }

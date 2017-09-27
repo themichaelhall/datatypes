@@ -22,4 +22,13 @@ interface EmailAddressInterface extends DataTypeInterface
      * @return HostInterface The host of the email address.
      */
     public function getHost();
+
+    /**
+     * Returns the username of the email address.
+     *
+     * @since 1.1.0
+     *
+     * @return string The username of the email address.
+     */
+    public function getUsername();
 }
