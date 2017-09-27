@@ -10,6 +10,7 @@ namespace DataTypes;
 use DataTypes\Exceptions\EmailAddressInvalidArgumentException;
 use DataTypes\Exceptions\HostnameInvalidArgumentException;
 use DataTypes\Interfaces\EmailAddressInterface;
+use DataTypes\Interfaces\HostInterface;
 
 /**
  * Class representing an email address.
@@ -18,6 +19,18 @@ use DataTypes\Interfaces\EmailAddressInterface;
  */
 class EmailAddress implements EmailAddressInterface
 {
+    /**
+     * Returns the host of the email address.
+     *
+     * @since 1.1.0
+     *
+     * @return HostInterface The host of the email address.
+     */
+    public function getHost()
+    {
+        return $this->myHost;
+    }
+
     /**
      * Returns the email address as a string.
      *
@@ -43,7 +56,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function isValid($emailAddress)
     {
-        return self::myParse($emailAddress);
+        return self::myParse($emailAddress, true);
     }
 
     /**
@@ -60,11 +73,11 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function parse($emailAddress)
     {
-        if (!self::myParse($emailAddress, $error)) {
+        if (!self::myParse($emailAddress, false, $host, $error)) {
             throw new EmailAddressInvalidArgumentException($error);
         }
 
-        return new self($emailAddress);
+        return new self($emailAddress, $host);
     }
 
     /**
@@ -80,34 +93,38 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function tryParse($emailAddress)
     {
-        if (!self::myParse($emailAddress, $error)) {
+        if (!self::myParse($emailAddress, false, $host)) {
             return null;
         }
 
-        return new self($emailAddress);
+        return new self($emailAddress, $host);
     }
 
     /**
-     * Constructs an email address from a string.
+     * Constructs an email address from a host.
      *
-     * @param string $emailAddress The email address.
+     * @param string        $emailAddress The email address.
+     * @param HostInterface $host         The host.
      */
-    private function __construct($emailAddress)
+    private function __construct($emailAddress, HostInterface $host)
     {
         $this->myEmailAddress = $emailAddress;
+        $this->myHost = $host;
     }
 
     /**
      * Tries to parse an email address and returns the result or error text.
      *
-     * @param string      $emailAddress The email address.
-     * @param string|null $error        The error text if parsing was not successful, undefined otherwise.
+     * @param string             $emailAddress The email address.
+     * @param bool               $validateOnly If true only validation is performed, if false parse results are returned.
+     * @param HostInterface|null $host         The host if parsing was successful, undefined otherwise.
+     * @param string|null        $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @throws \InvalidArgumentException If the $emailAddress parameter is not a string.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($emailAddress, &$error = null)
+    private static function myParse($emailAddress, $validateOnly, HostInterface &$host = null, &$error = null)
     {
         if (!is_string($emailAddress)) {
             throw new \InvalidArgumentException('$emailAddress parameter is not a string.');
@@ -126,9 +143,13 @@ class EmailAddress implements EmailAddressInterface
             return false;
         }
 
-        // Validate host.
+        if ($validateOnly) {
+            return Hostname::isValid($parts[1]);
+        }
+
+        // Get host.
         try {
-            Hostname::parse($parts[1]);
+            $host = Host::fromHostname(Hostname::parse($parts[1]));
         } catch (HostnameInvalidArgumentException $exception) {
             $error = 'Email address "' . $emailAddress . '" is invalid: ' . $exception->getMessage();
 
@@ -141,7 +162,12 @@ class EmailAddress implements EmailAddressInterface
     }
 
     /**
-     * @var string My email address.
+     * @var string My email address. fixme: remove
      */
     private $myEmailAddress;
+
+    /**
+     * @var HostInterface My host.
+     */
+    private $myHost;
 }

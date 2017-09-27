@@ -123,4 +123,14 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
     {
         EmailAddress::isValid(false);
     }
+
+    /**
+     * Test getHost method.
+     */
+    public function testGetHost()
+    {
+        $emailAddress = EmailAddress::parse('foo.bar@example.com');
+
+        self::assertSame('example.com', $emailAddress->getHost()->__toString());
+    }
 }
