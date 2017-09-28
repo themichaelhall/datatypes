@@ -196,7 +196,23 @@ class EmailAddress implements EmailAddressInterface
             return false;
         }
 
-        // fixme: validate username
+        if (strpos($username, '..') !== false) {
+            $error = 'Username "' . $username . '" contains "..".';
+
+            return false;
+        }
+
+        if (strlen($username) > 64) {
+            $error = 'Username "' . $username . '" is too long: Maximum length is 64.';
+
+            return false;
+        }
+
+        if (preg_match('/[^0-9a-zA-Z.!#$%&\'*+\/=?^_`{|}~-]/', $username, $matches)) {
+            $error = 'Username "' . $username . '" contains invalid character "' . $matches[0] . '".';
+
+            return false;
+        }
 
         return true;
     }

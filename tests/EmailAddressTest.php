@@ -16,6 +16,7 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
     {
         self::assertSame('foo@domain.com', EmailAddress::parse('foo@domain.com')->__toString());
         self::assertSame('foo.bar@baz.domain.com', EmailAddress::parse('foo.bar@baz.domain.com')->__toString());
+        self::assertSame('!#$%&\'*+-/=.?^_`{|}~@example.com', EmailAddress::parse('!#$%&\'*+-/=.?^_`{|}~@example.com')->__toString());
     }
 
     /**
@@ -85,6 +86,39 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test that empty EmailAddress with empty username is invalid.
+     *
+     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
+     * @expectedExceptionMessage Email address "a"b(c)d,e:f;g>h<i[j\k]l@example.com" is invalid: Username "a"b(c)d,e:f;g>h<i[j\k]l" contains invalid character """.
+     */
+    public function testEmailAddressWithInvalidUsernameIsInvalid()
+    {
+        EmailAddress::parse('a"b(c)d,e:f;g>h<i[j\\k]l@example.com');
+    }
+
+    /**
+     * Test that empty EmailAddress with empty username is invalid.
+     *
+     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
+     * @expectedExceptionMessage Email address "12345678901234567890123456789012345678901234567890123456789012345@example.com" is invalid: Username "12345678901234567890123456789012345678901234567890123456789012345" is too long: Maximum length is 64.
+     */
+    public function testEmailAddressWithTooLongUsernameIsInvalid()
+    {
+        EmailAddress::parse('12345678901234567890123456789012345678901234567890123456789012345@example.com');
+    }
+
+    /**
+     * Test that EmailAddress with username containing two consecutively dots is invalid.
+     *
+     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
+     * @expectedExceptionMessage Email address "foo..bar@example.com" is invalid: Username "foo..bar" contains "..".
+     */
+    public function testEmailAddressWithUsernameContainingTwoConsecutivelyDotsIsInvalid()
+    {
+        EmailAddress::parse('foo..bar@example.com');
+    }
+
+    /**
      * Test tryParse method.
      */
     public function testTryParse()
@@ -97,7 +131,10 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
         self::assertNull(EmailAddress::tryParse('foo.bar@'));
         self::assertNull(EmailAddress::tryParse('foo@bar@baz.com'));
         self::assertNull(EmailAddress::tryParse('@baz.com'));
-        // fixme: more tests
+        self::assertNull(EmailAddress::tryParse('a"b(c)d,e:f;g>h<i[j\\k]l@example.com'));
+        self::assertSame('!#$%&\'*+-/=.?^_`{|}~@example.com', EmailAddress::tryParse('!#$%&\'*+-/=.?^_`{|}~@example.com')->__toString());
+        self::assertNull(EmailAddress::tryParse('12345678901234567890123456789012345678901234567890123456789012345@example.com'));
+        self::assertNull(EmailAddress::tryParse('foo..bar@example.com'));
     }
 
     /**
@@ -123,7 +160,10 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
         self::assertFalse(EmailAddress::isValid('foo.bar@'));
         self::assertFalse(EmailAddress::isValid('foo@bar@baz.com'));
         self::assertFalse(EmailAddress::isValid('@baz.com'));
-        // fixme: more tests
+        self::assertFalse(EmailAddress::isValid('a"b(c)d,e:f;g>h<i[j\\k]l@example.com'));
+        self::assertTrue(EmailAddress::isValid('!#$%&\'*+-/=.?^_`{|}~@example.com'));
+        self::assertFalse(EmailAddress::isValid('12345678901234567890123456789012345678901234567890123456789012345@example.com'));
+        self::assertFalse(EmailAddress::isValid('foo..bar@example.com'));
     }
 
     /**
