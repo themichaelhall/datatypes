@@ -9,6 +9,7 @@ namespace DataTypes;
 
 use DataTypes\Exceptions\EmailAddressInvalidArgumentException;
 use DataTypes\Exceptions\HostnameInvalidArgumentException;
+use DataTypes\Exceptions\IPAddressInvalidArgumentException;
 use DataTypes\Interfaces\EmailAddressInterface;
 use DataTypes\Interfaces\HostInterface;
 
@@ -225,7 +226,7 @@ class EmailAddress implements EmailAddressInterface
         $hostname = $parts[1];
 
         if ($validateOnly) {
-            return self::myValidateUsername($username) && Hostname::isValid($hostname);
+            return self::myValidateUsername($username) && self::myParseHostname($hostname, true);
         }
 
         if (!self::myValidateUsername($username, $error)) {
@@ -234,10 +235,54 @@ class EmailAddress implements EmailAddressInterface
             return false;
         }
 
+        if (!self::myParseHostname($hostname, false, $host, $error)) {
+            $error = 'Email address "' . $emailAddress . '" is invalid: ' . $error;
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Parses the hostname.
+     *
+     * @param string             $hostname     The hostname.
+     * @param bool               $validateOnly If true only validation is performed, if false parse results are returned.
+     * @param HostInterface|null $host         The host if parsing was successful, undefined otherwise.
+     * @param string|null        $error        The error text if parsing was not successful, undefined otherwise.
+     *
+     * @return bool True if parsing was successful, false otherwise.
+     */
+    private static function myParseHostname($hostname, $validateOnly, &$host = null, &$error = null)
+    {
+        if (strlen($hostname) > 2 && substr($hostname, 0, 1) === '[' && substr($hostname, -1) === ']') {
+            // Hostname is actually an IP address.
+            $ipAddress = substr($hostname, 1, -1);
+
+            if ($validateOnly) {
+                return IPAddress::isValid($ipAddress);
+            }
+
+            try {
+                $host = Host::fromIPAddress(IPAddress::parse($ipAddress));
+            } catch (IPAddressInvalidArgumentException $exception) {
+                $error = $exception->getMessage();
+
+                return false;
+            }
+
+            return true;
+        }
+
+        if ($validateOnly) {
+            return Hostname::isValid($hostname);
+        }
+
         try {
             $host = Host::fromHostname(Hostname::parse($hostname));
         } catch (HostnameInvalidArgumentException $exception) {
-            $error = 'Email address "' . $emailAddress . '" is invalid: ' . $exception->getMessage();
+            $error = $exception->getMessage();
 
             return false;
         }

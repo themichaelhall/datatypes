@@ -122,6 +122,28 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test parse EmailAddress with IP address.
+     */
+    public function testParseWithIpAddress()
+    {
+        $emailAddress = EmailAddress::parse('foo.bar@[127.0.0.1]');
+
+        self::assertSame('foo.bar@[127.0.0.1]', $emailAddress->__toString());
+        self::assertSame('127.0.0.1', $emailAddress->getHost()->getIPAddress()->__toString());
+    }
+
+    /**
+     * Test parse EmailAddress with invalid IP address.
+     *
+     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
+     * @expectedExceptionMessage Email address "foo.bar@[127.0.X.1]" is invalid: IP address "127.0.X.1" is invalid: Octet "X" contains invalid character "X".
+     */
+    public function testParseWithInvalidIpAddress()
+    {
+        EmailAddress::parse('foo.bar@[127.0.X.1]');
+    }
+
+    /**
      * Test tryParse method.
      */
     public function testTryParse()
@@ -138,6 +160,9 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
         self::assertSame('!#$%&\'*+-/=.?^_`{|}~@example.com', EmailAddress::tryParse('!#$%&\'*+-/=.?^_`{|}~@example.com')->__toString());
         self::assertNull(EmailAddress::tryParse('12345678901234567890123456789012345678901234567890123456789012345@example.com'));
         self::assertNull(EmailAddress::tryParse('foo..bar@example.com'));
+        self::assertSame('foo.bar@[127.0.0.1]', EmailAddress::tryParse('foo.bar@[127.0.0.1]')->__toString());
+        self::assertNull(EmailAddress::tryParse('foo.bar@[]'));
+        self::assertNull(EmailAddress::tryParse('foo.bar@[1.2.3.256]'));
     }
 
     /**
@@ -167,6 +192,9 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
         self::assertTrue(EmailAddress::isValid('!#$%&\'*+-/=.?^_`{|}~@example.com'));
         self::assertFalse(EmailAddress::isValid('12345678901234567890123456789012345678901234567890123456789012345@example.com'));
         self::assertFalse(EmailAddress::isValid('foo..bar@example.com'));
+        self::assertTrue(EmailAddress::isValid('foo.bar@[127.0.0.1]'));
+        self::assertFalse(EmailAddress::isValid('foo.bar@[]'));
+        self::assertFalse(EmailAddress::isValid('foo.bar@[1.2.3.256]'));
     }
 
     /**
