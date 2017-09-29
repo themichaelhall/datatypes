@@ -95,6 +95,32 @@ class EmailAddress implements EmailAddressInterface
     }
 
     /**
+     * Creates an email address from parts.
+     *
+     * @since 1.1.0
+     *
+     * @param string        $username The username.
+     * @param HostInterface $host     The host.
+     *
+     * @throws \InvalidArgumentException            If the $username parameter is not a string.
+     * @throws EmailAddressInvalidArgumentException If the $username parameter is not a valid username.
+     *
+     * @return EmailAddress The email address.
+     */
+    public static function fromParts($username, HostInterface $host)
+    {
+        if (!is_string($username)) {
+            throw new \InvalidArgumentException('$username parameter is not a string.');
+        }
+
+        if (!self::myValidateUsername($username, $error)) {
+            throw new EmailAddressInvalidArgumentException($error);
+        }
+
+        return new self($username, $host);
+    }
+
+    /**
      * Checks if an email address is valid.
      *
      * @since 1.1.0

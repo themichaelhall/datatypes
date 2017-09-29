@@ -253,4 +253,46 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
 
         self::assertSame('foo.bar@[12.34.56.78]', $emailAddress->withHost(Host::fromIPAddress(IPAddress::parse('12.34.56.78')))->__toString());
     }
+
+    /**
+     * Test fromParts method with host from hostname.
+     */
+    public function testFromPartsWithHostFromHostname()
+    {
+        $emailAddress = EmailAddress::fromParts('foo.bar', Host::fromHostname(Hostname::parse('example.com')));
+
+        self::assertSame('foo.bar@example.com', $emailAddress->__toString());
+    }
+
+    /**
+     * Test fromParts method with host from IP-address.
+     */
+    public function testFromPartsWithHostFromIpAddress()
+    {
+        $emailAddress = EmailAddress::fromParts('foo.bar', Host::fromIPAddress(IPAddress::parse('12.34.56.78')));
+
+        self::assertSame('foo.bar@[12.34.56.78]', $emailAddress->__toString());
+    }
+
+    /**
+     * Test fromParts method with invalid username parameter type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $username parameter is not a string.
+     */
+    public function testFromPartsWithInvalidUsernameParameterType()
+    {
+        EmailAddress::fromParts(null, Host::parse('foo.com'));
+    }
+
+    /**
+     * Test fromParts method with invalid username.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Username "foo;bar" contains invalid character ";".
+     */
+    public function testFromPartsWithInvalidUsername()
+    {
+        EmailAddress::fromParts('foo;bar', Host::parse('foo.com'));
+    }
 }
