@@ -31,4 +31,15 @@ interface EmailAddressInterface extends DataTypeInterface
      * @return string The username of the email address.
      */
     public function getUsername();
+
+    /**
+     * Returns a copy of the email address instance with the specified username.
+     *
+     * @since 1.1.0
+     *
+     * @param string $username The username.
+     *
+     * @return EmailAddressInterface The email address instance.
+     */
+    public function withUsername($username);
 }

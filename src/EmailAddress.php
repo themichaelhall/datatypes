@@ -44,6 +44,31 @@ class EmailAddress implements EmailAddressInterface
     }
 
     /**
+     * Returns a copy of the email address instance with the specified username.
+     *
+     * @since 1.1.0
+     *
+     * @param string $username The username.
+     *
+     * @throws \InvalidArgumentException            If the $username parameter is not a string.
+     * @throws EmailAddressInvalidArgumentException If the $username parameter is not a valid username.
+     *
+     * @return EmailAddressInterface The email address instance.
+     */
+    public function withUsername($username)
+    {
+        if (!is_string($username)) {
+            throw new \InvalidArgumentException('$username parameter is not a string.');
+        }
+
+        if (!self::myValidateUsername($username, $error)) {
+            throw new EmailAddressInvalidArgumentException($error);
+        }
+
+        return new self($username, $this->myHost);
+    }
+
+    /**
      * Returns the email address as a string.
      *
      * @since 1.1.0

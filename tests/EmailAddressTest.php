@@ -196,4 +196,38 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
 
         self::assertSame('foo.bar', $emailAddress->getUsername());
     }
+
+    /**
+     * Test withUsername method.
+     */
+    public function testWithUsername()
+    {
+        $emailAddress = EmailAddress::parse('foo.bar@example.com');
+
+        self::assertSame('baz@example.com', $emailAddress->withUsername('baz')->__toString());
+    }
+
+    /**
+     * Test withUsername method with invalid parameter type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $username parameter is not a string.
+     */
+    public function testWithUsernameWithInvalidParameterType()
+    {
+        $emailAddress = EmailAddress::parse('foo.bar@example.com');
+        $emailAddress->withUsername(20);
+    }
+
+    /**
+     * Test withUsername method with invalid username.
+     *
+     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
+     * @expectedExceptionMessage Username ">FooBar" contains invalid character ">".
+     */
+    public function testWithUsernameWithInvalidUsername()
+    {
+        $emailAddress = EmailAddress::parse('foo.bar@example.com');
+        $emailAddress->withUsername('>FooBar');
+    }
 }
