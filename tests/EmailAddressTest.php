@@ -3,6 +3,9 @@
 namespace DataTypes\Tests;
 
 use DataTypes\EmailAddress;
+use DataTypes\Host;
+use DataTypes\Hostname;
+use DataTypes\IPAddress;
 
 /**
  * Test EmailAddress class.
@@ -229,5 +232,25 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
     {
         $emailAddress = EmailAddress::parse('foo.bar@example.com');
         $emailAddress->withUsername('>FooBar');
+    }
+
+    /**
+     * Test withHost method with host from hostname.
+     */
+    public function testWithHostWithHostFromHostname()
+    {
+        $emailAddress = EmailAddress::parse('foo.bar@example.com');
+
+        self::assertSame('foo.bar@baz.org', $emailAddress->withHost(Host::fromHostname(Hostname::parse('baz.org')))->__toString());
+    }
+
+    /**
+     * Test withHost method with host from IP-address.
+     */
+    public function testWithHostWithHostFromIpAddress()
+    {
+        $emailAddress = EmailAddress::parse('foo.bar@example.com');
+
+        self::assertSame('foo.bar@[12.34.56.78]', $emailAddress->withHost(Host::fromIPAddress(IPAddress::parse('12.34.56.78')))->__toString());
     }
 }

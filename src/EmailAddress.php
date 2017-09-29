@@ -44,6 +44,20 @@ class EmailAddress implements EmailAddressInterface
     }
 
     /**
+     * Returns a copy of the email address instance with the specified host.
+     *
+     * @since 1.1.0
+     *
+     * @param HostInterface $host The host.
+     *
+     * @return EmailAddressInterface The email address instance.
+     */
+    public function withHost(HostInterface $host)
+    {
+        return new self($this->myUsername, $host);
+    }
+
+    /**
      * Returns a copy of the email address instance with the specified username.
      *
      * @since 1.1.0
@@ -77,7 +91,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public function __toString()
     {
-        return $this->myUsername . '@' . $this->myHost->__toString();
+        return $this->myUsername . '@' . ($this->myHost->getIPAddress() !== null ? '[' . $this->myHost->__toString() . ']' : $this->myHost->__toString());
     }
 
     /**

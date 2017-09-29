@@ -33,6 +33,17 @@ interface EmailAddressInterface extends DataTypeInterface
     public function getUsername();
 
     /**
+     * Returns a copy of the email address instance with the specified host.
+     *
+     * @since 1.1.0
+     *
+     * @param HostInterface $host The host.
+     *
+     * @return EmailAddressInterface The email address instance.
+     */
+    public function withHost(HostInterface $host);
+
+    /**
      * Returns a copy of the email address instance with the specified username.
      *
      * @since 1.1.0
