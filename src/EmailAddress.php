@@ -106,7 +106,7 @@ class EmailAddress implements EmailAddressInterface
      * @throws \InvalidArgumentException            If the $username parameter is not a string.
      * @throws EmailAddressInvalidArgumentException If the $username parameter is not a valid username.
      *
-     * @return EmailAddress The email address.
+     * @return EmailAddressInterface The email address.
      */
     public static function fromParts($username, HostInterface $host)
     {
