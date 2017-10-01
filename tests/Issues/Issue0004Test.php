@@ -5,9 +5,9 @@ namespace DataTypes\Tests\Issues;
 use DataTypes\Url;
 
 /**
- * Tests issue #1 - Url with name and/or password should not be treated as invalid.
+ * Tests issue #4 - Url with name and/or password should not be treated as invalid.
  */
-class Issue0001Test extends \PHPUnit_Framework_TestCase
+class Issue0004Test extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test isValid method in Url for url with username and password.

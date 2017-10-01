@@ -792,4 +792,25 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     {
         Url::isValidRelative(null, Url::parse('http://domain.com/'));
     }
+
+    /**
+     * Test parse method with special characters.
+     */
+    public function testParseWithSpecialCharacters()
+    {
+        $url = Url::parse("http://example.com/:@-._~!$&'()*+,=;:@-._~!$&'()*+,=:@-._~!$&'()*+,==?/?:@-._~!$'()*+,;=/?:@-._~!$'()*+,;==#/?:@-._~!$&'()*+,;=");
+
+        self::assertSame('http', $url->getScheme()->__toString());
+        self::assertSame(80, $url->getPort());
+        self::assertSame('example.com', $url->getHost()->__toString());
+        self::assertSame(0, count($url->getPath()->getDirectoryParts()));
+        self::assertSame(":@-._~!$&'()*+,=;:@-._~!$&'()*+,=:@-._~!$&'()*+,==", $url->getPath()->getFilename());
+        self::assertSame("/?:@-._~!$'()*+,;=/?:@-._~!$'()*+,;==", $url->getQueryString());
+        self::assertSame("/?:@-._~!$&'()*+,;=", $url->getFragment());
+        self::assertSame(
+            'http://example.com' .
+            '/%3A%40-._~%21%24%26%27%28%29%2A%2B%2C%3D%3B%3A%40-._~%21%24%26%27%28%29%2A%2B%2C%3D%3A%40-._~%21%24%26%27%28%29%2A%2B%2C%3D%3D' .
+            '?/?:@-._~!$\'()*+,;=/?:@-._~!$\'()*+,;==' .
+            '#/?:@-._~!$&\'()*+,;=', $url->__toString());
+    }
 }
