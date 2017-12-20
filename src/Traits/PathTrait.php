@@ -234,7 +234,7 @@ trait PathTrait
                     return false;
                 }
 
-                ++$aboveBaseLevel;
+                $aboveBaseLevel++;
 
                 return true;
             }
@@ -305,11 +305,11 @@ trait PathTrait
         // If the first part is empty and other parts follow, the path begins with directory separator and is therefore absolute.
         if ($partsCount > 1 && $parts[0] === '') {
             $isAbsolute = true;
-            ++$index;
+            $index++;
         }
 
         // Go through all parts.
-        for (; $index < $partsCount; ++$index) {
+        for (; $index < $partsCount; $index++) {
             if (!self::myParsePart($parts[$index], $index === $partsCount - 1, $partValidator, $stringDecoder, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
                 return false;
             }
@@ -378,7 +378,7 @@ trait PathTrait
             return false;
         }
 
-        ++$aboveBaseLevel;
+        $aboveBaseLevel++;
 
         return true;
     }
