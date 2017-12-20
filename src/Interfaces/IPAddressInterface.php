@@ -32,5 +32,5 @@ interface IPAddressInterface extends DataTypeInterface
      *
      * @return IPAddressInterface The IP address.
      */
-    public function withMask(IPAddressInterface $mask);
+    public function withMask(self $mask);
 }

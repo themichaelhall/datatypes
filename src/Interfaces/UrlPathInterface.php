@@ -64,5 +64,5 @@ interface UrlPathInterface extends PathTraitInterface
      *
      * @return UrlPathInterface The combined url path.
      */
-    public function withUrlPath(UrlPathInterface $urlPath);
+    public function withUrlPath(self $urlPath);
 }

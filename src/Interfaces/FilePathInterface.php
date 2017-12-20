@@ -75,5 +75,5 @@ interface FilePathInterface extends PathTraitInterface
      *
      * @return FilePathInterface The combined file path.
      */
-    public function withFilePath(FilePathInterface $filePath);
+    public function withFilePath(self $filePath);
 }
