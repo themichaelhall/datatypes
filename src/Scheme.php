@@ -34,7 +34,7 @@ class Scheme implements SchemeInterface
     /**
      * Returns true if the scheme equals other scheme, false otherwise.
      *
-     * @since 1.0.0
+     * @since 1.2.0
      *
      * @param SchemeInterface $scheme The other scheme.
      *
