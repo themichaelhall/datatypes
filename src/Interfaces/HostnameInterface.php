@@ -15,6 +15,17 @@ namespace DataTypes\Interfaces;
 interface HostnameInterface extends DataTypeInterface
 {
     /**
+     * Returns true if the hostname equals other hostname, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param HostnameInterface $hostname The other hostname.
+     *
+     * @return bool True if the hostname equals other hostname, false otherwise.
+     */
+    public function equals(self $hostname);
+
+    /**
      * Returns the domain name including top-level domain.
      *
      * @since 1.0.0
