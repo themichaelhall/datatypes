@@ -15,6 +15,17 @@ namespace DataTypes\Interfaces;
 interface SchemeInterface extends DataTypeInterface
 {
     /**
+     * Returns true if the scheme equals other scheme, false otherwise.
+     *
+     * @since 1.0.0
+     *
+     * @param SchemeInterface $scheme The other scheme.
+     *
+     * @return bool True if the scheme equals other scheme, false otherwise.
+     */
+    public function equals(self $scheme);
+
+    /**
      * Returns the default port of the scheme.
      *
      * @since 1.0.0

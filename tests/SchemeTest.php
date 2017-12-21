@@ -141,4 +141,15 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         self::assertFalse(Scheme::parse('http')->isHttps());
         self::assertTrue(Scheme::parse('https')->isHttps());
     }
+
+    /**
+     * Test equals method.
+     */
+    public function testEquals()
+    {
+        self::assertTrue(Scheme::parse('http')->equals(Scheme::parse('http')));
+        self::assertFalse(Scheme::parse('http')->equals(Scheme::parse('https')));
+        self::assertFalse(Scheme::parse('https')->equals(Scheme::parse('http')));
+        self::assertTrue(Scheme::parse('https')->equals(Scheme::parse('https')));
+    }
 }
