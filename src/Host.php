@@ -118,7 +118,7 @@ class Host implements HostInterface
             throw new \InvalidArgumentException('$host parameter is not a string.');
         }
 
-        return self::myParse($host, true);
+        return self::myParse($host);
     }
 
     /**
@@ -139,7 +139,7 @@ class Host implements HostInterface
             throw new \InvalidArgumentException('$host parameter is not a string.');
         }
 
-        if (!self::myParse($host, false, $hostname, $ipAddress, $error)) {
+        if (!self::myParse($host, $hostname, $ipAddress, $error)) {
             throw new HostInvalidArgumentException($error);
         }
 
@@ -163,7 +163,7 @@ class Host implements HostInterface
             throw new \InvalidArgumentException('$host parameter is not a string.');
         }
 
-        if (!self::myParse($host, false, $hostname, $ipAddress)) {
+        if (!self::myParse($host, $hostname, $ipAddress)) {
             return null;
         }
 
@@ -185,24 +185,19 @@ class Host implements HostInterface
     /**
      * Tries to parse a host and returns the result or error text.
      *
-     * @param string                  $host         The host.
-     * @param bool                    $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param HostnameInterface|null  $hostname     The hostname or null if parsing was successful, undefined otherwise.
-     * @param IPAddressInterface|null $ipAddress    The IP address or null if parsing was successful, undefined otherwise.
-     * @param string|null             $error        The error text if parsing was not successful, undefined otherwise.
+     * @param string                  $host      The host.
+     * @param HostnameInterface|null  $hostname  The hostname or null if parsing was successful, undefined otherwise.
+     * @param IPAddressInterface|null $ipAddress The IP address or null if parsing was successful, undefined otherwise.
+     * @param string|null             $error     The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($host, $validateOnly, HostnameInterface &$hostname = null, IPAddressInterface &$ipAddress = null, &$error = null)
+    private static function myParse($host, HostnameInterface &$hostname = null, IPAddressInterface &$ipAddress = null, &$error = null)
     {
-        // Pre-validate host.
-        if (!self::myPreValidate($host, $error)) {
-            return false;
-        }
+        if ($host === '') {
+            $error = 'Host "' . $host . '" is empty.';
 
-        // Validate only?
-        if ($validateOnly) {
-            return Hostname::isValid($host) || IPAddress::isValid($host);
+            return false;
         }
 
         // Parse host as either a hostname or an IP address.
@@ -215,26 +210,6 @@ class Host implements HostInterface
             if ($ipAddress === null) {
                 return false;
             }
-        }
-
-        return true;
-    }
-
-    /**
-     * Pre-validates a host.
-     *
-     * @param string $host  The host.
-     * @param string $error The error text if pre-validation was not successful, undefined otherwise.
-     *
-     * @return bool True if pre-validation was successful, false otherwise.
-     */
-    private static function myPreValidate($host, &$error)
-    {
-        // Empty host is invalid.
-        if ($host === '') {
-            $error = 'Host "' . $host . '" is empty.';
-
-            return false;
         }
 
         return true;
