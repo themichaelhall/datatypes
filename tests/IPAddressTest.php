@@ -238,4 +238,35 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
             self::assertSame(-1, IPAddress::parse('255.255.255.255')->toInteger());
         }
     }
+
+    /**
+     * Test fromInteger method.
+     */
+    public function testFromInteger()
+    {
+        self::assertSame('0.0.0.0', IPAddress::fromInteger(0)->__toString());
+        self::assertSame('12.34.56.78', IPAddress::fromInteger(203569230)->__toString());
+        self::assertSame('127.255.255.255', IPAddress::fromInteger(2147483647)->__toString());
+        self::assertSame('128.0.0.0', IPAddress::fromInteger(intval(-2147483648))->__toString());
+        self::assertSame('192.168.0.1', IPAddress::fromInteger(-1062731775)->__toString());
+        self::assertSame('255.255.255.255', IPAddress::fromInteger(-1)->__toString());
+
+        if (PHP_INT_MAX > 2147483647) {
+            // > 32 bit.
+            self::assertSame('128.0.0.0', IPAddress::fromInteger(2147483648)->__toString());
+            self::assertSame('192.168.0.1', IPAddress::fromInteger(3232235521)->__toString());
+            self::assertSame('255.255.255.255', IPAddress::fromInteger(4294967295)->__toString());
+        }
+    }
+
+    /**
+     * Test fromInteger method with invalid parameter type.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $i parameter is not an integer.
+     */
+    public function testFromIntegerWithInvalidParameterType()
+    {
+        IPAddress::fromInteger('Foo');
+    }
 }
