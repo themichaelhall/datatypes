@@ -22,6 +22,20 @@ class UrlPath implements UrlPathInterface
     use PathTrait;
 
     /**
+     * Returns true if the url path equals other url path, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param UrlPathInterface $urlPath The other url path.
+     *
+     * @return bool True if the url path equals other url path, false otherwise.
+     */
+    public function equals(UrlPathInterface $urlPath)
+    {
+        return $this->isAbsolute() === $urlPath->isAbsolute() && $this->getDirectoryParts() === $urlPath->getDirectoryParts() && $this->getFilename() === $urlPath->getFilename();
+    }
+
+    /**
      * Returns the directory of the url path.
      *
      * @since 1.0.0
