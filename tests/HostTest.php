@@ -133,4 +133,17 @@ class HostTest extends \PHPUnit_Framework_TestCase
         self::assertSame('domain.com', Host::parse('domain.com')->getHostname()->__toString());
         self::assertSame('40.30.20.10.in-addr.arpa', Host::parse('10.20.30.40')->getHostname()->__toString());
     }
+
+    /**
+     * Test equals method.
+     */
+    public function testEquals()
+    {
+        self::assertTrue(Host::parse('www.example.com')->equals(Host::fromHostname(Hostname::parse('www.example.com'))));
+        self::assertFalse(Host::parse('www.example.com')->equals(Host::fromHostname(Hostname::parse('www.example.org'))));
+        self::assertTrue(Host::parse('127.0.0.1')->equals(Host::fromIPAddress(IPAddress::parse('127.0.0.1'))));
+        self::assertFalse(Host::parse('localhost')->equals(Host::fromIPAddress(IPAddress::parse('127.0.0.1'))));
+        self::assertFalse(Host::parse('127.0.0.1')->equals(Host::parse('example.com')));
+        self::assertTrue(Host::parse('1.0.0.127.in-addr.arpa')->equals(Host::fromIPAddress(IPAddress::parse('127.0.0.1'))));
+    }
 }

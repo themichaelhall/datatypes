@@ -21,6 +21,24 @@ use DataTypes\Interfaces\IPAddressInterface;
 class Host implements HostInterface
 {
     /**
+     * Returns true if the host equals other host, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param HostInterface $host The other host.
+     *
+     * @return bool True if the host equals other host, false otherwise.
+     */
+    public function equals(HostInterface $host)
+    {
+        if ($this->getIPAddress() !== null && $host->getIPAddress() !== null) {
+            return $this->getIPAddress()->equals($host->getIPAddress());
+        }
+
+        return $this->getHostname()->equals($host->getHostname());
+    }
+
+    /**
      * Returns the hostname of the host.
      *
      * @since 1.0.0
