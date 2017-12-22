@@ -3,11 +3,12 @@
 namespace DataTypes\Tests\Exceptions;
 
 use DataTypes\Exceptions\UrlPathLogicException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test UrlPathLogicException class.
  */
-class UrlPathLogicExceptionTest extends \PHPUnit_Framework_TestCase
+class UrlPathLogicExceptionTest extends TestCase
 {
     /**
      * Test that UrlPathLogicException is subclass of LogicException.

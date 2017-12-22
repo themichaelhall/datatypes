@@ -3,11 +3,12 @@
 namespace DataTypes\Tests;
 
 use DataTypes\UrlPath;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test UrlPath class.
  */
-class UrlPathTest extends \PHPUnit_Framework_TestCase
+class UrlPathTest extends TestCase
 {
     /**
      * Test __toString method.

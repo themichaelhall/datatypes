@@ -6,11 +6,12 @@ use DataTypes\Host;
 use DataTypes\Scheme;
 use DataTypes\Url;
 use DataTypes\UrlPath;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test Url class.
  */
-class UrlTest extends \PHPUnit_Framework_TestCase
+class UrlTest extends TestCase
 {
     /**
      * Test __toString method.

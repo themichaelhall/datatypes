@@ -5,11 +5,12 @@ namespace DataTypes\Tests;
 use DataTypes\Host;
 use DataTypes\Hostname;
 use DataTypes\IPAddress;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test Host class.
  */
-class HostTest extends \PHPUnit_Framework_TestCase
+class HostTest extends TestCase
 {
     /**
      * Test __toString() method.

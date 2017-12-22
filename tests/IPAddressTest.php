@@ -3,11 +3,12 @@
 namespace DataTypes\Tests;
 
 use DataTypes\IPAddress;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test IPAddress class.
  */
-class IPAddressTest extends \PHPUnit_Framework_TestCase
+class IPAddressTest extends TestCase
 {
     /**
      * Test __toString method.

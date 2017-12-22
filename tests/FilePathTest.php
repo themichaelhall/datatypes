@@ -5,13 +5,14 @@ namespace DataTypes\Tests;
 use DataTypes\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\Exceptions\FilePathLogicException;
 use DataTypes\FilePath;
+use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/Helpers/Fakes/FakePhpUname.php';
 
 /**
  * Test FilePath class.
  */
-class FilePathTest extends \PHPUnit_Framework_TestCase
+class FilePathTest extends TestCase
 {
     /**
      * Test __toString method.

@@ -3,11 +3,12 @@
 namespace DataTypes\Tests;
 
 use DataTypes\Hostname;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test Hostname class.
  */
-class HostnameTest extends \PHPUnit_Framework_TestCase
+class HostnameTest extends TestCase
 {
     /**
      * Test __toString() method.

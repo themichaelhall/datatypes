@@ -3,11 +3,12 @@
 namespace DataTypes\Tests;
 
 use DataTypes\Scheme;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test Scheme class.
  */
-class SchemeTest extends \PHPUnit_Framework_TestCase
+class SchemeTest extends TestCase
 {
     /**
      * Test __toString method.
