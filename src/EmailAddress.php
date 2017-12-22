@@ -21,6 +21,20 @@ use DataTypes\Interfaces\HostInterface;
 class EmailAddress implements EmailAddressInterface
 {
     /**
+     * Returns true if the email address equals other email address, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param EmailAddressInterface $emailAddress The other email address.
+     *
+     * @return bool True if the email address equals other email address, false otherwise.
+     */
+    public function equals(EmailAddressInterface $emailAddress)
+    {
+        return $this->getHost()->equals($emailAddress->getHost()) && $this->getUsername() === $emailAddress->getUsername();
+    }
+
+    /**
      * Returns the host of the email address.
      *
      * @since 1.1.0
