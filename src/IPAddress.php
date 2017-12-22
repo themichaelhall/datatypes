@@ -89,6 +89,31 @@ class IPAddress implements IPAddressInterface
     }
 
     /**
+     * Creates an IP address from an integer.
+     *
+     * @since 1.2.0
+     *
+     * @param int $i The integer.
+     *
+     * @throws \InvalidArgumentException If the $i parameter is not an integer.
+     *
+     * @return IPAddressInterface The IP address instance.
+     */
+    public static function fromInteger($i)
+    {
+        if (!is_int($i)) {
+            throw new \InvalidArgumentException('$i parameter is not an integer.');
+        }
+
+        return new self([
+            ($i >> 24) & 0xFF,
+            ($i >> 16) & 0xFF,
+            ($i >> 8) & 0xFF,
+            $i & 0xFF,
+        ]);
+    }
+
+    /**
      * Creates an IP address from octets.
      *
      * @since 1.0.0
