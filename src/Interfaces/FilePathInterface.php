@@ -18,6 +18,17 @@ use DataTypes\Interfaces\Traits\PathTraitInterface;
 interface FilePathInterface extends PathTraitInterface
 {
     /**
+     * Returns true if the file path equals other file path, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param FilePathInterface $filePath The other file path.
+     *
+     * @return bool True if the file path equals other file path, false otherwise.
+     */
+    public function equals(self $filePath);
+
+    /**
      * Returns the directory of the file path.
      *
      * @since 1.0.0

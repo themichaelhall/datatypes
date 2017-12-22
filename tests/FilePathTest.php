@@ -755,6 +755,22 @@ class FilePathTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test equals method.
+     */
+    public function testEquals()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        self::assertTrue(FilePath::parse('')->equals(FilePath::parse('.' . $DS)));
+        self::assertFalse(FilePath::parse('')->equals(FilePath::parse($DS)));
+        self::assertTrue(FilePath::parse('.' . $DS . 'foo')->equals(FilePath::parse('.' . $DS . 'foo')));
+        self::assertFalse(FilePath::parse($DS . 'foo')->equals(FilePath::parse('.' . $DS . 'foo')));
+        self::assertFalse(FilePath::parse('.' . $DS . 'foo')->equals(FilePath::parse('.' . $DS . 'bar')));
+        self::assertTrue(FilePath::parse('..' . $DS . 'foo')->equals(FilePath::parse('.' . $DS . '..' . $DS . 'foo')));
+        self::assertFalse(FilePath::parse('C:' . $DS . 'foo' . $DS . 'bar')->equals(FilePath::parse('D:' . $DS . 'foo' . $DS . 'bar')));
+    }
+
+    /**
      * Tear down.
      */
     public function tearDown()
