@@ -32,6 +32,20 @@ class Scheme implements SchemeInterface
     const TYPE_HTTPS = 2;
 
     /**
+     * Returns true if the scheme equals other scheme, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param SchemeInterface $scheme The other scheme.
+     *
+     * @return bool True if the scheme equals other scheme, false otherwise.
+     */
+    public function equals(SchemeInterface $scheme)
+    {
+        return $this->myType === $scheme->getType();
+    }
+
+    /**
      * Returns the default port of the scheme.
      *
      * @since 1.0.0
@@ -108,7 +122,7 @@ class Scheme implements SchemeInterface
             throw new \InvalidArgumentException('$scheme parameter is not a string.');
         }
 
-        return self::myParse($scheme, true);
+        return self::myParse($scheme);
     }
 
     /**
@@ -129,7 +143,7 @@ class Scheme implements SchemeInterface
             throw new \InvalidArgumentException('$scheme parameter is not a string.');
         }
 
-        if (!self::myParse($scheme, false, $result, $type, $defaultPort, $error)) {
+        if (!self::myParse($scheme, $result, $type, $defaultPort, $error)) {
             throw new SchemeInvalidArgumentException($error);
         }
 
@@ -153,7 +167,7 @@ class Scheme implements SchemeInterface
             throw new \InvalidArgumentException('$scheme parameter is not a string.');
         }
 
-        if (!self::myParse($scheme, false, $result, $type, $defaultPort)) {
+        if (!self::myParse($scheme, $result, $type, $defaultPort)) {
             return null;
         }
 
@@ -177,57 +191,33 @@ class Scheme implements SchemeInterface
     /**
      * Tries to parse a scheme and returns the result or error text.
      *
-     * @param string      $scheme       The scheme.
-     * @param bool        $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param string|null $result       The result if parsing was successful, undefined otherwise.
-     * @param int|null    $type         The type if parsing was successful, undefined otherwise.
-     * @param int|null    $defaultPort  The default port if parsing was successful, undefined otherwise.
-     * @param string|null $error        The error text if parsing was not successful, undefined otherwise.
+     * @param string      $scheme      The scheme.
+     * @param string|null $result      The result if parsing was successful, undefined otherwise.
+     * @param int|null    $type        The type if parsing was successful, undefined otherwise.
+     * @param int|null    $defaultPort The default port if parsing was successful, undefined otherwise.
+     * @param string|null $error       The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($scheme, $validateOnly, &$result = null, &$type = null, &$defaultPort = null, &$error = null)
+    private static function myParse($scheme, &$result = null, &$type = null, &$defaultPort = null, &$error = null)
     {
-        // Pre-validate scheme.
-        if (!self::myPreValidate($scheme, $error)) {
+        if ($scheme === '') {
+            $error = 'Scheme "' . $scheme . '" is empty.';
+
             return false;
         }
 
         $result = strtolower($scheme);
 
-        // Not existing scheme is invalid.
         if (!isset(self::$mySchemes[$result])) {
             $error = 'Scheme "' . $scheme . '" is invalid: Scheme must be "http" or "https".';
 
             return false;
         }
 
-        // Save the result.
-        if (!$validateOnly) {
-            $schemeInfo = self::$mySchemes[$result];
-            $type = $schemeInfo[0];
-            $defaultPort = $schemeInfo[1];
-        }
-
-        return true;
-    }
-
-    /**
-     * Pre-validates a scheme.
-     *
-     * @param string      $scheme The scheme.
-     * @param string|null $error  The error text if pre-validation was not successful, undefined otherwise.
-     *
-     * @return bool True if pre-validation was successful, false otherwise.
-     */
-    private static function myPreValidate($scheme, &$error = null)
-    {
-        // Empty scheme is invalid.
-        if ($scheme === '') {
-            $error = 'Scheme "' . $scheme . '" is empty.';
-
-            return false;
-        }
+        $schemeInfo = self::$mySchemes[$result];
+        $type = $schemeInfo[0];
+        $defaultPort = $schemeInfo[1];
 
         return true;
     }

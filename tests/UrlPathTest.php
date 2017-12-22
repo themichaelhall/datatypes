@@ -395,4 +395,17 @@ class UrlPathTest extends \PHPUnit_Framework_TestCase
         self::assertSame('../../../', UrlPath::parse('../../foo')->getParentDirectory()->__toString());
         self::assertSame('../../', UrlPath::parse('../../foo/')->getParentDirectory()->__toString());
     }
+
+    /**
+     * Test equals method.
+     */
+    public function testEquals()
+    {
+        self::assertTrue(UrlPath::parse('')->equals(UrlPath::parse('./')));
+        self::assertFalse(UrlPath::parse('')->equals(UrlPath::parse('/')));
+        self::assertTrue(UrlPath::parse('./foo')->equals(UrlPath::parse('./foo')));
+        self::assertFalse(UrlPath::parse('/foo')->equals(UrlPath::parse('./foo')));
+        self::assertFalse(UrlPath::parse('./foo')->equals(UrlPath::parse('./bar')));
+        self::assertTrue(UrlPath::parse('../foo')->equals(UrlPath::parse('./../foo')));
+    }
 }

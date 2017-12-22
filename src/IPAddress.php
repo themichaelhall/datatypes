@@ -18,6 +18,20 @@ use DataTypes\Interfaces\IPAddressInterface;
 class IPAddress implements IPAddressInterface
 {
     /**
+     * Returns true if the IP address equals other IP address, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param IPAddressInterface $ipAddress The other IP address.
+     *
+     * @return bool True if the IP address equals other IP address, false otherwise.
+     */
+    public function equals(IPAddressInterface $ipAddress)
+    {
+        return $this->getParts() === $ipAddress->getParts();
+    }
+
+    /**
      * Returns the IP address parts.
      *
      * @since 1.0.0
@@ -27,6 +41,18 @@ class IPAddress implements IPAddressInterface
     public function getParts()
     {
         return $this->myOctets;
+    }
+
+    /**
+     * Returns the IP address as an integer.
+     *
+     * @since 1.2.0
+     *
+     * @return int The IP address as an integer.
+     */
+    public function toInteger()
+    {
+        return ($this->myOctets[0] << 24) + ($this->myOctets[1] << 16) + ($this->myOctets[2] << 8) + $this->myOctets[3];
     }
 
     /**
@@ -60,6 +86,31 @@ class IPAddress implements IPAddressInterface
     public function __toString()
     {
         return implode('.', $this->myOctets);
+    }
+
+    /**
+     * Creates an IP address from an integer.
+     *
+     * @since 1.2.0
+     *
+     * @param int $i The integer.
+     *
+     * @throws \InvalidArgumentException If the $i parameter is not an integer.
+     *
+     * @return IPAddressInterface The IP address instance.
+     */
+    public static function fromInteger($i)
+    {
+        if (!is_int($i)) {
+            throw new \InvalidArgumentException('$i parameter is not an integer.');
+        }
+
+        return new self([
+            ($i >> 24) & 0xFF,
+            ($i >> 16) & 0xFF,
+            ($i >> 8) & 0xFF,
+            $i & 0xFF,
+        ]);
     }
 
     /**
@@ -99,7 +150,7 @@ class IPAddress implements IPAddressInterface
             throw new \InvalidArgumentException('$ipAddress parameter is not a string.');
         }
 
-        return self::myParse($ipAddress, true);
+        return self::myParse($ipAddress);
     }
 
     /**
@@ -120,7 +171,7 @@ class IPAddress implements IPAddressInterface
             throw new \InvalidArgumentException('$ipAddress parameter is not a string.');
         }
 
-        if (!self::myParse($ipAddress, false, $octets, $error)) {
+        if (!self::myParse($ipAddress, $octets, $error)) {
             throw new IPAddressInvalidArgumentException($error);
         }
 
@@ -144,7 +195,7 @@ class IPAddress implements IPAddressInterface
             throw new \InvalidArgumentException('$ipAddress parameter is not a string.');
         }
 
-        if (!self::myParse($ipAddress, false, $octets)) {
+        if (!self::myParse($ipAddress, $octets)) {
             return null;
         }
 
@@ -164,16 +215,17 @@ class IPAddress implements IPAddressInterface
     /**
      * Tries to parse an IP address and returns the result or error text.
      *
-     * @param string      $ipAddress    The IP address.
-     * @param bool        $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param int[]|null  $octets       The octets if parsing was successful, undefined otherwise.
-     * @param string|null $error        The error text if parsing was not successful, undefined otherwise.
+     * @param string      $ipAddress The IP address.
+     * @param int[]|null  $octets    The octets if parsing was successful, undefined otherwise.
+     * @param string|null $error     The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($ipAddress, $validateOnly, array &$octets = null, &$error = null)
+    private static function myParse($ipAddress, array &$octets = null, &$error = null)
     {
-        if (!self::myPreValidate($ipAddress, $error)) {
+        if ($ipAddress === '') {
+            $error = 'IP address "' . $ipAddress . '" is empty.';
+
             return false;
         }
 
@@ -194,30 +246,8 @@ class IPAddress implements IPAddressInterface
                 return false;
             }
 
-            if (!$validateOnly) {
-                // Save the resulting octet.
-                $octets[] = $octet;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Pre-validates a IP address.
-     *
-     * @param string $ipAddress The IP address.
-     * @param string $error     The error text if pre-validation was not successful, undefined otherwise.
-     *
-     * @return bool True if pre-validation was successful, false otherwise.
-     */
-    private static function myPreValidate($ipAddress, &$error)
-    {
-        // Empty IP address is invalid.
-        if ($ipAddress === '') {
-            $error = 'IP address "' . $ipAddress . '" is empty.';
-
-            return false;
+            // Save the resulting octet.
+            $octets[] = $octet;
         }
 
         return true;

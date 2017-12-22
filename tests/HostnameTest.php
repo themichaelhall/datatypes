@@ -359,4 +359,15 @@ class HostnameTest extends \PHPUnit_Framework_TestCase
     {
         Hostname::fromParts(['foo', 98765], 'bar');
     }
+
+    /**
+     * Test equals method.
+     */
+    public function testEquals()
+    {
+        self::assertTrue(Hostname::parse('foo.bar.com.')->equals(Hostname::parse('foo.bar.com')));
+        self::assertFalse(Hostname::parse('foo.bar.com')->equals(Hostname::parse('foo.bar.org')));
+        self::assertTrue(Hostname::fromParts(['foo', 'bar'], 'com')->equals(Hostname::parse('foo.bar.com')));
+        self::assertTrue(Hostname::fromParts(['foo'])->equals(Hostname::parse('foo')));
+    }
 }

@@ -21,6 +21,20 @@ use DataTypes\Interfaces\HostInterface;
 class EmailAddress implements EmailAddressInterface
 {
     /**
+     * Returns true if the email address equals other email address, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param EmailAddressInterface $emailAddress The other email address.
+     *
+     * @return bool True if the email address equals other email address, false otherwise.
+     */
+    public function equals(EmailAddressInterface $emailAddress)
+    {
+        return $this->getHost()->equals($emailAddress->getHost()) && $this->getUsername() === $emailAddress->getUsername();
+    }
+
+    /**
      * Returns the host of the email address.
      *
      * @since 1.1.0
@@ -134,7 +148,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function isValid($emailAddress)
     {
-        return self::myParse($emailAddress, true);
+        return self::myParse($emailAddress);
     }
 
     /**
@@ -151,7 +165,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function parse($emailAddress)
     {
-        if (!self::myParse($emailAddress, false, $username, $host, $error)) {
+        if (!self::myParse($emailAddress, $username, $host, $error)) {
             throw new EmailAddressInvalidArgumentException($error);
         }
 
@@ -171,7 +185,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function tryParse($emailAddress)
     {
-        if (!self::myParse($emailAddress, false, $username, $host)) {
+        if (!self::myParse($emailAddress, $username, $host)) {
             return null;
         }
 
@@ -194,7 +208,6 @@ class EmailAddress implements EmailAddressInterface
      * Tries to parse an email address and returns the result or error text.
      *
      * @param string             $emailAddress The email address.
-     * @param bool               $validateOnly If true only validation is performed, if false parse results are returned.
      * @param string|null        $username     The username if parsing was successful, undefined otherwise.
      * @param HostInterface|null $host         The host if parsing was successful, undefined otherwise.
      * @param string|null        $error        The error text if parsing was not successful, undefined otherwise.
@@ -203,7 +216,7 @@ class EmailAddress implements EmailAddressInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($emailAddress, $validateOnly, &$username = null, HostInterface &$host = null, &$error = null)
+    private static function myParse($emailAddress, &$username = null, HostInterface &$host = null, &$error = null)
     {
         if (!is_string($emailAddress)) {
             throw new \InvalidArgumentException('$emailAddress parameter is not a string.');
@@ -225,17 +238,13 @@ class EmailAddress implements EmailAddressInterface
         $username = $parts[0];
         $hostname = $parts[1];
 
-        if ($validateOnly) {
-            return self::myValidateUsername($username) && self::myParseHostname($hostname, true);
-        }
-
         if (!self::myValidateUsername($username, $error)) {
             $error = 'Email address "' . $emailAddress . '" is invalid: ' . $error;
 
             return false;
         }
 
-        if (!self::myParseHostname($hostname, false, $host, $error)) {
+        if (!self::myParseHostname($hostname, $host, $error)) {
             $error = 'Email address "' . $emailAddress . '" is invalid: ' . $error;
 
             return false;
@@ -247,22 +256,17 @@ class EmailAddress implements EmailAddressInterface
     /**
      * Parses the hostname.
      *
-     * @param string             $hostname     The hostname.
-     * @param bool               $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param HostInterface|null $host         The host if parsing was successful, undefined otherwise.
-     * @param string|null        $error        The error text if parsing was not successful, undefined otherwise.
+     * @param string             $hostname The hostname.
+     * @param HostInterface|null $host     The host if parsing was successful, undefined otherwise.
+     * @param string|null        $error    The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParseHostname($hostname, $validateOnly, &$host = null, &$error = null)
+    private static function myParseHostname($hostname, &$host = null, &$error = null)
     {
         if (strlen($hostname) > 2 && substr($hostname, 0, 1) === '[' && substr($hostname, -1) === ']') {
             // Hostname is actually an IP address.
             $ipAddress = substr($hostname, 1, -1);
-
-            if ($validateOnly) {
-                return IPAddress::isValid($ipAddress);
-            }
 
             try {
                 $host = Host::fromIPAddress(IPAddress::parse($ipAddress));
@@ -273,10 +277,6 @@ class EmailAddress implements EmailAddressInterface
             }
 
             return true;
-        }
-
-        if ($validateOnly) {
-            return Hostname::isValid($hostname);
         }
 
         try {

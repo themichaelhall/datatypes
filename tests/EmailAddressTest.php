@@ -323,4 +323,14 @@ class EmailAddressTest extends \PHPUnit_Framework_TestCase
     {
         EmailAddress::fromParts('foo;bar', Host::parse('foo.com'));
     }
+
+    /**
+     * Test equals method.
+     */
+    public function testEquals()
+    {
+        self::assertTrue(EmailAddress::parse('foo.bar@example.com')->equals(EmailAddress::fromParts('foo.bar', Host::parse('example.com'))));
+        self::assertFalse(EmailAddress::parse('foo.baz@example.com')->equals(EmailAddress::fromParts('foo.bar', Host::parse('example.com'))));
+        self::assertFalse(EmailAddress::parse('foo.bar@example.com')->equals(EmailAddress::parse('foo.bar@example.org')));
+    }
 }

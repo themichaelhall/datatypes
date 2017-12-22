@@ -15,6 +15,17 @@ namespace DataTypes\Interfaces;
 interface HostInterface extends DataTypeInterface
 {
     /**
+     * Returns true if the host equals other host, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param HostInterface $host The other host.
+     *
+     * @return bool True if the host equals other host, false otherwise.
+     */
+    public function equals(self $host);
+
+    /**
      * Returns the hostname of the host.
      *
      * @since 1.0.0

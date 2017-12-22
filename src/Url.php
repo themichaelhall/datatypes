@@ -25,6 +25,20 @@ use DataTypes\Interfaces\UrlPathInterface;
 class Url implements UrlInterface
 {
     /**
+     * Returns true if the url equals other url, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param UrlInterface $url The other url.
+     *
+     * @return bool True if the url equals other url, false otherwise.
+     */
+    public function equals(UrlInterface $url)
+    {
+        return $this->getScheme()->equals($url->getScheme()) && $this->getHost()->equals($url->getHost()) && $this->getPort() === $url->getPort() && $this->getPath()->equals($url->getPath()) && $this->getQueryString() === $url->getQueryString() && $this->getFragment() === $url->getFragment();
+    }
+
+    /**
      * Returns the fragment of the url or null if the url has no fragment.
      *
      * @since 1.0.0
@@ -307,7 +321,7 @@ class Url implements UrlInterface
             throw new \InvalidArgumentException('$url parameter is not a string.');
         }
 
-        return self::myParse(null, $url, true);
+        return self::myParse(null, $url);
     }
 
     /**
@@ -329,7 +343,7 @@ class Url implements UrlInterface
         }
 
         try {
-            return self::myParse($baseUrl, $url, true);
+            return self::myParse($baseUrl, $url);
         } catch (UrlPathLogicException $exception) {
             return false;
         }
@@ -353,7 +367,7 @@ class Url implements UrlInterface
             throw new \InvalidArgumentException('$url parameter is not a string.');
         }
 
-        if (!self::myParse(null, $url, false, $scheme, $host, $port, $path, $queryString, $fragment, $error)) {
+        if (!self::myParse(null, $url, $scheme, $host, $port, $path, $queryString, $fragment, $error)) {
             throw new UrlInvalidArgumentException($error);
         }
 
@@ -379,7 +393,7 @@ class Url implements UrlInterface
             throw new \InvalidArgumentException('$url parameter is not a string.');
         }
 
-        if (!self::myParse($baseUrl, $url, false, $scheme, $host, $port, $path, $queryString, $fragment, $error)) {
+        if (!self::myParse($baseUrl, $url, $scheme, $host, $port, $path, $queryString, $fragment, $error)) {
             throw new UrlInvalidArgumentException($error);
         }
 
@@ -403,7 +417,7 @@ class Url implements UrlInterface
             throw new \InvalidArgumentException('$url parameter is not a string.');
         }
 
-        if (!self::myParse(null, $url, false, $scheme, $host, $port, $path, $queryString, $fragment)) {
+        if (!self::myParse(null, $url, $scheme, $host, $port, $path, $queryString, $fragment)) {
             return null;
         }
 
@@ -429,7 +443,7 @@ class Url implements UrlInterface
         }
 
         try {
-            if (!self::myParse($baseUrl, $url, false, $scheme, $host, $port, $path, $queryString, $fragment)) {
+            if (!self::myParse($baseUrl, $url, $scheme, $host, $port, $path, $queryString, $fragment)) {
                 return null;
             }
         } catch (UrlPathLogicException $exception) {
@@ -462,20 +476,19 @@ class Url implements UrlInterface
     /**
      * Tries to parse a url and returns the result or error text.
      *
-     * @param UrlInterface|null     $baseUrl      The base url or null if no base url is present.
-     * @param string                $url          The url.
-     * @param bool                  $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param SchemeInterface|null  $scheme       The scheme if parsing was successful, undefined otherwise.
-     * @param HostInterface|null    $host         The host if parsing was successful, undefined otherwise.
-     * @param int|null              $port         The port if parsing was successful, undefined otherwise.
-     * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
-     * @param string|null           $queryString  The query string if parsing was successful, undefined otherwise.
-     * @param string|null           $fragment     The fragment if parsing was successful, undefined otherwise.
-     * @param string|null           $error        The error text if parsing was not successful, undefined otherwise.
+     * @param UrlInterface|null     $baseUrl     The base url or null if no base url is present.
+     * @param string                $url         The url.
+     * @param SchemeInterface|null  $scheme      The scheme if parsing was successful, undefined otherwise.
+     * @param HostInterface|null    $host        The host if parsing was successful, undefined otherwise.
+     * @param int|null              $port        The port if parsing was successful, undefined otherwise.
+     * @param UrlPathInterface|null $path        The path if parsing was successful, undefined otherwise.
+     * @param string|null           $queryString The query string if parsing was successful, undefined otherwise.
+     * @param string|null           $fragment    The fragment if parsing was successful, undefined otherwise.
+     * @param string|null           $error       The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse(UrlInterface $baseUrl = null, $url, $validateOnly, SchemeInterface &$scheme = null, HostInterface &$host = null, &$port = null, UrlPathInterface &$path = null, &$queryString = null, &$fragment = null, &$error = null)
+    private static function myParse(UrlInterface $baseUrl = null, $url, SchemeInterface &$scheme = null, HostInterface &$host = null, &$port = null, UrlPathInterface &$path = null, &$queryString = null, &$fragment = null, &$error = null)
     {
         if ($baseUrl === null && $url === '') {
             $error = 'Url "" is empty.';
@@ -487,26 +500,26 @@ class Url implements UrlInterface
         self::mySplit($url, $schemeString, $authorityString, $pathString);
 
         // Parse scheme.
-        if (!self::myParseScheme($baseUrl, $schemeString, $validateOnly, $scheme, $error)) {
+        if (!self::myParseScheme($baseUrl, $schemeString, $scheme, $error)) {
             $error = 'Url "' . $url . '" is invalid: ' . $error;
 
             return false;
         }
 
         // Parse authority.
-        if (!self::myParseAuthority($baseUrl, $authorityString, $validateOnly, $host, $port, $error)) {
+        if (!self::myParseAuthority($baseUrl, $authorityString, $host, $port, $error)) {
             $error = 'Url "' . $url . '" is invalid: ' . $error;
 
             return false;
         }
 
         // Set default port if needed.
-        if ($port === null && !$validateOnly) {
+        if ($port === null) {
             $port = $scheme->getDefaultPort();
         }
 
         // Parse path.
-        if (!self::myParsePath($baseUrl, $pathString, $validateOnly, $path, $queryString, $fragment, $error)) {
+        if (!self::myParsePath($baseUrl, $pathString, $path, $queryString, $fragment, $error)) {
             $error = 'Url "' . $url . '" is invalid: ' . $error;
 
             return false;
@@ -559,13 +572,12 @@ class Url implements UrlInterface
      *
      * @param UrlInterface|null    $baseUrl      The base url or null if no base url is present.
      * @param string|null          $schemeString The scheme that is to be parsed or null if no scheme is present.
-     * @param bool                 $validateOnly If true only validation is performed, if false parse results are returned.
      * @param SchemeInterface|null $scheme       The scheme if parsing was successful, undefined otherwise.
      * @param string|null          $error        The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParseScheme(UrlInterface $baseUrl = null, $schemeString, $validateOnly, SchemeInterface &$scheme = null, &$error = null)
+    private static function myParseScheme(UrlInterface $baseUrl = null, $schemeString, SchemeInterface &$scheme = null, &$error = null)
     {
         if ($schemeString === null) {
             if ($baseUrl === null) {
@@ -577,11 +589,6 @@ class Url implements UrlInterface
             $scheme = $baseUrl->getScheme();
 
             return true;
-        }
-
-        // Validate or try parse scheme.
-        if ($validateOnly) {
-            return Scheme::isValid($schemeString);
         }
 
         try {
@@ -600,14 +607,13 @@ class Url implements UrlInterface
      *
      * @param UrlInterface|null  $baseUrl         The base url or null if no base url is present.
      * @param string|null        $authorityString The authority part that is to be parsed or null if no authority part is present.
-     * @param bool               $validateOnly    If true only validation is performed, if false parse results are returned.
      * @param HostInterface|null $host            The host if parsing was successful, undefined otherwise.
      * @param int|null           $port            The port if parsing was successful, undefined otherwise.
      * @param string|null        $error           The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParseAuthority(UrlInterface $baseUrl = null, $authorityString, $validateOnly, HostInterface &$host = null, &$port = null, &$error = null)
+    private static function myParseAuthority(UrlInterface $baseUrl = null, $authorityString, HostInterface &$host = null, &$port = null, &$error = null)
     {
         if ($authorityString === null && $baseUrl !== null) {
             $host = $baseUrl->getHost();
@@ -642,11 +648,6 @@ class Url implements UrlInterface
             }
         }
 
-        // Validate or try parse host.
-        if ($validateOnly) {
-            return Host::isValid($parts[0]);
-        }
-
         try {
             $host = Host::parse($parts[0]);
         } catch (HostInvalidArgumentException $e) {
@@ -661,17 +662,16 @@ class Url implements UrlInterface
     /**
      * Parse path.
      *
-     * @param UrlInterface|null     $baseUrl      The base url or null if no base url is present.
-     * @param string                $pathString   The path that is to be parsed.
-     * @param bool                  $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
-     * @param string|null           $queryString  The query string if parsing was successful, undefined otherwise.
-     * @param string|null           $fragment     The fragment if parsing was successful, undefined otherwise.
-     * @param string|null           $error        The error text if parsing was not successful, undefined otherwise.
+     * @param UrlInterface|null     $baseUrl     The base url or null if no base url is present.
+     * @param string                $pathString  The path that is to be parsed.
+     * @param UrlPathInterface|null $path        The path if parsing was successful, undefined otherwise.
+     * @param string|null           $queryString The query string if parsing was successful, undefined otherwise.
+     * @param string|null           $fragment    The fragment if parsing was successful, undefined otherwise.
+     * @param string|null           $error       The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParsePath(UrlInterface $baseUrl = null, $pathString, $validateOnly, UrlPathInterface &$path = null, &$queryString = null, &$fragment = null, &$error = null)
+    private static function myParsePath(UrlInterface $baseUrl = null, $pathString, UrlPathInterface &$path = null, &$queryString = null, &$fragment = null, &$error = null)
     {
         // Fragment.
         $parts = explode('#', $pathString, 2);
@@ -692,7 +692,7 @@ class Url implements UrlInterface
         }
 
         // Try parse url path.
-        if (!self::myParseUrlPath($baseUrl, $pathString, $validateOnly, $path, $error)) {
+        if (!self::myParseUrlPath($baseUrl, $pathString, $path, $error)) {
             return false;
         }
 
@@ -708,21 +708,15 @@ class Url implements UrlInterface
     /**
      * Try to validate or parse path.
      *
-     * @param UrlInterface|null     $baseUrl      The base url or null if no base url is present.
-     * @param string                $pathString   The path that is to be parsed.
-     * @param bool                  $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param UrlPathInterface|null $path         The path if parsing was successful, undefined otherwise.
-     * @param string|null           $error        The error text if parsing was not successful, undefined otherwise.
+     * @param UrlInterface|null     $baseUrl    The base url or null if no base url is present.
+     * @param string                $pathString The path that is to be parsed.
+     * @param UrlPathInterface|null $path       The path if parsing was successful, undefined otherwise.
+     * @param string|null           $error      The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParseUrlPath(UrlInterface $baseUrl = null, $pathString, $validateOnly, UrlPathInterface &$path = null, &$error = null)
+    private static function myParseUrlPath(UrlInterface $baseUrl = null, $pathString, UrlPathInterface &$path = null, &$error = null)
     {
-        // Just validation and no base url to combine with.
-        if ($baseUrl === null && $validateOnly) {
-            return UrlPath::isValid($pathString);
-        }
-
         // If path is empty and there is a base url, use the path from base url.
         if ($baseUrl !== null && $pathString === '') {
             $path = $baseUrl->getPath();

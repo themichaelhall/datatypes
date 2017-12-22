@@ -18,6 +18,20 @@ use DataTypes\Interfaces\HostnameInterface;
 class Hostname implements HostnameInterface
 {
     /**
+     * Returns true if the hostname equals other hostname, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param HostnameInterface $hostname The other hostname.
+     *
+     * @return bool True if the hostname equals other hostname, false otherwise.
+     */
+    public function equals(HostnameInterface $hostname)
+    {
+        return $this->getDomainParts() === $hostname->getDomainParts() && $this->getTld() === $hostname->getTld();
+    }
+
+    /**
      * Returns the domain name including top-level domain.
      *
      * @since 1.0.0
@@ -112,22 +126,18 @@ class Hostname implements HostnameInterface
             throw new \InvalidArgumentException('$tld parameter is not a string or null.');
         }
 
-        // Empty domain parts is invalid.
         if (count($domainParts) === 0) {
             throw new HostnameInvalidArgumentException('Domain parts [] is empty.');
         }
 
-        // Validate the domain parts.
         if (!self::myValidateDomainParts($domainParts, $error)) {
             throw new HostnameInvalidArgumentException('Domain parts ["' . implode('", "', $domainParts) . '"] is invalid: ' . $error);
         }
 
-        // Validate top-level domain.
         if (!self::myValidateTld($tld, $error)) {
             throw new HostnameInvalidArgumentException($error);
         }
 
-        // Normalize parts.
         self::myNormalizeDomainParts($domainParts);
         self::myNormalizeTld($tld);
 
@@ -151,7 +161,7 @@ class Hostname implements HostnameInterface
             throw new \InvalidArgumentException('$hostname parameter is not a string.');
         }
 
-        return self::myParse($hostname, true);
+        return self::myParse($hostname);
     }
 
     /**
@@ -172,7 +182,7 @@ class Hostname implements HostnameInterface
             throw new \InvalidArgumentException('$hostname parameter is not a string.');
         }
 
-        if (!self::myParse($hostname, false, $domainParts, $tld, $error)) {
+        if (!self::myParse($hostname, $domainParts, $tld, $error)) {
             throw new HostnameInvalidArgumentException($error);
         }
 
@@ -196,7 +206,7 @@ class Hostname implements HostnameInterface
             throw new \InvalidArgumentException('$hostname parameter is not a string.');
         }
 
-        if (!self::myParse($hostname, false, $domainParts, $tld)) {
+        if (!self::myParse($hostname, $domainParts, $tld)) {
             return null;
         }
 
@@ -218,22 +228,27 @@ class Hostname implements HostnameInterface
     /**
      * Tries to parse a hostname and returns the result or error text.
      *
-     * @param string        $hostname     The hostname.
-     * @param bool          $validateOnly If true only validation is performed, if false parse results are returned.
-     * @param string[]|null $domainParts  The domain parts if parsing was successful, undefined otherwise.
-     * @param string|null   $tld          The top-level domain if parsing was successful, undefined otherwise.
-     * @param string|null   $error        The error text if parsing was not successful, undefined otherwise.
+     * @param string        $hostname    The hostname.
+     * @param string[]|null $domainParts The domain parts if parsing was successful, undefined otherwise.
+     * @param string|null   $tld         The top-level domain if parsing was successful, undefined otherwise.
+     * @param string|null   $error       The error text if parsing was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($hostname, $validateOnly, array &$domainParts = null, &$tld = null, &$error = null)
+    private static function myParse($hostname, array &$domainParts = null, &$tld = null, &$error = null)
     {
-        // Pre-validate hostname.
-        if (!self::myPreValidate($hostname, $error)) {
+        if ($hostname === '') {
+            $error = 'Hostname "' . $hostname . '" is empty.';
+
             return false;
         }
 
-        // Split hostname in parts.
+        if (strlen($hostname) > 255) {
+            $error = 'Hostname "' . $hostname . '" is too long: Maximum allowed length is 255 characters."';
+
+            return false;
+        }
+
         $domainParts = explode(
             '.',
             substr($hostname, -1) === '.' ? substr($hostname, 0, -1) : $hostname // Remove trailing "." from hostname.
@@ -257,38 +272,9 @@ class Hostname implements HostnameInterface
             return false;
         }
 
-        if (!$validateOnly) {
-            // Normalize result.
-            self::myNormalizeDomainParts($domainParts);
-            self::myNormalizeTld($tld);
-        }
-
-        return true;
-    }
-
-    /**
-     * Pre-validates a hostname.
-     *
-     * @param string $hostname The hostname.
-     * @param string $error    The error text if pre-validation was not successful, undefined otherwise.
-     *
-     * @return bool True if pre-validation was successful, false otherwise.
-     */
-    private static function myPreValidate($hostname, &$error)
-    {
-        // Empty hostname is invalid.
-        if ($hostname === '') {
-            $error = 'Hostname "' . $hostname . '" is empty.';
-
-            return false;
-        }
-
-        // Hostname longer than maximum length is invalid.
-        if (strlen($hostname) > 255) {
-            $error = 'Hostname "' . $hostname . '" is too long: Maximum allowed length is 255 characters."';
-
-            return false;
-        }
+        // Normalize result.
+        self::myNormalizeDomainParts($domainParts);
+        self::myNormalizeTld($tld);
 
         return true;
     }
@@ -303,21 +289,18 @@ class Hostname implements HostnameInterface
      */
     private static function myValidateTld($tld, &$error)
     {
-        // Empty top-level domain is invalid.
         if ($tld === '') {
             $error = 'Top-level domain "' . $tld . '" is empty.';
 
             return false;
         }
 
-        // Too long top level domain is invalid.
         if (strlen($tld) > 63) {
             $error = 'Top-level domain "' . $tld . '" is too long: Maximum allowed length is 63 characters.';
 
             return false;
         }
 
-        // Top-level domain containing invalid character is invalid.
         if (preg_match('/[^a-zA-Z]/', $tld, $matches)) {
             $error = 'Top-level domain "' . $tld . '" contains invalid character "' . $matches[0] . '".';
 
@@ -362,35 +345,30 @@ class Hostname implements HostnameInterface
      */
     private static function myValidateDomainPart($domainPart, &$error)
     {
-        // Empty domain part is invalid.
         if ($domainPart === '') {
             $error = 'Part of domain "' . $domainPart . '" is empty.';
 
             return false;
         }
 
-        // Too long domain part is invalid.
         if (strlen($domainPart) > 63) {
             $error = 'Part of domain "' . $domainPart . '" is too long: Maximum allowed length is 63 characters.';
 
             return false;
         }
 
-        // Domain part containing invalid character is invalid.
         if (preg_match('/[^a-zA-Z0-9-]/', $domainPart, $matches)) {
             $error = 'Part of domain "' . $domainPart . '" contains invalid character "' . $matches[0] . '".';
 
             return false;
         }
 
-        // Domain part can not begin with a dash.
         if (substr($domainPart, 0, 1) === '-') {
             $error = 'Part of domain "' . $domainPart . '" begins with "-".';
 
             return false;
         }
 
-        // Domain part can not end with a dash.
         if (substr($domainPart, -1) === '-') {
             $error = 'Part of domain "' . $domainPart . '" ends with "-".';
 
