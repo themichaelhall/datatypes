@@ -44,6 +44,18 @@ class IPAddress implements IPAddressInterface
     }
 
     /**
+     * Returns the IP address as an integer.
+     *
+     * @since 1.2.0
+     *
+     * @return int The IP address as an integer.
+     */
+    public function toInteger()
+    {
+        return ($this->myOctets[0] << 24) + ($this->myOctets[1] << 16) + ($this->myOctets[2] << 8) + $this->myOctets[3];
+    }
+
+    /**
      * Returns a copy of the IP address instance masked with the specified mask.
      *
      * @since 1.0.0

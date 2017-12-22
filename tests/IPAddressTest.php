@@ -216,4 +216,26 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
         self::assertFalse(IPAddress::parse('1.2.3.4')->equals(IPAddress::parse('1.2.3.0')));
         self::assertTrue(IPAddress::parse('127.0.0.1')->equals(IPAddress::fromParts([127, 0, 0, 1])));
     }
+
+    /**
+     * Test toInteger method.
+     */
+    public function testToInteger()
+    {
+        self::assertSame(0, IPAddress::parse('0.0.0.0')->toInteger());
+        self::assertSame(203569230, IPAddress::parse('12.34.56.78')->toInteger());
+        self::assertSame(2147483647, IPAddress::parse('127.255.255.255')->toInteger());
+
+        if (PHP_INT_MAX > 2147483647) {
+            // > 32 bit.
+            self::assertSame(2147483648, IPAddress::parse('128.0.0.0')->toInteger());
+            self::assertSame(3232235521, IPAddress::parse('192.168.0.1')->toInteger());
+            self::assertSame(4294967295, IPAddress::parse('255.255.255.255')->toInteger());
+        } else {
+            // 32 bit.
+            self::assertSame(intval(-2147483648), IPAddress::parse('128.0.0.0')->toInteger());
+            self::assertSame(-1062731775, IPAddress::parse('192.168.0.1')->toInteger());
+            self::assertSame(-1, IPAddress::parse('255.255.255.255')->toInteger());
+        }
+    }
 }

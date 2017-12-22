@@ -1,5 +1,6 @@
 ## Unreleased
 - Added equals method to all data type classes.
+- Added toInteger method to IPAddress class.
 
 ## [1.1.0] - 2017-10-01
 - Added EmailAddress class.

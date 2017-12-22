@@ -35,6 +35,15 @@ interface IPAddressInterface extends DataTypeInterface
     public function getParts();
 
     /**
+     * Returns the IP address as an integer.
+     *
+     * @since 1.2.0
+     *
+     * @return int The IP address as an integer.
+     */
+    public function toInteger();
+
+    /**
      * Returns a copy of the IP address masked with the specified mask.
      *
      * @since 1.0.0
