@@ -1,3 +1,5 @@
+## Unreleased
+
 ## [1.2.0] - 2017-12-22
 - Added equals method to all data type classes.
 - Added toInteger method to IPAddress class.
