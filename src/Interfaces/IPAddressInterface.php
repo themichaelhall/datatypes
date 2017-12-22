@@ -15,6 +15,17 @@ namespace DataTypes\Interfaces;
 interface IPAddressInterface extends DataTypeInterface
 {
     /**
+     * Returns true if the IP address equals other IP address, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param IPAddressInterface $ipAddress The other IP address.
+     *
+     * @return bool True if the IP address equals other IP address, false otherwise.
+     */
+    public function equals(self $ipAddress);
+
+    /**
      * Returns the IP address parts.
      *
      * @since 1.0.0

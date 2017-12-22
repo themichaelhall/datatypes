@@ -18,6 +18,17 @@ use DataTypes\Interfaces\Traits\PathTraitInterface;
 interface UrlPathInterface extends PathTraitInterface
 {
     /**
+     * Returns true if the url path equals other url path, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param UrlPathInterface $urlPath The other url path.
+     *
+     * @return bool True if the url path equals other url path, false otherwise.
+     */
+    public function equals(self $urlPath);
+
+    /**
      * Returns the directory of the url path.
      *
      * @since 1.0.0

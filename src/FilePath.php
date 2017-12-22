@@ -22,6 +22,20 @@ class FilePath implements FilePathInterface
     use PathTrait;
 
     /**
+     * Returns true if the file path equals other file path, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param FilePathInterface $filePath The other file path.
+     *
+     * @return bool True if the file path equals other file path, false otherwise.
+     */
+    public function equals(FilePathInterface $filePath)
+    {
+        return $this->getDrive() === $filePath->getDrive() && $this->isAbsolute() === $filePath->isAbsolute() && $this->getDirectoryParts() === $filePath->getDirectoryParts() && $this->getFilename() === $filePath->getFilename();
+    }
+
+    /**
      * Returns the directory of the file path.
      *
      * @since 1.0.0

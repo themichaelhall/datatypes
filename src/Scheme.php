@@ -32,6 +32,20 @@ class Scheme implements SchemeInterface
     const TYPE_HTTPS = 2;
 
     /**
+     * Returns true if the scheme equals other scheme, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param SchemeInterface $scheme The other scheme.
+     *
+     * @return bool True if the scheme equals other scheme, false otherwise.
+     */
+    public function equals(SchemeInterface $scheme)
+    {
+        return $this->myType === $scheme->getType();
+    }
+
+    /**
      * Returns the default port of the scheme.
      *
      * @since 1.0.0

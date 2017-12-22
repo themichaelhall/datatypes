@@ -206,4 +206,14 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
         self::assertSame('192.0.0.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('255.0.0.0'))->__toString());
         self::assertSame('0.0.0.0', IPAddress::parse('192.168.1.1')->withMask(IPAddress::parse('0.0.0.0'))->__toString());
     }
+
+    /**
+     * Test equals method.
+     */
+    public function testEquals()
+    {
+        self::assertTrue(IPAddress::parse('1.2.3.4')->equals(IPAddress::parse('1.2.3.4')));
+        self::assertFalse(IPAddress::parse('1.2.3.4')->equals(IPAddress::parse('1.2.3.0')));
+        self::assertTrue(IPAddress::parse('127.0.0.1')->equals(IPAddress::fromParts([127, 0, 0, 1])));
+    }
 }

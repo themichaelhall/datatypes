@@ -25,6 +25,20 @@ use DataTypes\Interfaces\UrlPathInterface;
 class Url implements UrlInterface
 {
     /**
+     * Returns true if the url equals other url, false otherwise.
+     *
+     * @since 1.2.0
+     *
+     * @param UrlInterface $url The other url.
+     *
+     * @return bool True if the url equals other url, false otherwise.
+     */
+    public function equals(UrlInterface $url)
+    {
+        return $this->getScheme()->equals($url->getScheme()) && $this->getHost()->equals($url->getHost()) && $this->getPort() === $url->getPort() && $this->getPath()->equals($url->getPath()) && $this->getQueryString() === $url->getQueryString() && $this->getFragment() === $url->getFragment();
+    }
+
+    /**
      * Returns the fragment of the url or null if the url has no fragment.
      *
      * @since 1.0.0
