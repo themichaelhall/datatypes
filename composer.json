@@ -1,7 +1,6 @@
 {
   "name": "datatypes/datatypes",
   "description": "Data type classes for PHP",
-  "homepage": "https://phpdatatypes.com/",
   "license": "MIT",
   "keywords": [
     "data",
