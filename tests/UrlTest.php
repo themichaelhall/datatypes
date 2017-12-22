@@ -813,4 +813,19 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             '?/?:@-._~!$\'()*+,;=/?:@-._~!$\'()*+,;==' .
             '#/?:@-._~!$&\'()*+,;=', $url->__toString());
     }
+
+    /**
+     * Test equals method.
+     */
+    public function testEquals()
+    {
+        self::assertTrue(Url::parse('https://example.com/')->equals(Url::parse('https://example.com/')));
+        self::assertTrue(Url::parse('https://example.com:8080/path/file?query#fragment')->equals(Url::parse('https://example.com:8080/path/file?query#fragment')));
+        self::assertFalse(Url::parse('https://example.com:8080/path/file?query#fragment')->equals(Url::parse('http://example.com:8080/path/file?query#fragment')));
+        self::assertFalse(Url::parse('https://example.com:8080/path/file?query#fragment')->equals(Url::parse('https://example.org:8080/path/file?query#fragment')));
+        self::assertFalse(Url::parse('https://example.com:8080/path/file?query#fragment')->equals(Url::parse('https://example.com/path/file?query#fragment')));
+        self::assertFalse(Url::parse('https://example.com:8080/path/file?query#fragment')->equals(Url::parse('https://example.com:8080/file?query#fragment')));
+        self::assertFalse(Url::parse('https://example.com:8080/path/file?query#fragment')->equals(Url::parse('https://example.com:8080/path/file#fragment')));
+        self::assertFalse(Url::parse('https://example.com:8080/path/file?query#fragment')->equals(Url::parse('https://example.com:8080/path/file?query#foo')));
+    }
 }

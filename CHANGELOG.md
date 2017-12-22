@@ -1,8 +1,8 @@
 ## Unreleased
+- Added equals method to all data type classes.
 
 ## [1.1.0] - 2017-10-01
-### Added
-- EmailAddress class.
+- Added EmailAddress class.
 
 ## [1.0.1] - 2017-05-29
 - Fixed [#4](https://github.com/themichaelhall/datatypes/issues/4) - Url with name and/or password should not be treated as invalid.
