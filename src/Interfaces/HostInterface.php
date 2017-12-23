@@ -24,7 +24,7 @@ interface HostInterface extends DataTypeInterface
      *
      * @return bool True if the host equals other host, false otherwise.
      */
-    public function equals(self $host);
+    public function equals(self $host): bool;
 
     /**
      * Returns the hostname of the host.
@@ -33,7 +33,7 @@ interface HostInterface extends DataTypeInterface
      *
      * @return HostnameInterface The hostname of the host.
      */
-    public function getHostname();
+    public function getHostname(): HostnameInterface;
 
     /**
      * Returns the IP address of the host or null if the host has no IP address.
@@ -42,5 +42,5 @@ interface HostInterface extends DataTypeInterface
      *
      * @return IPAddressInterface|null The IP address of the host or null if the host has no IP address.
      */
-    public function getIPAddress();
+    public function getIPAddress(): ?IPAddressInterface;
 }
