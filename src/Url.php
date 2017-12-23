@@ -824,7 +824,7 @@ class Url implements UrlInterface
         if ($queryString === null) {
             return true;
         }
-        
+
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]\/\?%-]/', $queryString, $matches)) {
             $error = 'Query string "' . $queryString . '" contains invalid character "' . $matches[0] . '".';
 
