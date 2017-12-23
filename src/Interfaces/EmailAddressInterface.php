@@ -24,7 +24,7 @@ interface EmailAddressInterface extends DataTypeInterface
      *
      * @return bool True if the email address equals other email address, false otherwise.
      */
-    public function equals(self $emailAddress);
+    public function equals(self $emailAddress): bool;
 
     /**
      * Returns the host of the email address.
@@ -33,7 +33,7 @@ interface EmailAddressInterface extends DataTypeInterface
      *
      * @return HostInterface The host of the email address.
      */
-    public function getHost();
+    public function getHost(): HostInterface;
 
     /**
      * Returns the username of the email address.
@@ -42,7 +42,7 @@ interface EmailAddressInterface extends DataTypeInterface
      *
      * @return string The username of the email address.
      */
-    public function getUsername();
+    public function getUsername(): string;
 
     /**
      * Returns a copy of the email address instance with the specified host.
@@ -53,7 +53,7 @@ interface EmailAddressInterface extends DataTypeInterface
      *
      * @return EmailAddressInterface The email address instance.
      */
-    public function withHost(HostInterface $host);
+    public function withHost(HostInterface $host): self;
 
     /**
      * Returns a copy of the email address instance with the specified username.
@@ -64,5 +64,5 @@ interface EmailAddressInterface extends DataTypeInterface
      *
      * @return EmailAddressInterface The email address instance.
      */
-    public function withUsername($username);
+    public function withUsername(string $username): self;
 }

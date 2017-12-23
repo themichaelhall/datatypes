@@ -26,17 +26,6 @@ class EmailAddressTest extends TestCase
     }
 
     /**
-     * Test parse method with invalid parameter type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $emailAddress parameter is not a string.
-     */
-    public function testParseWithInvalidParameterType()
-    {
-        EmailAddress::parse(false);
-    }
-
-    /**
      * Test that empty EmailAddress is invalid.
      *
      * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
@@ -169,17 +158,6 @@ class EmailAddressTest extends TestCase
     }
 
     /**
-     * Test tryParse method with invalid parameter type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $emailAddress parameter is not a string.
-     */
-    public function testTryParseWithInvalidParameterType()
-    {
-        EmailAddress::tryParse(false);
-    }
-
-    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -198,17 +176,6 @@ class EmailAddressTest extends TestCase
         self::assertTrue(EmailAddress::isValid('foo.bar@[127.0.0.1]'));
         self::assertFalse(EmailAddress::isValid('foo.bar@[]'));
         self::assertFalse(EmailAddress::isValid('foo.bar@[1.2.3.256]'));
-    }
-
-    /**
-     * Test isValid method with invalid parameter type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $emailAddress parameter is not a string.
-     */
-    public function testIsValidWithInvalidParameterType()
-    {
-        EmailAddress::isValid(false);
     }
 
     /**
@@ -239,18 +206,6 @@ class EmailAddressTest extends TestCase
         $emailAddress = EmailAddress::parse('foo.bar@example.com');
 
         self::assertSame('baz@example.com', $emailAddress->withUsername('baz')->__toString());
-    }
-
-    /**
-     * Test withUsername method with invalid parameter type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $username parameter is not a string.
-     */
-    public function testWithUsernameWithInvalidParameterType()
-    {
-        $emailAddress = EmailAddress::parse('foo.bar@example.com');
-        $emailAddress->withUsername(20);
     }
 
     /**
@@ -303,17 +258,6 @@ class EmailAddressTest extends TestCase
         $emailAddress = EmailAddress::fromParts('foo.bar', Host::fromIPAddress(IPAddress::parse('12.34.56.78')));
 
         self::assertSame('foo.bar@[12.34.56.78]', $emailAddress->__toString());
-    }
-
-    /**
-     * Test fromParts method with invalid username parameter type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $username parameter is not a string.
-     */
-    public function testFromPartsWithInvalidUsernameParameterType()
-    {
-        EmailAddress::fromParts(null, Host::parse('foo.com'));
     }
 
     /**
