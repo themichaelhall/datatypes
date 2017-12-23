@@ -24,7 +24,7 @@ interface PathTraitInterface extends DataTypeInterface
      *
      * @return int The depth of the path.
      */
-    public function getDepth();
+    public function getDepth(): int;
 
     /**
      * Returns the directory parts.
@@ -33,7 +33,7 @@ interface PathTraitInterface extends DataTypeInterface
      *
      * @return string[] The directory parts.
      */
-    public function getDirectoryParts();
+    public function getDirectoryParts(): array;
 
     /**
      * Returns the filename or null if the path is a directory.
@@ -42,7 +42,7 @@ interface PathTraitInterface extends DataTypeInterface
      *
      * @return string|null The filename or null if the path is a directory.
      */
-    public function getFilename();
+    public function getFilename(): ?string;
 
     /**
      * Returns true if path has a parent directory, false otherwise.
@@ -51,7 +51,7 @@ interface PathTraitInterface extends DataTypeInterface
      *
      * @return bool True if path has a parent directory, false otherwise.
      */
-    public function hasParentDirectory();
+    public function hasParentDirectory(): bool;
 
     /**
      * Returns true if path is absolute, false otherwise.
@@ -60,7 +60,7 @@ interface PathTraitInterface extends DataTypeInterface
      *
      * @return bool True if path is absolute, false otherwise.
      */
-    public function isAbsolute();
+    public function isAbsolute(): bool;
 
     /**
      * Returns true if path is a directory, false otherwise.
@@ -69,7 +69,7 @@ interface PathTraitInterface extends DataTypeInterface
      *
      * @return bool True if path is a directory, false otherwise.
      */
-    public function isDirectory();
+    public function isDirectory(): bool;
 
     /**
      * Returns true if path is a file, false otherwise.
@@ -78,7 +78,7 @@ interface PathTraitInterface extends DataTypeInterface
      *
      * @return bool True if path is a file, false otherwise.
      */
-    public function isFile();
+    public function isFile(): bool;
 
     /**
      * Returns true if path is relative, false otherwise.
@@ -87,5 +87,5 @@ interface PathTraitInterface extends DataTypeInterface
      *
      * @return bool True if path is relative, false otherwise.
      */
-    public function isRelative();
+    public function isRelative(): bool;
 }
