@@ -24,7 +24,7 @@ interface IPAddressInterface extends DataTypeInterface
      *
      * @return bool True if the IP address equals other IP address, false otherwise.
      */
-    public function equals(self $ipAddress);
+    public function equals(self $ipAddress): bool;
 
     /**
      * Returns the IP address parts.
@@ -33,7 +33,7 @@ interface IPAddressInterface extends DataTypeInterface
      *
      * @return int[] The IP address parts.
      */
-    public function getParts();
+    public function getParts(): array;
 
     /**
      * Returns the IP address as an integer.
@@ -42,7 +42,7 @@ interface IPAddressInterface extends DataTypeInterface
      *
      * @return int The IP address as an integer.
      */
-    public function toInteger();
+    public function toInteger(): int;
 
     /**
      * Returns a copy of the IP address masked with the specified mask.
@@ -53,5 +53,5 @@ interface IPAddressInterface extends DataTypeInterface
      *
      * @return IPAddressInterface The IP address.
      */
-    public function withMask(self $mask);
+    public function withMask(self $mask): self;
 }
