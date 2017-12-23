@@ -24,7 +24,7 @@ interface HostnameInterface extends DataTypeInterface
      *
      * @return bool True if the hostname equals other hostname, false otherwise.
      */
-    public function equals(self $hostname);
+    public function equals(self $hostname): bool;
 
     /**
      * Returns the domain name including top-level domain.
@@ -33,7 +33,7 @@ interface HostnameInterface extends DataTypeInterface
      *
      * @return string The domain name including top-level domain.
      */
-    public function getDomainName();
+    public function getDomainName(): string;
 
     /**
      * Returns the domain parts.
@@ -42,7 +42,7 @@ interface HostnameInterface extends DataTypeInterface
      *
      * @return string[] The domain parts.
      */
-    public function getDomainParts();
+    public function getDomainParts(): array;
 
     /**
      * Returns the top-level domain of the hostname if hostname has a top-level domain, null otherwise.
@@ -51,7 +51,7 @@ interface HostnameInterface extends DataTypeInterface
      *
      * @return string|null The top-level domain of the hostname if hostname has a top-level domain, null otherwise.
      */
-    public function getTld();
+    public function getTld(): ?string;
 
     /**
      * Returns a copy of the Hostname instance with the specified top-level domain.
@@ -62,5 +62,5 @@ interface HostnameInterface extends DataTypeInterface
      *
      * @return HostnameInterface The Hostname instance.
      */
-    public function withTld($tld);
+    public function withTld(string $tld): self;
 }

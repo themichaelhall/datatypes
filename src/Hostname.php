@@ -27,7 +27,7 @@ class Hostname implements HostnameInterface
      *
      * @return bool True if the hostname equals other hostname, false otherwise.
      */
-    public function equals(HostnameInterface $hostname)
+    public function equals(HostnameInterface $hostname): bool
     {
         return $this->getDomainParts() === $hostname->getDomainParts() && $this->getTld() === $hostname->getTld();
     }
@@ -39,7 +39,7 @@ class Hostname implements HostnameInterface
      *
      * @return string The domain name including top-level domain.
      */
-    public function getDomainName()
+    public function getDomainName(): string
     {
         return $this->myDomainParts[count($this->myDomainParts) - 1] . ($this->myTld !== null ? '.' . $this->myTld : '');
     }
@@ -51,7 +51,7 @@ class Hostname implements HostnameInterface
      *
      * @return string[] The domain parts.
      */
-    public function getDomainParts()
+    public function getDomainParts(): array
     {
         return $this->myDomainParts;
     }
@@ -63,7 +63,7 @@ class Hostname implements HostnameInterface
      *
      * @return string|null The top-level domain of the hostname if hostname has a top-level domain, null otherwise.
      */
-    public function getTld()
+    public function getTld(): ?string
     {
         return $this->myTld;
     }
@@ -76,16 +76,11 @@ class Hostname implements HostnameInterface
      * @param string $tld The top-level domain.
      *
      * @throws HostnameInvalidArgumentException If the top-level domain parameter is not a valid top-level domain.
-     * @throws \InvalidArgumentException        If the $tld parameter is not a string.
      *
      * @return HostnameInterface The Hostname instance.
      */
-    public function withTld($tld)
+    public function withTld(string $tld): HostnameInterface
     {
-        if (!is_string($tld)) {
-            throw new \InvalidArgumentException('$tld parameter is not a string.');
-        }
-
         if (!self::myValidateTld($tld, $error)) {
             throw new HostnameInvalidArgumentException($error);
         }
@@ -103,7 +98,7 @@ class Hostname implements HostnameInterface
      *
      * @return string The hostname as a string.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return implode('.', $this->myDomainParts) . ($this->myTld !== null ? '.' . $this->myTld : '');
     }
@@ -117,16 +112,12 @@ class Hostname implements HostnameInterface
      * @param string|null $tld         The top level domain or null if no top-level domain should be included.
      *
      * @throws HostnameInvalidArgumentException If any of the parameters are invalid.
-     * @throws \InvalidArgumentException        If any of the parameters are of invalid type.
+     * @throws \InvalidArgumentException        If the $domainParts parameter is not an array of strings.
      *
      * @return HostnameInterface The hostname instance.
      */
-    public static function fromParts(array $domainParts, $tld = null)
+    public static function fromParts(array $domainParts, ?string $tld = null): HostnameInterface
     {
-        if (!is_string($tld) && !is_null($tld)) {
-            throw new \InvalidArgumentException('$tld parameter is not a string or null.');
-        }
-
         if (count($domainParts) === 0) {
             throw new HostnameInvalidArgumentException('Domain parts [] is empty.');
         }
@@ -152,16 +143,10 @@ class Hostname implements HostnameInterface
      *
      * @param string $hostname The hostname.
      *
-     * @throws \InvalidArgumentException If the $hostname parameter is not a string.
-     *
      * @return bool True if the $hostname parameter is a valid hostname, false otherwise.
      */
-    public static function isValid($hostname)
+    public static function isValid(string $hostname): bool
     {
-        if (!is_string($hostname)) {
-            throw new \InvalidArgumentException('$hostname parameter is not a string.');
-        }
-
         return self::myParse($hostname);
     }
 
@@ -173,16 +158,11 @@ class Hostname implements HostnameInterface
      * @param string $hostname The hostname.
      *
      * @throws HostnameInvalidArgumentException If the $hostname parameter is not a valid hostname.
-     * @throws \InvalidArgumentException        If the $hostname parameter is not a string.
      *
      * @return HostnameInterface The Hostname instance.
      */
-    public static function parse($hostname)
+    public static function parse(string $hostname): HostnameInterface
     {
-        if (!is_string($hostname)) {
-            throw new \InvalidArgumentException('$hostname parameter is not a string.');
-        }
-
         if (!self::myParse($hostname, $domainParts, $tld, $error)) {
             throw new HostnameInvalidArgumentException($error);
         }
@@ -197,16 +177,10 @@ class Hostname implements HostnameInterface
      *
      * @param string $hostname The hostname.
      *
-     * @throws \InvalidArgumentException If the $hostname parameter is not a string.
-     *
      * @return HostnameInterface|null The Hostname instance if the $hostname parameter is a valid hostname, null otherwise.
      */
-    public static function tryParse($hostname)
+    public static function tryParse(string $hostname): ?HostnameInterface
     {
-        if (!is_string($hostname)) {
-            throw new \InvalidArgumentException('$hostname parameter is not a string.');
-        }
-
         if (!self::myParse($hostname, $domainParts, $tld)) {
             return null;
         }
@@ -220,7 +194,7 @@ class Hostname implements HostnameInterface
      * @param string[]    $domainParts The domain parts.
      * @param string|null $tld         The top-level domain if top-level domain is present, null otherwise.
      */
-    private function __construct(array $domainParts, $tld = null)
+    private function __construct(array $domainParts, ?string $tld = null)
     {
         $this->myDomainParts = $domainParts;
         $this->myTld = $tld;
@@ -236,7 +210,7 @@ class Hostname implements HostnameInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($hostname, array &$domainParts = null, &$tld = null, &$error = null)
+    private static function myParse(string $hostname, ?array &$domainParts = null, ?string &$tld = null, ?string &$error = null): bool
     {
         if ($hostname === '') {
             $error = 'Hostname "' . $hostname . '" is empty.';
@@ -284,11 +258,11 @@ class Hostname implements HostnameInterface
      * Validates a top-level domain.
      *
      * @param string|null $tld   The top-level domain.
-     * @param string      $error The The error text if validation was not successful, undefined otherwise.
+     * @param string|null $error The The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myValidateTld($tld, &$error)
+    private static function myValidateTld(?string $tld, ?string &$error): bool
     {
         if ($tld === null) {
             return true;
@@ -318,14 +292,14 @@ class Hostname implements HostnameInterface
     /**
      * Validates domain parts.
      *
-     * @param string[] $domainParts The domain parts.
-     * @param string   $error       The error text if validation was not successful, undefined otherwise.
+     * @param string[]    $domainParts The domain parts.
+     * @param string|null $error       The error text if validation was not successful, undefined otherwise.
      *
      * @throws \InvalidArgumentException If the $domainParts parameter is not an array of strings.
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myValidateDomainParts(array $domainParts, &$error)
+    private static function myValidateDomainParts(array $domainParts, ?string &$error): bool
     {
         foreach ($domainParts as $part) {
             if (!is_string($part)) {
@@ -343,12 +317,12 @@ class Hostname implements HostnameInterface
     /**
      * Validates a domain part.
      *
-     * @param string $domainPart The domain part.
-     * @param string $error      The error text if validation was not successful, undefined otherwise.
+     * @param string      $domainPart The domain part.
+     * @param string|null $error      The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myValidateDomainPart($domainPart, &$error)
+    private static function myValidateDomainPart(string $domainPart, ?string &$error): bool
     {
         if ($domainPart === '') {
             $error = 'Part of domain "' . $domainPart . '" is empty.';
@@ -388,7 +362,7 @@ class Hostname implements HostnameInterface
      *
      * @param string|null $tld The top-level domain.
      */
-    private static function myNormalizeTld(&$tld = null)
+    private static function myNormalizeTld(?string &$tld = null): void
     {
         if ($tld !== null) {
             $tld = strtolower($tld);
@@ -400,7 +374,7 @@ class Hostname implements HostnameInterface
      *
      * @param string[] $domainParts The domain parts.
      */
-    private static function myNormalizeDomainParts(array &$domainParts)
+    private static function myNormalizeDomainParts(array &$domainParts): void
     {
         array_walk($domainParts, function (&$part) {
             $part = strtolower($part);
