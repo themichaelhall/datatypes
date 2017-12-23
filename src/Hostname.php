@@ -4,6 +4,7 @@
  *
  * Read more at https://phpdatatypes.com/
  */
+declare(strict_types=1);
 
 namespace DataTypes;
 
@@ -282,13 +283,17 @@ class Hostname implements HostnameInterface
     /**
      * Validates a top-level domain.
      *
-     * @param string $tld   The top-level domain.
-     * @param string $error The The error text if validation was not successful, undefined otherwise.
+     * @param string|null $tld   The top-level domain.
+     * @param string      $error The The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if validation was successful, false otherwise.
      */
     private static function myValidateTld($tld, &$error)
     {
+        if ($tld === null) {
+            return true;
+        }
+
         if ($tld === '') {
             $error = 'Top-level domain "' . $tld . '" is empty.';
 

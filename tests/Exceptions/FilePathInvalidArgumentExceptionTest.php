@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DataTypes\Tests\Exceptions;
 
 use DataTypes\Exceptions\FilePathInvalidArgumentException;

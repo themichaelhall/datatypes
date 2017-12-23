@@ -4,6 +4,7 @@
  *
  * Read more at https://phpdatatypes.com/
  */
+declare(strict_types=1);
 
 namespace DataTypes;
 
@@ -811,8 +812,8 @@ class Url implements UrlInterface
     /**
      * Validates a query string.
      *
-     * @param string $queryString The query string.
-     * @param string $error       The error text if validation was not successful, undefined otherwise.
+     * @param string|null $queryString The query string.
+     * @param string      $error       The error text if validation was not successful, undefined otherwise.
      *
      * @throws \InvalidArgumentException If the $queryString parameter is not a string.
      *
@@ -820,6 +821,10 @@ class Url implements UrlInterface
      */
     private static function myValidateQueryString($queryString, &$error)
     {
+        if ($queryString === null) {
+            return true;
+        }
+        
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]\/\?%-]/', $queryString, $matches)) {
             $error = 'Query string "' . $queryString . '" contains invalid character "' . $matches[0] . '".';
 
@@ -832,8 +837,8 @@ class Url implements UrlInterface
     /**
      * Validates a fragment.
      *
-     * @param string $fragment The fragment.
-     * @param string $error    The error text if validation was not successful, undefined otherwise.
+     * @param string|null $fragment The fragment.
+     * @param string      $error    The error text if validation was not successful, undefined otherwise.
      *
      * @throws \InvalidArgumentException If the $fragment parameter is not a string.
      *
@@ -841,6 +846,10 @@ class Url implements UrlInterface
      */
     private static function myValidateFragment($fragment, &$error)
     {
+        if ($fragment === null) {
+            return true;
+        }
+
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]\/\?%-]/', $fragment, $matches)) {
             $error = 'Fragment "' . $fragment . '" contains invalid character "' . $matches[0] . '".';
 
