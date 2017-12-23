@@ -41,7 +41,7 @@ class Scheme implements SchemeInterface
      *
      * @return bool True if the scheme equals other scheme, false otherwise.
      */
-    public function equals(SchemeInterface $scheme)
+    public function equals(SchemeInterface $scheme): bool
     {
         return $this->myType === $scheme->getType();
     }
@@ -53,7 +53,7 @@ class Scheme implements SchemeInterface
      *
      * @return int The default port of the scheme.
      */
-    public function getDefaultPort()
+    public function getDefaultPort(): int
     {
         return $this->myDefaultPort;
     }
@@ -65,7 +65,7 @@ class Scheme implements SchemeInterface
      *
      * @return int The type of the scheme.
      */
-    public function getType()
+    public function getType(): int
     {
         return $this->myType;
     }
@@ -77,7 +77,7 @@ class Scheme implements SchemeInterface
      *
      * @return bool True if the scheme is http, false otherwise.
      */
-    public function isHttp()
+    public function isHttp(): bool
     {
         return $this->myType === self::TYPE_HTTP;
     }
@@ -89,7 +89,7 @@ class Scheme implements SchemeInterface
      *
      * @return bool True if the scheme is https, false otherwise.
      */
-    public function isHttps()
+    public function isHttps(): bool
     {
         return $this->myType === self::TYPE_HTTPS;
     }
@@ -101,7 +101,7 @@ class Scheme implements SchemeInterface
      *
      * @return string The scheme as a string.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->myScheme;
     }
@@ -113,16 +113,10 @@ class Scheme implements SchemeInterface
      *
      * @param string $scheme The scheme.
      *
-     * @throws \InvalidArgumentException If the $scheme parameter is not a string.
-     *
      * @return bool True if the $scheme parameter is a valid scheme, false otherwise.
      */
-    public static function isValid($scheme)
+    public static function isValid(string $scheme): bool
     {
-        if (!is_string($scheme)) {
-            throw new \InvalidArgumentException('$scheme parameter is not a string.');
-        }
-
         return self::myParse($scheme);
     }
 
@@ -133,17 +127,12 @@ class Scheme implements SchemeInterface
      *
      * @param string $scheme The scheme.
      *
-     * @throws \InvalidArgumentException      If the $scheme parameter is not a string.
      * @throws SchemeInvalidArgumentException If the $scheme parameter is not a valid scheme.
      *
      * @return SchemeInterface The Scheme instance.
      */
-    public static function parse($scheme)
+    public static function parse(string $scheme): SchemeInterface
     {
-        if (!is_string($scheme)) {
-            throw new \InvalidArgumentException('$scheme parameter is not a string.');
-        }
-
         if (!self::myParse($scheme, $result, $type, $defaultPort, $error)) {
             throw new SchemeInvalidArgumentException($error);
         }
@@ -158,16 +147,10 @@ class Scheme implements SchemeInterface
      *
      * @param string $scheme The scheme.
      *
-     * @throws \InvalidArgumentException If the $scheme parameter is not a string.
-     *
      * @return SchemeInterface|null The Scheme instance if the $scheme parameter is a valid scheme, null otherwise.
      */
-    public static function tryParse($scheme)
+    public static function tryParse(string $scheme): ?SchemeInterface
     {
-        if (!is_string($scheme)) {
-            throw new \InvalidArgumentException('$scheme parameter is not a string.');
-        }
-
         if (!self::myParse($scheme, $result, $type, $defaultPort)) {
             return null;
         }
@@ -182,7 +165,7 @@ class Scheme implements SchemeInterface
      * @param int    $type        The type.
      * @param int    $defaultPort The default port.
      */
-    private function __construct($scheme, $type, $defaultPort)
+    private function __construct(string $scheme, int $type, int $defaultPort)
     {
         $this->myScheme = $scheme;
         $this->myType = $type;
@@ -200,7 +183,7 @@ class Scheme implements SchemeInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($scheme, &$result = null, &$type = null, &$defaultPort = null, &$error = null)
+    private static function myParse(string $scheme, ?string &$result = null, ?int &$type = null, ?int &$defaultPort = null, ?string &$error = null): bool
     {
         if ($scheme === '') {
             $error = 'Scheme "' . $scheme . '" is empty.';
