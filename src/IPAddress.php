@@ -4,6 +4,7 @@
  *
  * Read more at https://phpdatatypes.com/
  */
+declare(strict_types=1);
 
 namespace DataTypes;
 
@@ -26,7 +27,7 @@ class IPAddress implements IPAddressInterface
      *
      * @return bool True if the IP address equals other IP address, false otherwise.
      */
-    public function equals(IPAddressInterface $ipAddress)
+    public function equals(IPAddressInterface $ipAddress): bool
     {
         return $this->getParts() === $ipAddress->getParts();
     }
@@ -38,7 +39,7 @@ class IPAddress implements IPAddressInterface
      *
      * @return int[] The IP address parts.
      */
-    public function getParts()
+    public function getParts(): array
     {
         return $this->myOctets;
     }
@@ -50,7 +51,7 @@ class IPAddress implements IPAddressInterface
      *
      * @return int The IP address as an integer.
      */
-    public function toInteger()
+    public function toInteger(): int
     {
         return ($this->myOctets[0] << 24) + ($this->myOctets[1] << 16) + ($this->myOctets[2] << 8) + $this->myOctets[3];
     }
@@ -64,7 +65,7 @@ class IPAddress implements IPAddressInterface
      *
      * @return IPAddressInterface The IP address instance.
      */
-    public function withMask(IPAddressInterface $mask)
+    public function withMask(IPAddressInterface $mask): IPAddressInterface
     {
         $octets = $this->getParts();
         $maskOctets = $mask->getParts();
@@ -83,7 +84,7 @@ class IPAddress implements IPAddressInterface
      *
      * @return string The IP address as a string.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return implode('.', $this->myOctets);
     }
@@ -95,16 +96,10 @@ class IPAddress implements IPAddressInterface
      *
      * @param int $i The integer.
      *
-     * @throws \InvalidArgumentException If the $i parameter is not an integer.
-     *
      * @return IPAddressInterface The IP address instance.
      */
-    public static function fromInteger($i)
+    public static function fromInteger(int $i): IPAddressInterface
     {
-        if (!is_int($i)) {
-            throw new \InvalidArgumentException('$i parameter is not an integer.');
-        }
-
         return new self([
             ($i >> 24) & 0xFF,
             ($i >> 16) & 0xFF,
@@ -120,11 +115,12 @@ class IPAddress implements IPAddressInterface
      *
      * @param int[] $octets The octets.
      *
+     * @throws \InvalidArgumentException         If the octets parameter is not an array of integers.
      * @throws IPAddressInvalidArgumentException If the $octets parameter is not a valid array of octets.
      *
-     * @return IPAddress The IP address.
+     * @return IPAddressInterface The IP address.
      */
-    public static function fromParts(array $octets)
+    public static function fromParts(array $octets): IPAddressInterface
     {
         if (!self::myValidateOctets($octets, $error)) {
             throw new IPAddressInvalidArgumentException('Octets are invalid: ' . $error);
@@ -140,16 +136,10 @@ class IPAddress implements IPAddressInterface
      *
      * @param string $ipAddress The IP address.
      *
-     * @throws \InvalidArgumentException If the $ipAddress parameter is not a string.
-     *
      * @return bool True if the $ipAddress parameter is a valid IP address, false otherwise.
      */
-    public static function isValid($ipAddress)
+    public static function isValid(string $ipAddress): bool
     {
-        if (!is_string($ipAddress)) {
-            throw new \InvalidArgumentException('$ipAddress parameter is not a string.');
-        }
-
         return self::myParse($ipAddress);
     }
 
@@ -160,17 +150,12 @@ class IPAddress implements IPAddressInterface
      *
      * @param string $ipAddress The IP address.
      *
-     * @throws \InvalidArgumentException         If the $ipAddress parameter is not a string.
      * @throws IPAddressInvalidArgumentException If the $ipAddress parameter is not a valid IP address.
      *
      * @return IPAddressInterface The IPAddress instance.
      */
-    public static function parse($ipAddress)
+    public static function parse(string $ipAddress): IPAddressInterface
     {
-        if (!is_string($ipAddress)) {
-            throw new \InvalidArgumentException('$ipAddress parameter is not a string.');
-        }
-
         if (!self::myParse($ipAddress, $octets, $error)) {
             throw new IPAddressInvalidArgumentException($error);
         }
@@ -185,16 +170,10 @@ class IPAddress implements IPAddressInterface
      *
      * @param string $ipAddress The IP address.
      *
-     * @throws \InvalidArgumentException If the $ipAddress parameter is not a string.
-     *
      * @return IPAddressInterface|null The IPAddress instance if the $ipAddress parameter is a valid IP address, null otherwise.
      */
-    public static function tryParse($ipAddress)
+    public static function tryParse(string $ipAddress): ?IPAddressInterface
     {
-        if (!is_string($ipAddress)) {
-            throw new \InvalidArgumentException('$ipAddress parameter is not a string.');
-        }
-
         if (!self::myParse($ipAddress, $octets)) {
             return null;
         }
@@ -221,7 +200,7 @@ class IPAddress implements IPAddressInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse($ipAddress, array &$octets = null, &$error = null)
+    private static function myParse(string $ipAddress, ?array &$octets = null, ?string &$error = null): bool
     {
         if ($ipAddress === '') {
             $error = 'IP address "' . $ipAddress . '" is empty.';
@@ -256,13 +235,13 @@ class IPAddress implements IPAddressInterface
     /**
      * Validates an IP address part.
      *
-     * @param string $ipAddressPart The IP address part.
-     * @param int    $octet         The resulting octet.
-     * @param string $error         The error text if validation was not successful, undefined otherwise.
+     * @param string      $ipAddressPart The IP address part.
+     * @param int|null    $octet         The resulting octet.
+     * @param string|null $error         The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myValidateIpAddressPart($ipAddressPart, &$octet, &$error)
+    private static function myValidateIpAddressPart(string $ipAddressPart, ?int &$octet, ?string &$error): bool
     {
         if ($ipAddressPart === '') {
             $error = 'Octet "' . $ipAddressPart . '" is empty.';
@@ -288,12 +267,14 @@ class IPAddress implements IPAddressInterface
     /**
      * Validates an array of octets.
      *
-     * @param int[]  $octets The array of octets.
-     * @param string $error  The error text if validation was not successful, undefined otherwise.
+     * @param int[]       $octets The array of octets.
+     * @param string|null $error  The error text if validation was not successful, undefined otherwise.
+     *
+     * @throws \InvalidArgumentException If the octets parameter is not an array of integers.
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myValidateOctets(array $octets, &$error)
+    private static function myValidateOctets(array $octets, ?string &$error): bool
     {
         if (count($octets) !== 4) {
             $error = 'IP address must consist of four octets.';
@@ -302,6 +283,10 @@ class IPAddress implements IPAddressInterface
         }
 
         foreach ($octets as $octet) {
+            if (!is_int($octet)) {
+                throw new \InvalidArgumentException('$octets is not an array of integers.');
+            }
+
             if (!self::myValidateOctet($octet, $error)) {
                 return false;
             }
@@ -313,19 +298,13 @@ class IPAddress implements IPAddressInterface
     /**
      * Validates an octet.
      *
-     * @param int    $octet The octet.
-     * @param string $error The error text if validation was not successful, undefined otherwise.
-     *
-     * @throws \InvalidArgumentException If the octet parameter is not an integer.
+     * @param int         $octet The octet.
+     * @param string|null $error The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myValidateOctet($octet, &$error)
+    private static function myValidateOctet(int $octet, ?string &$error): bool
     {
-        if (!is_int($octet)) {
-            throw new \InvalidArgumentException('$octet is not an integer.');
-        }
-
         if ($octet < 0) {
             $error = 'Octet ' . $octet . ' is out of range: Minimum value for an octet is 0.';
 

@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DataTypes\Tests\Exceptions;
 
 use DataTypes\Exceptions\FilePathInvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test FilePathInvalidArgumentException class.
  */
-class FilePathInvalidArgumentExceptionTest extends \PHPUnit_Framework_TestCase
+class FilePathInvalidArgumentExceptionTest extends TestCase
 {
     /**
      * Test that FilePathInvalidArgumentException is subclass of InvalidArgumentException.

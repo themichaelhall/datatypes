@@ -4,6 +4,7 @@
  *
  * Read more at https://phpdatatypes.com/
  */
+declare(strict_types=1);
 
 namespace DataTypes\Interfaces;
 
@@ -23,7 +24,7 @@ interface SchemeInterface extends DataTypeInterface
      *
      * @return bool True if the scheme equals other scheme, false otherwise.
      */
-    public function equals(self $scheme);
+    public function equals(self $scheme): bool;
 
     /**
      * Returns the default port of the scheme.
@@ -32,7 +33,7 @@ interface SchemeInterface extends DataTypeInterface
      *
      * @return int The default port of the scheme.
      */
-    public function getDefaultPort();
+    public function getDefaultPort(): int;
 
     /**
      * Returns the type of the scheme.
@@ -41,7 +42,7 @@ interface SchemeInterface extends DataTypeInterface
      *
      * @return int The type of the scheme.
      */
-    public function getType();
+    public function getType(): int;
 
     /**
      * Returns true if the scheme is http, false otherwise.
@@ -50,7 +51,7 @@ interface SchemeInterface extends DataTypeInterface
      *
      * @return bool True if the scheme is http, false otherwise.
      */
-    public function isHttp();
+    public function isHttp(): bool;
 
     /**
      * Returns true if the scheme is https, false otherwise.
@@ -59,5 +60,5 @@ interface SchemeInterface extends DataTypeInterface
      *
      * @return bool True if the scheme is https, false otherwise.
      */
-    public function isHttps();
+    public function isHttps(): bool;
 }

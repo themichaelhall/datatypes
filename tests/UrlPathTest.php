@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DataTypes\Tests;
 
 use DataTypes\UrlPath;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test UrlPath class.
  */
-class UrlPathTest extends \PHPUnit_Framework_TestCase
+class UrlPathTest extends TestCase
 {
     /**
      * Test __toString method.
@@ -149,17 +152,6 @@ class UrlPathTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test parse method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $urlPath parameter is not a string.
-     */
-    public function testParseWithInvalidArgumentType()
-    {
-        UrlPath::parse(1.0);
-    }
-
-    /**
      * Test tryParse method.
      */
     public function testTryParse()
@@ -172,17 +164,6 @@ class UrlPathTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test tryParse method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $urlPath parameter is not a string.
-     */
-    public function testTryParseWithInvalidArgumentType()
-    {
-        UrlPath::tryParse(true);
-    }
-
-    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -191,17 +172,6 @@ class UrlPathTest extends \PHPUnit_Framework_TestCase
         self::assertTrue(UrlPath::isValid('foo/bar/baz.html'));
         self::assertFalse(UrlPath::isValid('/foo/{bar}/'));
         self::assertFalse(UrlPath::isValid('/foo/../../'));
-    }
-
-    /**
-     * Test isValid method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $urlPath parameter is not a string.
-     */
-    public function testIsValidWithInvalidArgumentType()
-    {
-        UrlPath::isValid(42);
     }
 
     /**

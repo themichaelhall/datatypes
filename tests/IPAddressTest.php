@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DataTypes\Tests;
 
 use DataTypes\IPAddress;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test IPAddress class.
  */
-class IPAddressTest extends \PHPUnit_Framework_TestCase
+class IPAddressTest extends TestCase
 {
     /**
      * Test __toString method.
@@ -74,17 +77,6 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test parse method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $ipAddress parameter is not a string.
-     */
-    public function testParseWithInvalidArgumentType()
-    {
-        IPAddress::parse(1.0);
-    }
-
-    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -99,17 +91,6 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test isValid method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $ipAddress parameter is not a string.
-     */
-    public function testIsValidWithInvalidArgumentType()
-    {
-        IPAddress::isValid(false);
-    }
-
-    /**
      * Test tryParse method.
      */
     public function testTryParse()
@@ -121,18 +102,6 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
         self::assertNull(IPAddress::tryParse('yyy.123.234.1'));
         self::assertSame('0.0.0.0', IPAddress::tryParse('0.0.0.0')->__toString());
         self::assertSame('255.255.255.255', IPAddress::tryParse('255.255.255.255')->__toString());
-    }
-
-    /**
-     * Test tryParse method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $ipAddress parameter is not a string.
-     */
-    public function testTryParseWithInvalidArgumentType()
-    {
-        /** @noinspection PhpParamsInspection */
-        IPAddress::tryParse([192, 168, 1, 1]);
     }
 
     /**
@@ -166,7 +135,7 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
      * Test fromParts method with invalid octet type.
      *
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $octet is not an integer.
+     * @expectedExceptionMessage $octets is not an array of integers.
      */
     public function testFromPartsWithInvalidOctetType()
     {
@@ -257,16 +226,5 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
             self::assertSame('192.168.0.1', IPAddress::fromInteger(3232235521)->__toString());
             self::assertSame('255.255.255.255', IPAddress::fromInteger(4294967295)->__toString());
         }
-    }
-
-    /**
-     * Test fromInteger method with invalid parameter type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $i parameter is not an integer.
-     */
-    public function testFromIntegerWithInvalidParameterType()
-    {
-        IPAddress::fromInteger('Foo');
     }
 }

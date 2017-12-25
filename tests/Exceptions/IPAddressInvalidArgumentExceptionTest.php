@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DataTypes\Tests\Exceptions;
 
 use DataTypes\Exceptions\IPAddressInvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test IPAddressInvalidArgumentException class.
  */
-class IPAddressInvalidArgumentExceptionTest extends \PHPUnit_Framework_TestCase
+class IPAddressInvalidArgumentExceptionTest extends TestCase
 {
     /**
      * Test that IPAddressInvalidArgumentException is subclass of InvalidArgumentException.
