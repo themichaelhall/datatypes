@@ -22,5 +22,5 @@ interface DataTypeInterface
      *
      * @return string The data type as a string.
      */
-    public function __toString();
+    public function __toString(): string;
 }
