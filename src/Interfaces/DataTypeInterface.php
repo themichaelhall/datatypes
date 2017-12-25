@@ -4,6 +4,7 @@
  *
  * Read more at https://phpdatatypes.com/
  */
+declare(strict_types=1);
 
 namespace DataTypes\Interfaces;
 
@@ -21,5 +22,5 @@ interface DataTypeInterface
      *
      * @return string The data type as a string.
      */
-    public function __toString();
+    public function __toString(): string;
 }

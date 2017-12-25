@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DataTypes\Tests;
 
 use DataTypes\Host;
 use DataTypes\Scheme;
 use DataTypes\Url;
 use DataTypes\UrlPath;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test Url class.
  */
-class UrlTest extends \PHPUnit_Framework_TestCase
+class UrlTest extends TestCase
 {
     /**
      * Test __toString method.
@@ -240,17 +243,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test parse method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $url parameter is not a string.
-     */
-    public function testParseWithInvalidArgumentType()
-    {
-        Url::parse(true);
-    }
-
-    /**
      * Test getQueryString method.
      */
     public function testGetQueryString()
@@ -321,17 +313,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test fromParts method with invalid port argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $port parameter is not an integer or null.
-     */
-    public function testFromPartsWithInvalidPortArgumentType()
-    {
-        Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), '80', UrlPath::parse('/'));
-    }
-
-    /**
      * Test fromParts method with invalid query string.
      *
      * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
@@ -343,17 +324,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test fromParts method with invalid query string argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $queryString parameter is not a string or null.
-     */
-    public function testFromPartsWithInvalidQueryStringArgumentType()
-    {
-        Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), null, UrlPath::parse('/'), ['foo']);
-    }
-
-    /**
      * Test fromParts method with invalid fragment.
      *
      * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
@@ -362,17 +332,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     public function testFromPartsWithInvalidFragment()
     {
         Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), null, UrlPath::parse('/'), 'foo', '>bar');
-    }
-
-    /**
-     * Test fromParts method with invalid fragment argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $fragment parameter is not a string or null.
-     */
-    public function testFromPartsWithInvalidFragmentArgumentType()
-    {
-        Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), null, UrlPath::parse('/'), null, ['foo']);
     }
 
     /**
@@ -395,18 +354,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         self::assertTrue(Url::isValid('http://domain.com/?foo#bar'));
         self::assertFalse(Url::isValid('http://domain.com/?foo#>bar'));
         self::assertFalse(Url::isValid('http://domain.com/#bar<'));
-    }
-
-    /**
-     * Test isValid method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $url parameter is not a string.
-     */
-    public function testIsValidWithInvalidArgumentType()
-    {
-        /** @noinspection PhpParamsInspection */
-        Url::isValid([]);
     }
 
     /**
@@ -450,17 +397,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         self::assertSame('http://foo.com:8080/path/new-file#new-fragment', Url::parseRelative('new-file#new-fragment', $url)->__toString());
         self::assertSame('http://foo.com:8080/new-path/', Url::parseRelative('/new-path/', $url)->__toString());
         self::assertSame('http://foo.com:8080/path/file?query#fragment', Url::parseRelative('', $url)->__toString());
-    }
-
-    /**
-     * Test parseRelative method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $url parameter is not a string.
-     */
-    public function testParseRelativeWithInvalidArgumentType()
-    {
-        Url::parseRelative(null, Url::parse('http://domain.com/'));
     }
 
     /**
@@ -552,17 +488,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test tryParse method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $url parameter is not a string.
-     */
-    public function testTryParseWithInvalidArgumentType()
-    {
-        Url::tryParse(67890);
-    }
-
-    /**
      * Test getHostAndPort method.
      */
     public function testGetHostAndPort()
@@ -611,17 +536,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test withPort method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $port parameter is not an integer.
-     */
-    public function testWithPortWithInvalidArgumentType()
-    {
-        Url::parse('http://localhost/')->withPort(null);
-    }
-
-    /**
      * Test withPort method with port below 0.
      *
      * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
@@ -657,17 +571,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test withQueryString method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $queryString parameter is not a string or null.
-     */
-    public function testWithQueryStringWithInvalidArgumentType()
-    {
-        Url::parse('https://domain.com/')->withQueryString(false);
-    }
-
-    /**
      * Test withQueryString method with invalid query string.
      *
      * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
@@ -689,17 +592,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo')->withFragment(null)->__toString());
         self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo#bar')->withFragment(null)->__toString());
         self::assertSame('https://domain.com/foo?bar', Url::parse('https://domain.com/foo?bar#fragment')->withFragment(null)->__toString());
-    }
-
-    /**
-     * Test withFragment method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $fragment parameter is not a string or null.
-     */
-    public function testWithFragmentWithInvalidArgumentType()
-    {
-        Url::parse('https://domain.com/')->withFragment(false);
     }
 
     /**
@@ -743,17 +635,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test parseRelative method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $url parameter is not a string.
-     */
-    public function testTryParseRelativeWithInvalidArgumentType()
-    {
-        Url::tryParseRelative(null, Url::parse('http://domain.com/'));
-    }
-
-    /**
      * Test isValidRelative method.
      */
     public function testIsValidRelative()
@@ -780,17 +661,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         self::assertFalse(Url::isValidRelative('http://domain.com/path?{query}', $url));
         self::assertFalse(Url::isValidRelative('http://domain.com/path#{fragment}', $url));
         self::assertFalse(Url::isValidRelative('../../', $url));
-    }
-
-    /**
-     * Test isValidRelative method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $url parameter is not a string.
-     */
-    public function testIsValidRelativeWithInvalidArgumentType()
-    {
-        Url::isValidRelative(null, Url::parse('http://domain.com/'));
     }
 
     /**

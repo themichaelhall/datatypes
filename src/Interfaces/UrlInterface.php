@@ -4,6 +4,7 @@
  *
  * Read more at https://phpdatatypes.com/
  */
+declare(strict_types=1);
 
 namespace DataTypes\Interfaces;
 
@@ -23,7 +24,7 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return bool True if the url equals other url, false otherwise.
      */
-    public function equals(self $url);
+    public function equals(self $url): bool;
 
     /**
      * Returns the fragment of the url or null if the url has no fragment.
@@ -32,7 +33,7 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return string|null The fragment of the url or null if the url has no fragment.
      */
-    public function getFragment();
+    public function getFragment(): ?string;
 
     /**
      * Returns the host of the url.
@@ -41,7 +42,7 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return HostInterface The host of the url.
      */
-    public function getHost();
+    public function getHost(): HostInterface;
 
     /**
      * Returns the host and port of the url as a string.
@@ -50,7 +51,7 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return string The host and port of the url.
      */
-    public function getHostAndPort();
+    public function getHostAndPort(): string;
 
     /**
      * Returns the path of the url.
@@ -59,7 +60,7 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return UrlPathInterface The path of the url.
      */
-    public function getPath();
+    public function getPath(): UrlPathInterface;
 
     /**
      * Returns the port of the url.
@@ -68,7 +69,7 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return int The port of the url.
      */
-    public function getPort();
+    public function getPort(): int;
 
     /**
      * Returns the query string of the url or null if the url has no query string.
@@ -77,7 +78,7 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return string|null The query string of the url or null if the url has no query string.
      */
-    public function getQueryString();
+    public function getQueryString(): ?string;
 
     /**
      * Returns the scheme of the url.
@@ -86,7 +87,7 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return SchemeInterface The scheme of the url.
      */
-    public function getScheme();
+    public function getScheme(): SchemeInterface;
 
     /**
      * Returns a copy of the Url instance with the specified fragment.
@@ -97,7 +98,7 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return UrlInterface The url instance.
      */
-    public function withFragment($fragment = null);
+    public function withFragment(?string $fragment = null): self;
 
     /**
      * Returns a copy of the Url instance with the specified host.
@@ -108,7 +109,7 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return UrlInterface The Url instance.
      */
-    public function withHost(HostInterface $host);
+    public function withHost(HostInterface $host): self;
 
     /**
      * Returns a copy of the Url instance with the specified path.
@@ -119,7 +120,7 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return UrlInterface The Url instance.
      */
-    public function withPath(UrlPathInterface $path);
+    public function withPath(UrlPathInterface $path): self;
 
     /**
      * Returns a copy of the Url instance with the specified port.
@@ -130,7 +131,7 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return UrlInterface The Url instance.
      */
-    public function withPort($port);
+    public function withPort(int $port): self;
 
     /**
      * Returns a copy of the Url instance with the specified query string.
@@ -141,7 +142,7 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return UrlInterface The url instance.
      */
-    public function withQueryString($queryString = null);
+    public function withQueryString(?string $queryString = null): self;
 
     /**
      * Returns a copy of the Url instance with the specified scheme.
@@ -153,5 +154,5 @@ interface UrlInterface extends DataTypeInterface
      *
      * @return UrlInterface The Url instance.
      */
-    public function withScheme(SchemeInterface $scheme, $keepDefaultPort = true);
+    public function withScheme(SchemeInterface $scheme, bool $keepDefaultPort = true): self;
 }

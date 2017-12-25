@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DataTypes\Tests;
 
 use DataTypes\Host;
 use DataTypes\Hostname;
 use DataTypes\IPAddress;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test Host class.
  */
-class HostTest extends \PHPUnit_Framework_TestCase
+class HostTest extends TestCase
 {
     /**
      * Test __toString() method.
@@ -33,17 +36,6 @@ class HostTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test parse method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $host parameter is not a string.
-     */
-    public function testParseWithInvalidArgumentType()
-    {
-        Host::parse(12345);
-    }
-
-    /**
      * Test tryParse method.
      */
     public function testTryParse()
@@ -55,17 +47,6 @@ class HostTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test tryParse method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $host parameter is not a string.
-     */
-    public function testTryParseWithInvalidArgumentType()
-    {
-        Host::tryParse(true);
-    }
-
-    /**
      * Test isValid method.
      */
     public function testIsValid()
@@ -74,18 +55,6 @@ class HostTest extends \PHPUnit_Framework_TestCase
         self::assertTrue(Host::isValid('domain.com'));
         self::assertTrue(Host::isValid('1.2.3.4'));
         self::assertFalse(Host::isValid('*'));
-    }
-
-    /**
-     * Test isValid method with invalid argument type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $host parameter is not a string.
-     */
-    public function testIsValidWithInvalidArgumentType()
-    {
-        /** @noinspection PhpParamsInspection */
-        Host::isValid(['foo', 'bar']);
     }
 
     /**

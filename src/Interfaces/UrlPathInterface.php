@@ -4,6 +4,7 @@
  *
  * Read more at https://phpdatatypes.com/
  */
+declare(strict_types=1);
 
 namespace DataTypes\Interfaces;
 
@@ -26,7 +27,7 @@ interface UrlPathInterface extends PathTraitInterface
      *
      * @return bool True if the url path equals other url path, false otherwise.
      */
-    public function equals(self $urlPath);
+    public function equals(self $urlPath): bool;
 
     /**
      * Returns the directory of the url path.
@@ -35,7 +36,7 @@ interface UrlPathInterface extends PathTraitInterface
      *
      * @return UrlPathInterface The directory of the url path.
      */
-    public function getDirectory();
+    public function getDirectory(): self;
 
     /**
      * Returns the parent directory of the url path or null if url path does not have a parent directory.
@@ -44,7 +45,7 @@ interface UrlPathInterface extends PathTraitInterface
      *
      * @return UrlPathInterface|null The parent directory of the url path or null if url path does not have a parent directory.
      */
-    public function getParentDirectory();
+    public function getParentDirectory(): ?self;
 
     /**
      * Returns the url path as a absolute path.
@@ -53,7 +54,7 @@ interface UrlPathInterface extends PathTraitInterface
      *
      * @return UrlPathInterface The url path as a absolute path.
      */
-    public function toAbsolute();
+    public function toAbsolute(): self;
 
     /**
      * Returns the url path as a relative path.
@@ -62,7 +63,7 @@ interface UrlPathInterface extends PathTraitInterface
      *
      * @return UrlPathInterface The url path as a relative path.
      */
-    public function toRelative();
+    public function toRelative(): self;
 
     /**
      * Returns a copy of the url path combined with another url path.
@@ -75,5 +76,5 @@ interface UrlPathInterface extends PathTraitInterface
      *
      * @return UrlPathInterface The combined url path.
      */
-    public function withUrlPath(self $urlPath);
+    public function withUrlPath(self $urlPath): self;
 }

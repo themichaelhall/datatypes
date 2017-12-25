@@ -4,6 +4,7 @@
  *
  * Read more at https://phpdatatypes.com/
  */
+declare(strict_types=1);
 
 namespace DataTypes;
 
@@ -30,7 +31,7 @@ class FilePath implements FilePathInterface
      *
      * @return bool True if the file path equals other file path, false otherwise.
      */
-    public function equals(FilePathInterface $filePath)
+    public function equals(FilePathInterface $filePath): bool
     {
         return $this->getDrive() === $filePath->getDrive() && $this->isAbsolute() === $filePath->isAbsolute() && $this->getDirectoryParts() === $filePath->getDirectoryParts() && $this->getFilename() === $filePath->getFilename();
     }
@@ -42,7 +43,7 @@ class FilePath implements FilePathInterface
      *
      * @return FilePathInterface The directory of the file path.
      */
-    public function getDirectory()
+    public function getDirectory(): FilePathInterface
     {
         return new self($this->myIsAbsolute, $this->myAboveBaseLevel, $this->myDrive, $this->myDirectoryParts, null);
     }
@@ -54,7 +55,7 @@ class FilePath implements FilePathInterface
      *
      * @return string|null The drive of the file path or null if no drive is present or supported.
      */
-    public function getDrive()
+    public function getDrive(): ?string
     {
         return $this->myDrive;
     }
@@ -66,7 +67,7 @@ class FilePath implements FilePathInterface
      *
      * @return FilePathInterface|null The parent directory of the file path or null if file path does not have a parent directory.
      */
-    public function getParentDirectory()
+    public function getParentDirectory(): ?FilePathInterface
     {
         if ($this->myParentDirectory($aboveBaseLevel, $directoryParts)) {
             return new self($this->myIsAbsolute, $aboveBaseLevel, $this->myDrive, $directoryParts, null);
@@ -84,7 +85,7 @@ class FilePath implements FilePathInterface
      *
      * @return FilePathInterface The file path as an absolute path.
      */
-    public function toAbsolute()
+    public function toAbsolute(): FilePathInterface
     {
         if ($this->myAboveBaseLevel > 0) {
             throw new FilePathLogicException('File path "' . $this->__toString() . '" can not be made absolute: Relative path is above base level.');
@@ -100,7 +101,7 @@ class FilePath implements FilePathInterface
      *
      * @return FilePathInterface The file path as a relative path.
      */
-    public function toRelative()
+    public function toRelative(): FilePathInterface
     {
         return new self(false, $this->myAboveBaseLevel, null, $this->myDirectoryParts, $this->myFilename);
     }
@@ -116,7 +117,7 @@ class FilePath implements FilePathInterface
      *
      * @return FilePathInterface The combined file path.
      */
-    public function withFilePath(FilePathInterface $filePath)
+    public function withFilePath(FilePathInterface $filePath): FilePathInterface
     {
         if (!$this->myCombine($filePath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
             throw new FilePathLogicException('File path "' . $this->__toString() . '" can not be combined with file path "' . $filePath->__toString() . '": ' . $error);
@@ -132,7 +133,7 @@ class FilePath implements FilePathInterface
      *
      * @return string The file path as a string.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return ($this->myDrive !== null ? $this->myDrive . ':' : '') . $this->myToString(DIRECTORY_SEPARATOR);
     }
@@ -144,16 +145,10 @@ class FilePath implements FilePathInterface
      *
      * @param string $filePath The file path.
      *
-     * @throws \InvalidArgumentException If the $filePath parameter is not a string.
-     *
      * @return bool True if the $filePath parameter is a valid file path, false otherwise.
      */
-    public static function isValid($filePath)
+    public static function isValid(string $filePath): bool
     {
-        if (!is_string($filePath)) {
-            throw new \InvalidArgumentException('$filePath parameter is not a string.');
-        }
-
         return self::myFilePathParse(
             DIRECTORY_SEPARATOR,
             $filePath,
@@ -170,16 +165,11 @@ class FilePath implements FilePathInterface
      * @param string $filePath The file path.
      *
      * @throws FilePathInvalidArgumentException If the $filePath parameter is not a valid file path.
-     * @throws \InvalidArgumentException        If the $filePath parameter is not a string.
      *
      * @return FilePathInterface The file path instance.
      */
-    public static function parse($filePath)
+    public static function parse(string $filePath): FilePathInterface
     {
-        if (!is_string($filePath)) {
-            throw new \InvalidArgumentException('$filePath parameter is not a string.');
-        }
-
         if (!self::myFilePathParse(
             DIRECTORY_SEPARATOR,
             $filePath,
@@ -207,16 +197,10 @@ class FilePath implements FilePathInterface
      *
      * @param string $filePath The file path.
      *
-     * @throws \InvalidArgumentException If the $filePath parameter is not a string.
-     *
      * @return FilePathInterface|null The file path instance if the $filePath parameter is a valid file path, null otherwise.
      */
-    public static function tryParse($filePath)
+    public static function tryParse(string $filePath): ?FilePathInterface
     {
-        if (!is_string($filePath)) {
-            throw new \InvalidArgumentException('$filePath parameter is not a string.');
-        }
-
         if (!self::myFilePathParse(
             DIRECTORY_SEPARATOR,
             $filePath,
@@ -247,7 +231,7 @@ class FilePath implements FilePathInterface
      * @param string[]    $directoryParts The directory parts.
      * @param string|null $filename       The filename.
      */
-    private function __construct($isAbsolute, $aboveBaseLevel, $drive = null, array $directoryParts = [], $filename = null)
+    private function __construct(bool $isAbsolute, int $aboveBaseLevel, ?string $drive = null, array $directoryParts = [], ?string $filename = null)
     {
         $this->myIsAbsolute = $isAbsolute;
         $this->myAboveBaseLevel = $aboveBaseLevel;
@@ -272,7 +256,7 @@ class FilePath implements FilePathInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myFilePathParse($directorySeparator, $path, callable $partValidator, callable $stringDecoder = null, &$isAbsolute = null, &$aboveBaseLevel = null, &$drive = null, array &$directoryParts = null, &$filename = null, &$error = null)
+    private static function myFilePathParse(string $directorySeparator, string $path, callable $partValidator, callable $stringDecoder = null, ?bool &$isAbsolute = null, ?int &$aboveBaseLevel = null, ?string &$drive = null, ?array &$directoryParts = null, ?string &$filename = null, ?string &$error = null): bool
     {
         $drive = null;
 
@@ -316,13 +300,13 @@ class FilePath implements FilePathInterface
     /**
      * Validates a directory part name or a file name.
      *
-     * @param string $part        The part to validate.
-     * @param bool   $isDirectory If true part is a directory part name, if false part is a file name.
-     * @param string $error       The error text if validation was not successful, undefined otherwise.
+     * @param string      $part        The part to validate.
+     * @param bool        $isDirectory If true part is a directory part name, if false part is a file name.
+     * @param string|null $error       The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myPartValidator($part, $isDirectory, &$error)
+    private static function myPartValidator(string $part, bool $isDirectory, ?string &$error): bool
     {
         if (preg_match(self::myIsWindows() ? '/[\0<>:*?"|]+/' : '/[\0]+/', $part, $matches)) {
             $error = ($isDirectory ? 'Part of directory' : 'Filename') . ' "' . $part . '" contains invalid character "' . $matches[0] . '".';
@@ -336,12 +320,12 @@ class FilePath implements FilePathInterface
     /**
      * Validates a drive.
      *
-     * @param string $drive The drive to validate.
-     * @param string $error The error text if validation was not successful, undefined otherwise.
+     * @param string      $drive The drive to validate.
+     * @param string|null $error The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myDriveValidator($drive, &$error)
+    private static function myDriveValidator(string $drive, ?string &$error): bool
     {
         if (!preg_match('/^[a-zA-Z]$/', $drive)) {
             $error = 'Drive "' . $drive . '" is invalid.';
@@ -357,7 +341,7 @@ class FilePath implements FilePathInterface
      *
      * @return bool True if the operating system is windows, false otherwise.
      */
-    private static function myIsWindows()
+    private static function myIsWindows(): bool
     {
         return strtolower(substr(php_uname('s'), 0, 7)) === 'windows';
     }

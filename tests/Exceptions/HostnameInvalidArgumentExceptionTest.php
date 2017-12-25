@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DataTypes\Tests\Exceptions;
 
 use DataTypes\Exceptions\HostnameInvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test HostnameInvalidArgumentException class.
  */
-class HostnameInvalidArgumentExceptionTest extends \PHPUnit_Framework_TestCase
+class HostnameInvalidArgumentExceptionTest extends TestCase
 {
     /**
      * Test that HostnameInvalidArgumentException is subclass of InvalidArgumentException.

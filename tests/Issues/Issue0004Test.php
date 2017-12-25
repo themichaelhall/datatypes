@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DataTypes\Tests\Issues;
 
 use DataTypes\Url;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests issue #4 - Url with name and/or password should not be treated as invalid.
  */
-class Issue0004Test extends \PHPUnit_Framework_TestCase
+class Issue0004Test extends TestCase
 {
     /**
      * Test isValid method in Url for url with username and password.

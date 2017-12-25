@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DataTypes\Tests\Exceptions;
 
 use DataTypes\Exceptions\SchemeInvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test SchemeInvalidArgumentException class.
  */
-class SchemeInvalidArgumentExceptionTest extends \PHPUnit_Framework_TestCase
+class SchemeInvalidArgumentExceptionTest extends TestCase
 {
     /**
      * Test that SchemeInvalidArgumentException is subclass of InvalidArgumentException.

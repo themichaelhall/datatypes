@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DataTypes\Tests\Exceptions;
 
 use DataTypes\Exceptions\FilePathLogicException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test FilePathLogicException class.
  */
-class FilePathLogicExceptionTest extends \PHPUnit_Framework_TestCase
+class FilePathLogicExceptionTest extends TestCase
 {
     /**
      * Test that FilePathLogicException is subclass of LogicException.
