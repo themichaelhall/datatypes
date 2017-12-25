@@ -31,7 +31,7 @@ class UrlPath implements UrlPathInterface
      *
      * @return bool True if the url path equals other url path, false otherwise.
      */
-    public function equals(UrlPathInterface $urlPath)
+    public function equals(UrlPathInterface $urlPath): bool
     {
         return $this->isAbsolute() === $urlPath->isAbsolute() && $this->getDirectoryParts() === $urlPath->getDirectoryParts() && $this->getFilename() === $urlPath->getFilename();
     }
@@ -43,7 +43,7 @@ class UrlPath implements UrlPathInterface
      *
      * @return UrlPathInterface The directory of the url path.
      */
-    public function getDirectory()
+    public function getDirectory(): UrlPathInterface
     {
         return new self($this->myIsAbsolute, $this->myAboveBaseLevel, $this->myDirectoryParts, null);
     }
@@ -55,7 +55,7 @@ class UrlPath implements UrlPathInterface
      *
      * @return UrlPathInterface|null The parent directory of the url path or null if url path does not have a parent directory.
      */
-    public function getParentDirectory()
+    public function getParentDirectory(): ?UrlPathInterface
     {
         if ($this->myParentDirectory($aboveBaseLevel, $directoryParts)) {
             return new self($this->myIsAbsolute, $aboveBaseLevel, $directoryParts, null);
@@ -73,7 +73,7 @@ class UrlPath implements UrlPathInterface
      *
      * @return UrlPathInterface The url path as an absolute path.
      */
-    public function toAbsolute()
+    public function toAbsolute(): UrlPathInterface
     {
         if ($this->myAboveBaseLevel > 0) {
             throw new UrlPathLogicException('Url path "' . $this->__toString() . '" can not be made absolute: Relative path is above base level.');
@@ -89,7 +89,7 @@ class UrlPath implements UrlPathInterface
      *
      * @return UrlPathInterface The url path as a relative path.
      */
-    public function toRelative()
+    public function toRelative(): UrlPathInterface
     {
         return new self(false, $this->myAboveBaseLevel, $this->myDirectoryParts, $this->myFilename);
     }
@@ -105,7 +105,7 @@ class UrlPath implements UrlPathInterface
      *
      * @return UrlPathInterface The combined url path.
      */
-    public function withUrlPath(UrlPathInterface $urlPath)
+    public function withUrlPath(UrlPathInterface $urlPath): UrlPathInterface
     {
         if (!$this->myCombine($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
             throw new UrlPathLogicException('Url path "' . $this->__toString() . '" can not be combined with url path "' . $urlPath->__toString() . '": ' . $error);
@@ -121,7 +121,7 @@ class UrlPath implements UrlPathInterface
      *
      * @return string The url path as a string.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->myToString('/', function ($s) {
             return rawurlencode($s);
@@ -135,16 +135,10 @@ class UrlPath implements UrlPathInterface
      *
      * @param string $urlPath The url path.
      *
-     * @throws \InvalidArgumentException If the $urlPath parameter is not a string.
-     *
      * @return bool True if the $urlPath parameter is a valid url path, false otherwise.
      */
-    public static function isValid($urlPath)
+    public static function isValid(string $urlPath): bool
     {
-        if (!is_string($urlPath)) {
-            throw new \InvalidArgumentException('$urlPath parameter is not a string.');
-        }
-
         return self::myParse(
             '/',
             $urlPath,
@@ -161,16 +155,11 @@ class UrlPath implements UrlPathInterface
      * @param string $urlPath The url path.
      *
      * @throws UrlPathInvalidArgumentException If the $urlPath parameter is not a valid url path.
-     * @throws \InvalidArgumentException       If the $urlPath parameter is not a string.
      *
      * @return UrlPathInterface The url path instance.
      */
-    public static function parse($urlPath)
+    public static function parse(string $urlPath): UrlPathInterface
     {
-        if (!is_string($urlPath)) {
-            throw new \InvalidArgumentException('$urlPath parameter is not a string.');
-        }
-
         if (!self::myParse(
             '/',
             $urlPath,
@@ -199,16 +188,10 @@ class UrlPath implements UrlPathInterface
      *
      * @param string $urlPath The url path.
      *
-     * @throws \InvalidArgumentException If the $urlPath parameter is not a string.
-     *
      * @return UrlPathInterface|null The url path instance if the $urlPath parameter is a valid url path, null otherwise.
      */
-    public static function tryParse($urlPath)
+    public static function tryParse(string $urlPath): ?UrlPathInterface
     {
-        if (!is_string($urlPath)) {
-            throw new \InvalidArgumentException('$urlPath parameter is not a string.');
-        }
-
         if (!self::myParse(
             '/',
             $urlPath,
@@ -237,7 +220,7 @@ class UrlPath implements UrlPathInterface
      * @param string[]    $directoryParts The directory parts.
      * @param string|null $filename       The filename.
      */
-    private function __construct($isAbsolute, $aboveBaseLevel, array $directoryParts, $filename = null)
+    private function __construct(bool $isAbsolute, int $aboveBaseLevel, array $directoryParts, string $filename = null)
     {
         $this->myIsAbsolute = $isAbsolute;
         $this->myAboveBaseLevel = $aboveBaseLevel;
@@ -248,13 +231,13 @@ class UrlPath implements UrlPathInterface
     /**
      * Validates a directory part name or a file name.
      *
-     * @param string $part        The part to validate.
-     * @param bool   $isDirectory If true part is a directory part name, if false part is a file name.
-     * @param string $error       The error text if validation was not successful, undefined otherwise.
+     * @param string      $part        The part to validate.
+     * @param bool        $isDirectory If true part is a directory part name, if false part is a file name.
+     * @param string|null $error       The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myPartValidator($part, $isDirectory, &$error)
+    private static function myPartValidator(string $part, bool $isDirectory, ?string &$error): bool
     {
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]%-]/', $part, $matches)) {
             $error = ($isDirectory ? 'Part of directory' : 'Filename') . ' "' . $part . '" contains invalid character "' . $matches[0] . '".';
