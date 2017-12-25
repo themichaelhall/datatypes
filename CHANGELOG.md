@@ -1,5 +1,6 @@
 ## Unreleased
-- Changed required PHP version to >= 7.1. 
+- Added type hints to all data type classes.
+- Changed required PHP version to >= 7.1.
 
 ## [1.2.0] - 2017-12-22
 - Added equals method to all data type classes.
