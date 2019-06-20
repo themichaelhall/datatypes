@@ -2,6 +2,7 @@
   "name": "datatypes/datatypes",
   "description": "Data type classes for PHP",
   "license": "MIT",
+  "type": "library",
   "keywords": [
     "data",
     "types"
