@@ -743,8 +743,10 @@ class FilePathTest extends TestCase
     /**
      * Tear down.
      */
-    public function tearDown()
+    public function tearDown(): void
     {
+        parent::tearDown();
+
         \FakePhpUname::disable();
     }
 }

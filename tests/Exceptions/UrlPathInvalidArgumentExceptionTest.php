@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DataTypes\Tests\Exceptions;
 
 use DataTypes\Exceptions\UrlPathInvalidArgumentException;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,12 +15,12 @@ class UrlPathInvalidArgumentExceptionTest extends TestCase
 {
     /**
      * Test that UrlPathInvalidArgumentException is subclass of InvalidArgumentException.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage This is a UrlPathInvalidArgumentException.
      */
     public function testUrlPathInvalidArgumentExceptionIsInvalidArgumentException()
     {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('This is a UrlPathInvalidArgumentException.');
+
         throw new UrlPathInvalidArgumentException('This is a UrlPathInvalidArgumentException.');
     }
 }

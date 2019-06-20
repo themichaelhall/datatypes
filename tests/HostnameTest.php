@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests;
 
+use DataTypes\Exceptions\HostnameInvalidArgumentException;
 use DataTypes\Hostname;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -42,34 +44,34 @@ class HostnameTest extends TestCase
 
     /**
      * Test that empty hostname is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "" is empty.
      */
     public function testEmptyHostnameIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Hostname "" is empty.');
+
         Hostname::parse('');
     }
 
     /**
      * Test that hostname with only a dot is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "." is invalid: Part of domain "" is empty.
      */
     public function testHostnameWithOnlyADotIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Hostname "." is invalid: Part of domain "" is empty.');
+
         Hostname::parse('.');
     }
 
     /**
      * Test that too long hostname is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxx" is too long: Maximum allowed length is 255 characters.
      */
     public function testTooLongHostnameIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Hostname "xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxx" is too long: Maximum allowed length is 255 characters.');
+
         Hostname::parse(
             'xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.' .
             'xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.' .
@@ -81,89 +83,89 @@ class HostnameTest extends TestCase
 
     /**
      * Test that hostname with invalid character is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "foo.ba+r.com" is invalid: Part of domain "ba+r" contains invalid character "+".
      */
     public function testHostnameWithInvalidCharacterIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Hostname "foo.ba+r.com" is invalid: Part of domain "ba+r" contains invalid character "+".');
+
         Hostname::parse('foo.ba+r.com');
     }
 
     /**
      * Test that hostname with empty part is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "foo..com" is invalid: Part of domain "" is empty.
      */
     public function testHostnameWithEmptyPartIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Hostname "foo..com" is invalid: Part of domain "" is empty.');
+
         Hostname::parse('foo..com');
     }
 
     /**
      * Test that hostname with too long part is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.com" is invalid: Part of domain "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is too long: Maximum allowed length is 63 characters.
      */
     public function testHostNameWithTooLongPartIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Hostname "foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.com" is invalid: Part of domain "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is too long: Maximum allowed length is 63 characters.');
+
         Hostname::parse('foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.com');
     }
 
     /**
      * Test that hostname with part beginning with dash is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "-foo.bar.com" is invalid: Part of domain "-foo" begins with "-".
      */
     public function testHostnameWithPartBeginningWithDashIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Hostname "-foo.bar.com" is invalid: Part of domain "-foo" begins with "-".');
+
         Hostname::parse('-foo.bar.com');
     }
 
     /**
      * Test that hostname with part ending with dash is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "foo.bar-.com" is invalid: Part of domain "bar-" ends with "-".
      */
     public function testHostnameWithPartEndingWithDashIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Hostname "foo.bar-.com" is invalid: Part of domain "bar-" ends with "-".');
+
         Hostname::parse('foo.bar-.com');
     }
 
     /**
      * Test that hostname with empty top-level domain is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "bar.." is invalid: Top-level domain "" is empty.
      */
     public function testHostnameWithEmptyTopLevelDomainIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Hostname "bar.." is invalid: Top-level domain "" is empty.');
+
         Hostname::parse('bar..');
     }
 
     /**
      * Test that hostname with too long top-level domain is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is invalid: Top-level domain "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is too long: Maximum allowed length is 63 characters.
      */
     public function testHostNameWithTooLongTopLevelDomainIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Hostname "foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is invalid: Top-level domain "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is too long: Maximum allowed length is 63 characters.');
+
         Hostname::parse('foo.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
     }
 
     /**
      * Test that hostname with invalid character in top level domain is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Hostname "foo.bar.co2" is invalid: Top-level domain "co2" contains invalid character "2".
      */
     public function testHostnameWithInvalidCharacterInTopLevelDomainIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Hostname "foo.bar.co2" is invalid: Top-level domain "co2" contains invalid character "2".');
+
         Hostname::parse('foo.bar.co2');
     }
 
@@ -234,12 +236,12 @@ class HostnameTest extends TestCase
 
     /**
      * Test that a call to withTld method with an invalid top-level domain is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Top-level domain "123" contains invalid character "1".
      */
     public function testWithTldWithInvalidTopDomainLevelIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Top-level domain "123" contains invalid character "1".');
+
         Hostname::parse('domain.com')->withTld('123');
     }
 
@@ -266,45 +268,45 @@ class HostnameTest extends TestCase
 
     /**
      * Test that a call to fromParts with empty domain parts is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Domain parts [] is empty.
      */
     public function testFromPartsWithEmptyDomainPartsIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Domain parts [] is empty.');
+
         Hostname::fromParts([]);
     }
 
     /**
      * Test that a call to fromParts with invalid domain part is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Domain parts ["foo", "b*r"] is invalid: Part of domain "b*r" contains invalid character "*".
      */
     public function testFromPartsWithInvalidDomainPartsIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Domain parts ["foo", "b*r"] is invalid: Part of domain "b*r" contains invalid character "*".');
+
         Hostname::fromParts(['foo', 'b*r']);
     }
 
     /**
      * Test that a call to fromParts with invalid top-level domain is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostnameInvalidArgumentException
-     * @expectedExceptionMessage Top-level domain "c*m" contains invalid character "*".
      */
     public function testFromPartsWithInvalidTopLevelDomainIsInvalid()
     {
+        self::expectException(HostnameInvalidArgumentException::class);
+        self::expectExceptionMessage('Top-level domain "c*m" contains invalid character "*".');
+
         Hostname::fromParts(['foo'], 'c*m');
     }
 
     /**
      * Test fromParts method with invalid argument type for domain part.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $domainParts parameter is not an array of strings.
      */
     public function testFromPartsWithInvalidDomainPartArgumentType()
     {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('$domainParts parameter is not an array of strings.');
+
         Hostname::fromParts(['foo', 98765], 'bar');
     }
 

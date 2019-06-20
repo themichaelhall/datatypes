@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests;
 
+use DataTypes\Exceptions\IPAddressInvalidArgumentException;
 use DataTypes\IPAddress;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,56 +25,56 @@ class IPAddressTest extends TestCase
 
     /**
      * Test that empty IP address is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
-     * @expectedExceptionMessage IP address "" is empty.
      */
     public function testEmptyIPAddressIsInvalid()
     {
+        self::expectException(IPAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('IP address "" is empty.');
+
         IPAddress::parse('');
     }
 
     /**
      * Test that empty IP address with not four octets is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
-     * @expectedExceptionMessage IP address "1.2.3" is invalid: IP address must consist of four octets.
      */
     public function testIPAddressWithNotFourOctetsIsInvalid()
     {
+        self::expectException(IPAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('IP address "1.2.3" is invalid: IP address must consist of four octets.');
+
         IPAddress::parse('1.2.3');
     }
 
     /**
      * Test that IP address with empty octet is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
-     * @expectedExceptionMessage IP address "192.168..1" is invalid: Octet "" is empty.
      */
     public function testIPAddressWithEmptyOctetIsInvalid()
     {
+        self::expectException(IPAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('IP address "192.168..1" is invalid: Octet "" is empty.');
+
         IPAddress::parse('192.168..1');
     }
 
     /**
      * Test that IP address with invalid character in octet is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
-     * @expectedExceptionMessage IP address "127.0.0X.1" is invalid: Octet "0X" contains invalid character "X".
      */
     public function testIPAddressWithInvalidCharacterInOctetIsInvalid()
     {
+        self::expectException(IPAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('IP address "127.0.0X.1" is invalid: Octet "0X" contains invalid character "X".');
+
         IPAddress::parse('127.0.0X.1');
     }
 
     /**
      * Test that IP address with octet out of range is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
-     * @expectedExceptionMessage IP address "255.255.256.255" is invalid: Octet 256 is out of range: Maximum value for an octet is 255.
      */
     public function testIPAddressWithOctetOutOfRangeIsInvalid()
     {
+        self::expectException(IPAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('IP address "255.255.256.255" is invalid: Octet 256 is out of range: Maximum value for an octet is 255.');
+
         IPAddress::parse('255.255.256.255');
     }
 
@@ -122,45 +124,45 @@ class IPAddressTest extends TestCase
 
     /**
      * Test fromParts method with invalid number of octets.
-     *
-     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
-     * @expectedExceptionMessage Octets are invalid: IP address must consist of four octets.
      */
     public function testFromPartsWithInvalidNumberOfOctets()
     {
+        self::expectException(IPAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Octets are invalid: IP address must consist of four octets.');
+
         IPAddress::fromParts([1, 2, 3]);
     }
 
     /**
      * Test fromParts method with invalid octet type.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $octets is not an array of integers.
      */
     public function testFromPartsWithInvalidOctetType()
     {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('$octets is not an array of integers.');
+
         IPAddress::fromParts([1, 'Foo', 3, 4]);
     }
 
     /**
      * Test fromParts method with octet value too low.
-     *
-     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
-     * @expectedExceptionMessage Octets are invalid: Octet -1 is out of range: Minimum value for an octet is 0.
      */
     public function testFromPartsWithOctetValueTooLow()
     {
+        self::expectException(IPAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Octets are invalid: Octet -1 is out of range: Minimum value for an octet is 0.');
+
         IPAddress::fromParts([1, 2, -1, 4]);
     }
 
     /**
      * Test fromParts method with octet value too high.
-     *
-     * @expectedException \DataTypes\Exceptions\IPAddressInvalidArgumentException
-     * @expectedExceptionMessage Octets are invalid: Octet 256 is out of range: Maximum value for an octet is 255.
      */
     public function testFromPartsWithOctetValueTooHigh()
     {
+        self::expectException(IPAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Octets are invalid: Octet 256 is out of range: Maximum value for an octet is 255.');
+
         IPAddress::fromParts([1, 2, 256, 4]);
     }
 

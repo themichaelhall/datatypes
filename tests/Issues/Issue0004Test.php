@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests\Issues;
 
+use DataTypes\Exceptions\UrlInvalidArgumentException;
 use DataTypes\Url;
 use PHPUnit\Framework\TestCase;
 
@@ -67,12 +68,12 @@ class Issue0004Test extends TestCase
 
     /**
      * Test parse method in Url for url with invalid username and password.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "https://username:password@foo@domain.com/path/file" is invalid: Host "foo@domain.com" is invalid: Hostname "foo@domain.com" is invalid: Part of domain "foo@domain" contains invalid character "@".
      */
     public function testUrlParseForUrlWithInvalidUsernameAndPassword()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "https://username:password@foo@domain.com/path/file" is invalid: Host "foo@domain.com" is invalid: Hostname "foo@domain.com" is invalid: Part of domain "foo@domain" contains invalid character "@".');
+
         Url::parse('https://username:password@foo@domain.com/path/file');
     }
 
@@ -89,12 +90,12 @@ class Issue0004Test extends TestCase
 
     /**
      * Test parseRelative method in Url for url with invalid username and password.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "https://username:password@foo@domain.com/path/file" is invalid: Host "foo@domain.com" is invalid: Hostname "foo@domain.com" is invalid: Part of domain "foo@domain" contains invalid character "@".
      */
     public function testUrlParseRelativeForUrlWithInvalidUsernameAndPassword()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "https://username:password@foo@domain.com/path/file" is invalid: Host "foo@domain.com" is invalid: Hostname "foo@domain.com" is invalid: Part of domain "foo@domain" contains invalid character "@".');
+
         $url = Url::parse('http://localhost/');
 
         Url::parseRelative('https://username:password@foo@domain.com/path/file', $url);

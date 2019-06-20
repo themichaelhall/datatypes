@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests;
 
+use DataTypes\Exceptions\UrlInvalidArgumentException;
+use DataTypes\Exceptions\UrlPathLogicException;
 use DataTypes\Host;
 use DataTypes\Scheme;
 use DataTypes\Url;
@@ -36,12 +38,12 @@ class UrlTest extends TestCase
 
     /**
      * Test that empty Url is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "" is empty.
      */
     public function testEmptyUrlIsInvalid()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "" is empty.');
+
         Url::parse('');
     }
 
@@ -56,45 +58,45 @@ class UrlTest extends TestCase
 
     /**
      * Test that missing scheme is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "foo.bar.com" is invalid: Scheme is missing.
      */
     public function testMissingSchemeIsInvalid()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "foo.bar.com" is invalid: Scheme is missing.');
+
         Url::parse('foo.bar.com');
     }
 
     /**
      * Test that empty scheme is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "://foo.bar.com/" is invalid: Scheme "" is empty.
      */
     public function testEmptySchemeIsInvalid()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "://foo.bar.com/" is invalid: Scheme "" is empty.');
+
         Url::parse('://foo.bar.com/');
     }
 
     /**
      * Test that no scheme is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "//foo.bar.com/" is invalid: Scheme is missing.
      */
     public function testNoSchemeIsInvalid()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "//foo.bar.com/" is invalid: Scheme is missing.');
+
         Url::parse('//foo.bar.com/');
     }
 
     /**
      * Test that invalid scheme is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "baz://foo.bar.com/" is invalid: Scheme "baz" is invalid: Scheme must be "http" or "https"
      */
     public function testInvalidSchemeIsInvalid()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "baz://foo.bar.com/" is invalid: Scheme "baz" is invalid: Scheme must be "http" or "https".');
+
         Url::parse('baz://foo.bar.com/');
     }
 
@@ -128,23 +130,23 @@ class UrlTest extends TestCase
 
     /**
      * Test that empty host is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "https://" is invalid: Host "" is empty.
      */
     public function testEmptyHostIsInvalid()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "https://" is invalid: Host "" is empty.');
+
         Url::parse('https://');
     }
 
     /**
      * Test that invalid host is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "https://foo[bar" is invalid: Host "foo[bar" is invalid: Hostname "foo[bar" is invalid: Part of domain "foo[bar" contains invalid character "[".
      */
     public function testInvalidHostIsInvalid()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "https://foo[bar" is invalid: Host "foo[bar" is invalid: Hostname "foo[bar" is invalid: Part of domain "foo[bar" contains invalid character "[".');
+
         Url::parse('https://foo[bar');
     }
 
@@ -180,23 +182,23 @@ class UrlTest extends TestCase
 
     /**
      * Test that url with invalid character in port is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "http://domain.com:12X45" is invalid: Port "12X45" contains invalid character "X".
      */
     public function testUrlWithInvalidCharacterInPortIsInvalid()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "http://domain.com:12X45" is invalid: Port "12X45" contains invalid character "X".');
+
         Url::parse('http://domain.com:12X45');
     }
 
     /**
      * Test that url with port out of range is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "http://domain.com:65536" is invalid: Port 65536 is out of range: Maximum port number is 65535.
      */
     public function testUrlWithPortOutOfRangeIsInvalid()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "http://domain.com:65536" is invalid: Port 65536 is out of range: Maximum port number is 65535.');
+
         Url::parse('http://domain.com:65536');
     }
 
@@ -211,34 +213,34 @@ class UrlTest extends TestCase
 
     /**
      * Test that url with invalid path is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "https://domain.com:1000/foo/{bar}" is invalid: Url path "/foo/{bar}" is invalid: Filename "{bar}" contains invalid character "{".
      */
     public function testUrlWithInvalidPathIsInvalid()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "https://domain.com:1000/foo/{bar}" is invalid: Url path "/foo/{bar}" is invalid: Filename "{bar}" contains invalid character "{".');
+
         Url::parse('https://domain.com:1000/foo/{bar}');
     }
 
     /**
      * Test parse url with invalid query string.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "https://domain.com:1000/foo?{bar}" is invalid: Query string "{bar}" contains invalid character "{".
      */
     public function testParseWithInvalidQueryString()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "https://domain.com:1000/foo?{bar}" is invalid: Query string "{bar}" contains invalid character "{".');
+
         Url::parse('https://domain.com:1000/foo?{bar}');
     }
 
     /**
      * Test parse url with invalid query fragment.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "https://domain.com:1000/foo#{bar}" is invalid: Fragment "{bar}" contains invalid character "{".
      */
     public function testParseWithInvalidFragment()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "https://domain.com:1000/foo#{bar}" is invalid: Fragment "{bar}" contains invalid character "{".');
+
         Url::parse('https://domain.com:1000/foo#{bar}');
     }
 
@@ -281,56 +283,56 @@ class UrlTest extends TestCase
 
     /**
      * Test that using fromParts method with port number below 0 is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Port -1 is out of range: Minimum port number is 0.
      */
     public function testFromPartsWithPortNumberBelow0IsInvalid()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Port -1 is out of range: Minimum port number is 0.');
+
         Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), -1, UrlPath::parse('/'));
     }
 
     /**
      * Test that using fromParts method with port number above 65535 is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Port 65536 is out of range: Maximum port number is 65535.
      */
     public function testFromPartsWithPortNumberAbove65535IsInvalid()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Port 65536 is out of range: Maximum port number is 65535.');
+
         Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), 65536, UrlPath::parse('/'));
     }
 
     /**
      * Test that using fromParts method with relative url path is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url path "foo/" is relative.
      */
     public function testFromPartsWithRelativeUrlPathIsInvalid()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url path "foo/" is relative.');
+
         Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), null, UrlPath::parse('foo/'));
     }
 
     /**
      * Test fromParts method with invalid query string.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Query string "foo#bar" contains invalid character "#".
      */
     public function testFromPartsWithInvalidQueryString()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Query string "foo#bar" contains invalid character "#".');
+
         Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), null, UrlPath::parse('/'), 'foo#bar');
     }
 
     /**
      * Test fromParts method with invalid fragment.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Fragment ">bar" contains invalid character ">".
      */
     public function testFromPartsWithInvalidFragment()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Fragment ">bar" contains invalid character ">".');
+
         Url::fromParts(Scheme::parse('http'), Host::parse('www.domain.com'), null, UrlPath::parse('/'), 'foo', '>bar');
     }
 
@@ -401,89 +403,89 @@ class UrlTest extends TestCase
 
     /**
      * Test parseRelative method with empty scheme.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "://domain.com/" is invalid: Scheme "" is empty.
      */
     public function testParseRelativeWithEmptyScheme()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "://domain.com/" is invalid: Scheme "" is empty.');
+
         Url::parseRelative('://domain.com/', Url::parse('http://foo.com:8080/path/file?query'));
     }
 
     /**
      * Test parseRelative method with invalid scheme.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "baz://domain.com/" is invalid: Scheme "baz" is invalid: Scheme must be "http" or "https".
      */
     public function testParseRelativeWithInvalidScheme()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "baz://domain.com/" is invalid: Scheme "baz" is invalid: Scheme must be "http" or "https".');
+
         Url::parseRelative('baz://domain.com/', Url::parse('http://foo.com:8080/path/file?query'));
     }
 
     /**
      * Test parseRelative method with invalid host.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "http://[domain].com/" is invalid: Host "[domain].com" is invalid: Hostname "[domain].com" is invalid: Part of domain "[domain]" contains invalid character "[".
      */
     public function testParseRelativeWithInvalidHost()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "http://[domain].com/" is invalid: Host "[domain].com" is invalid: Hostname "[domain].com" is invalid: Part of domain "[domain]" contains invalid character "[".');
+
         Url::parseRelative('http://[domain].com/', Url::parse('http://foo.com:8080/path/file?query'));
     }
 
     /**
      * Test parseRelative method with invalid port.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "http://domain.com:foo/" is invalid: Port "foo" contains invalid character "f".
      */
     public function testParseRelativeWithInvalidPort()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "http://domain.com:foo/" is invalid: Port "foo" contains invalid character "f".');
+
         Url::parseRelative('http://domain.com:foo/', Url::parse('http://foo.com:8080/path/file?query'));
     }
 
     /**
      * Test parseRelative method with invalid path.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "http://domain.com/{path}" is invalid: Url path "/{path}" is invalid: Filename "{path}" contains invalid character "{".
      */
     public function testParseRelativeWithInvalidPath()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "http://domain.com/{path}" is invalid: Url path "/{path}" is invalid: Filename "{path}" contains invalid character "{".');
+
         Url::parseRelative('http://domain.com/{path}', Url::parse('http://foo.com:8080/path/file?query'));
     }
 
     /**
      * Test parseRelative method with invalid query string.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "http://domain.com/path?{query}" is invalid: Query string "{query}" contains invalid character "{".
      */
     public function testParseRelativeWithInvalidQueryString()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "http://domain.com/path?{query}" is invalid: Query string "{query}" contains invalid character "{".');
+
         Url::parseRelative('http://domain.com/path?{query}', Url::parse('http://foo.com:8080/path/file?query'));
     }
 
     /**
      * Test parseRelative method with invalid fragment.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Url "http://domain.com/path#{fragment}" is invalid: Fragment "{fragment}" contains invalid character "{".
      */
     public function testParseRelativeWithInvalidFragment()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Url "http://domain.com/path#{fragment}" is invalid: Fragment "{fragment}" contains invalid character "{".');
+
         Url::parseRelative('http://domain.com/path#{fragment}', Url::parse('http://foo.com:8080/path/file?query'));
     }
 
     /**
      * Test parse relative path with path that resolves above root level.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlPathLogicException
-     * @expectedExceptionMessage Url path "/foo/" can not be combined with url path "../../bar": Absolute path is above root level.
      */
     public function testParseRelativePathWithPathAboveRootLevel()
     {
+        self::expectException(UrlPathLogicException::class);
+        self::expectExceptionMessage('Url path "/foo/" can not be combined with url path "../../bar": Absolute path is above root level.');
+
         echo Url::parseRelative('../../bar', Url::parse('http://localhost/foo/'));
     }
 
@@ -513,12 +515,12 @@ class UrlTest extends TestCase
 
     /**
      * Test withPath method with path that resolves above root level.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlPathLogicException
-     * @expectedExceptionMessage Url path "/foo/bar" can not be combined with url path "../../": Absolute path is above root level.
      */
     public function testWithUrlPathWithPathAboveRootLevel()
     {
+        self::expectException(UrlPathLogicException::class);
+        self::expectExceptionMessage('Url path "/foo/bar" can not be combined with url path "../../": Absolute path is above root level.');
+
         Url::parse('https://localhost.com/foo/bar')->withPath(UrlPath::parse('../../'));
     }
 
@@ -537,23 +539,23 @@ class UrlTest extends TestCase
 
     /**
      * Test withPort method with port below 0.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Port -1 is out of range: Minimum port number is 0.
      */
     public function testWithPortWithPortBelow0()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Port -1 is out of range: Minimum port number is 0.');
+
         Url::parse('http://localhost/')->withPort(-1);
     }
 
     /**
      * Test withPort method with port above 65535.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Port 65536 is out of range: Maximum port number is 65535.
      */
     public function testWithPortWithPortAbove65535()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Port 65536 is out of range: Maximum port number is 65535.');
+
         Url::parse('http://localhost/')->withPort(65536);
     }
 
@@ -572,12 +574,12 @@ class UrlTest extends TestCase
 
     /**
      * Test withQueryString method with invalid query string.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Query string "{foo}" contains invalid character "{".
      */
     public function testWithQueryStringWithInvalidQueryString()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Query string "{foo}" contains invalid character "{".');
+
         Url::parse('https://domain.com/')->withQueryString('{foo}');
     }
 
@@ -596,12 +598,12 @@ class UrlTest extends TestCase
 
     /**
      * Test withFragment method with invalid fragment.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlInvalidArgumentException
-     * @expectedExceptionMessage Fragment "{foo}" contains invalid character "{".
      */
     public function testWithFragmentWithInvalidFragment()
     {
+        self::expectException(UrlInvalidArgumentException::class);
+        self::expectExceptionMessage('Fragment "{foo}" contains invalid character "{".');
+
         Url::parse('https://domain.com/')->withFragment('{foo}');
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DataTypes\Tests\Exceptions;
 
 use DataTypes\Exceptions\HostInvalidArgumentException;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,12 +15,12 @@ class HostInvalidArgumentExceptionTest extends TestCase
 {
     /**
      * Test that HostInvalidArgumentException is subclass of InvalidArgumentException.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage This is a HostInvalidArgumentException.
      */
     public function testHostnameInvalidArgumentExceptionIsInvalidArgumentException()
     {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('This is a HostInvalidArgumentException.');
+
         throw new HostInvalidArgumentException('This is a HostInvalidArgumentException.');
     }
 }

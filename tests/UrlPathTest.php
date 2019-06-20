@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests;
 
+use DataTypes\Exceptions\UrlPathInvalidArgumentException;
+use DataTypes\Exceptions\UrlPathLogicException;
 use DataTypes\UrlPath;
 use PHPUnit\Framework\TestCase;
 
@@ -108,23 +110,23 @@ class UrlPathTest extends TestCase
 
     /**
      * Test that url path with invalid character in directory is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlPathInvalidArgumentException
-     * @expectedExceptionMessage Url path "/foo/{bar}/" is invalid: Part of directory "{bar}" contains invalid character "{".
      */
     public function testPathWithInvalidCharacterInDirectoryIsInvalid()
     {
+        self::expectException(UrlPathInvalidArgumentException::class);
+        self::expectExceptionMessage('Url path "/foo/{bar}/" is invalid: Part of directory "{bar}" contains invalid character "{".');
+
         UrlPath::parse('/foo/{bar}/');
     }
 
     /**
      * Test that url path with invalid character in filename is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlPathInvalidArgumentException
-     * @expectedExceptionMessage Url path "/foo/bar?html" is invalid: Filename "bar?html" contains invalid character "?".
      */
     public function testPathWithInvalidCharacterInFilenameIsInvalid()
     {
+        self::expectException(UrlPathInvalidArgumentException::class);
+        self::expectExceptionMessage('Url path "/foo/bar?html" is invalid: Filename "bar?html" contains invalid character "?".');
+
         UrlPath::parse('/foo/bar?html');
     }
 
@@ -142,12 +144,12 @@ class UrlPathTest extends TestCase
 
     /**
      * Test that absolute url path above root level is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlPathInvalidArgumentException
-     * @expectedExceptionMessage Url path "/foo/../../" is invalid: Absolute path is above root level.
      */
     public function testAbsoluteUrlPathAboveRootLevelIsInvalid()
     {
+        self::expectException(UrlPathInvalidArgumentException::class);
+        self::expectExceptionMessage('Url path "/foo/../../" is invalid: Absolute path is above root level.');
+
         UrlPath::parse('/foo/../../');
     }
 
@@ -271,12 +273,12 @@ class UrlPathTest extends TestCase
 
     /**
      * Test that attempting to make an absolute path for a url path above root is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlPathLogicException
-     * @expectedExceptionMessage Url path "../" can not be made absolute: Relative path is above base level.
      */
     public function testToAbsoluteForUrlPathAboveRootIsInvalid()
     {
+        self::expectException(UrlPathLogicException::class);
+        self::expectExceptionMessage('Url path "../" can not be made absolute: Relative path is above base level.');
+
         UrlPath::parse('../')->toAbsolute();
     }
 
@@ -315,12 +317,12 @@ class UrlPathTest extends TestCase
 
     /**
      * Test that combining an absolute url path with an url path that results in a path above root level is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\UrlPathLogicException
-     * @expectedExceptionMessage Url path "/foo/bar/" can not be combined with url path "../../../baz/file": Absolute path is above root level.
      */
     public function testAbsoluteUrlPathWithUrlPathAboveRootLevelIsInvalid()
     {
+        self::expectException(UrlPathLogicException::class);
+        self::expectExceptionMessage('Url path "/foo/bar/" can not be combined with url path "../../../baz/file": Absolute path is above root level.');
+
         UrlPath::parse('/foo/bar/')->withUrlPath(UrlPath::parse('../../../baz/file'));
     }
 

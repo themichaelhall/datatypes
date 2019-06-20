@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace DataTypes\Tests;
 
 use DataTypes\EmailAddress;
+use DataTypes\Exceptions\EmailAddressInvalidArgumentException;
 use DataTypes\Host;
 use DataTypes\Hostname;
 use DataTypes\IPAddress;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,89 +29,89 @@ class EmailAddressTest extends TestCase
 
     /**
      * Test that empty EmailAddress is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
-     * @expectedExceptionMessage Email address "" is empty.
      */
     public function testEmptyEmailAddressIsInvalid()
     {
+        self::expectException(EmailAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Email address "" is empty.');
+
         EmailAddress::parse('');
     }
 
     /**
      * Test that empty EmailAddress with missing @ is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
-     * @expectedExceptionMessage Email address "foo" is invalid: Character "@" is missing.
      */
     public function testEmailAddressWithMissingAtIsInvalid()
     {
+        self::expectException(EmailAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Email address "foo" is invalid: Character "@" is missing.');
+
         EmailAddress::parse('foo');
     }
 
     /**
      * Test that empty EmailAddress with empty host is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
-     * @expectedExceptionMessage Email address "foo@" is invalid: Hostname "" is empty.
      */
     public function testEmailAddressWithEmptyHostIsInvalid()
     {
+        self::expectException(EmailAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Email address "foo@" is invalid: Hostname "" is empty.');
+
         EmailAddress::parse('foo@');
     }
 
     /**
      * Test that empty EmailAddress with invalid host is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
-     * @expectedExceptionMessage Email address "foo@bar@baz" is invalid: Hostname "bar@baz" is invalid: Part of domain "bar@baz" contains invalid character "@".
      */
     public function testEmailAddressWithInvalidHostIsInvalid()
     {
+        self::expectException(EmailAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Email address "foo@bar@baz" is invalid: Hostname "bar@baz" is invalid: Part of domain "bar@baz" contains invalid character "@".');
+
         EmailAddress::parse('foo@bar@baz');
     }
 
     /**
      * Test that empty EmailAddress with empty username is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
-     * @expectedExceptionMessage Email address "@bar.com" is invalid: Username "" is empty.
      */
     public function testEmailAddressWithEmptyUsernameIsInvalid()
     {
+        self::expectException(EmailAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Email address "@bar.com" is invalid: Username "" is empty.');
+
         EmailAddress::parse('@bar.com');
     }
 
     /**
      * Test that empty EmailAddress with empty username is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
-     * @expectedExceptionMessage Email address "a"b(c)d,e:f;g>h<i[j\k]l@example.com" is invalid: Username "a"b(c)d,e:f;g>h<i[j\k]l" contains invalid character """.
      */
     public function testEmailAddressWithInvalidUsernameIsInvalid()
     {
+        self::expectException(EmailAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Email address "a"b(c)d,e:f;g>h<i[j\k]l@example.com" is invalid: Username "a"b(c)d,e:f;g>h<i[j\k]l" contains invalid character """.');
+
         EmailAddress::parse('a"b(c)d,e:f;g>h<i[j\\k]l@example.com');
     }
 
     /**
      * Test that empty EmailAddress with empty username is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
-     * @expectedExceptionMessage Email address "12345678901234567890123456789012345678901234567890123456789012345@example.com" is invalid: Username "12345678901234567890123456789012345678901234567890123456789012345" is too long: Maximum length is 64.
      */
     public function testEmailAddressWithTooLongUsernameIsInvalid()
     {
+        self::expectException(EmailAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Email address "12345678901234567890123456789012345678901234567890123456789012345@example.com" is invalid: Username "12345678901234567890123456789012345678901234567890123456789012345" is too long: Maximum length is 64.');
+
         EmailAddress::parse('12345678901234567890123456789012345678901234567890123456789012345@example.com');
     }
 
     /**
      * Test that EmailAddress with username containing two consecutively dots is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
-     * @expectedExceptionMessage Email address "foo..bar@example.com" is invalid: Username "foo..bar" contains "..".
      */
     public function testEmailAddressWithUsernameContainingTwoConsecutivelyDotsIsInvalid()
     {
+        self::expectException(EmailAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Email address "foo..bar@example.com" is invalid: Username "foo..bar" contains "..".');
+
         EmailAddress::parse('foo..bar@example.com');
     }
 
@@ -126,12 +128,12 @@ class EmailAddressTest extends TestCase
 
     /**
      * Test parse EmailAddress with invalid IP address.
-     *
-     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
-     * @expectedExceptionMessage Email address "foo.bar@[127.0.X.1]" is invalid: IP address "127.0.X.1" is invalid: Octet "X" contains invalid character "X".
      */
     public function testParseWithInvalidIpAddress()
     {
+        self::expectException(EmailAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Email address "foo.bar@[127.0.X.1]" is invalid: IP address "127.0.X.1" is invalid: Octet "X" contains invalid character "X".');
+
         EmailAddress::parse('foo.bar@[127.0.X.1]');
     }
 
@@ -210,12 +212,12 @@ class EmailAddressTest extends TestCase
 
     /**
      * Test withUsername method with invalid username.
-     *
-     * @expectedException \DataTypes\Exceptions\EmailAddressInvalidArgumentException
-     * @expectedExceptionMessage Username ">FooBar" contains invalid character ">".
      */
     public function testWithUsernameWithInvalidUsername()
     {
+        self::expectException(EmailAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Username ">FooBar" contains invalid character ">".');
+
         $emailAddress = EmailAddress::parse('foo.bar@example.com');
         $emailAddress->withUsername('>FooBar');
     }
@@ -262,12 +264,12 @@ class EmailAddressTest extends TestCase
 
     /**
      * Test fromParts method with invalid username.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Username "foo;bar" contains invalid character ";".
      */
     public function testFromPartsWithInvalidUsername()
     {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('Username "foo;bar" contains invalid character ";".');
+
         EmailAddress::fromParts('foo;bar', Host::parse('foo.com'));
     }
 

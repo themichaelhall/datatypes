@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests;
 
+use DataTypes\Exceptions\SchemeInvalidArgumentException;
 use DataTypes\Scheme;
 use PHPUnit\Framework\TestCase;
 
@@ -23,23 +24,23 @@ class SchemeTest extends TestCase
 
     /**
      * Test that empty scheme is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\SchemeInvalidArgumentException
-     * @expectedExceptionMessage Scheme "" is empty.
      */
     public function testEmptySchemeIsInvalid()
     {
+        self::expectException(SchemeInvalidArgumentException::class);
+        self::expectExceptionMessage('Scheme "" is empty.');
+
         Scheme::parse('');
     }
 
     /**
      * Test that invalid scheme is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\SchemeInvalidArgumentException
-     * @expectedExceptionMessage Scheme "foobar" is invalid: Scheme must be "http" or "https".
      */
     public function testInvalidSchemeIsInvalid()
     {
+        self::expectException(SchemeInvalidArgumentException::class);
+        self::expectExceptionMessage('Scheme "foobar" is invalid: Scheme must be "http" or "https".');
+
         Scheme::parse('foobar');
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DataTypes\Tests\Exceptions;
 
 use DataTypes\Exceptions\FilePathInvalidArgumentException;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,12 +15,12 @@ class FilePathInvalidArgumentExceptionTest extends TestCase
 {
     /**
      * Test that FilePathInvalidArgumentException is subclass of InvalidArgumentException.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage This is a FilePathInvalidArgumentException.
      */
     public function testFilePathInvalidArgumentExceptionIsInvalidArgumentException()
     {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('This is a FilePathInvalidArgumentException.');
+
         throw new FilePathInvalidArgumentException('This is a FilePathInvalidArgumentException.');
     }
 }

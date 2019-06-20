@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DataTypes\Tests\Exceptions;
 
 use DataTypes\Exceptions\FilePathLogicException;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,12 +15,12 @@ class FilePathLogicExceptionTest extends TestCase
 {
     /**
      * Test that FilePathLogicException is subclass of LogicException.
-     *
-     * @expectedException \LogicException
-     * @expectedExceptionMessage This is a FilePathLogicException.
      */
     public function testFilePathLogicExceptionIsLogicException()
     {
+        self::expectException(LogicException::class);
+        self::expectExceptionMessage('This is a FilePathLogicException.');
+
         throw new FilePathLogicException('This is a FilePathLogicException.');
     }
 }

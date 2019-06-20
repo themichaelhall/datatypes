@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DataTypes\Tests\Exceptions;
 
 use DataTypes\Exceptions\SchemeInvalidArgumentException;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,12 +15,12 @@ class SchemeInvalidArgumentExceptionTest extends TestCase
 {
     /**
      * Test that SchemeInvalidArgumentException is subclass of InvalidArgumentException.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage This is a SchemeInvalidArgumentException.
      */
     public function testSchemeInvalidArgumentExceptionIsInvalidArgumentException()
     {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('This is a SchemeInvalidArgumentException.');
+
         throw new SchemeInvalidArgumentException('This is a SchemeInvalidArgumentException.');
     }
 }

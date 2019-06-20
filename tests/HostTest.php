@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests;
 
+use DataTypes\Exceptions\HostInvalidArgumentException;
 use DataTypes\Host;
 use DataTypes\Hostname;
 use DataTypes\IPAddress;
@@ -26,12 +27,12 @@ class HostTest extends TestCase
 
     /**
      * Test that empty host is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostInvalidArgumentException
-     * @expectedExceptionMessage Host "" is empty.
      */
     public function testEmptyHostIsInvalid()
     {
+        self::expectException(HostInvalidArgumentException::class);
+        self::expectExceptionMessage('Host "" is empty.');
+
         Host::parse('');
     }
 
@@ -59,12 +60,12 @@ class HostTest extends TestCase
 
     /**
      * Test that invalid hostname or invalid IP address is invalid.
-     *
-     * @expectedException \DataTypes\Exceptions\HostInvalidArgumentException
-     * @expectedExceptionMessage Host "foo@bar.com" is invalid: Hostname "foo@bar.com" is invalid: Part of domain "foo@bar" contains invalid character "@".
      */
     public function testInvalidHostnameOrInvalidIPAddressIsInvalid()
     {
+        self::expectException(HostInvalidArgumentException::class);
+        self::expectExceptionMessage('Host "foo@bar.com" is invalid: Hostname "foo@bar.com" is invalid: Part of domain "foo@bar" contains invalid character "@".');
+
         Host::parse('foo@bar.com');
     }
 
