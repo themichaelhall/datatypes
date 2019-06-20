@@ -427,7 +427,7 @@ class Url implements UrlInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function doParse(?UrlInterface $baseUrl = null, string $url, ?SchemeInterface &$scheme = null, ?HostInterface &$host = null, ?int &$port = null, ?UrlPathInterface &$path = null, ?string &$queryString = null, ?string &$fragment = null, ?string &$error = null): bool
+    private static function doParse(?UrlInterface $baseUrl, string $url, ?SchemeInterface &$scheme = null, ?HostInterface &$host = null, ?int &$port = null, ?UrlPathInterface &$path = null, ?string &$queryString = null, ?string &$fragment = null, ?string &$error = null): bool
     {
         if ($baseUrl === null && $url === '') {
             $error = 'Url "" is empty.';
@@ -516,7 +516,7 @@ class Url implements UrlInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function parseScheme(?UrlInterface $baseUrl = null, ?string $schemeString, ?SchemeInterface &$scheme = null, ?string &$error = null): bool
+    private static function parseScheme(?UrlInterface $baseUrl, ?string $schemeString, ?SchemeInterface &$scheme = null, ?string &$error = null): bool
     {
         if ($schemeString === null) {
             if ($baseUrl === null) {
@@ -552,7 +552,7 @@ class Url implements UrlInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function parseAuthority(?UrlInterface $baseUrl = null, ?string $authorityString, ?HostInterface &$host = null, ?int &$port = null, ?string &$error = null): bool
+    private static function parseAuthority(?UrlInterface $baseUrl, ?string $authorityString, ?HostInterface &$host = null, ?int &$port = null, ?string &$error = null): bool
     {
         if ($authorityString === null && $baseUrl !== null) {
             $host = $baseUrl->getHost();
@@ -610,7 +610,7 @@ class Url implements UrlInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function parsePath(?UrlInterface $baseUrl = null, string $pathString, ?UrlPathInterface &$path = null, ?string &$queryString = null, ?string &$fragment = null, ?string &$error = null): bool
+    private static function parsePath(?UrlInterface $baseUrl, string $pathString, ?UrlPathInterface &$path = null, ?string &$queryString = null, ?string &$fragment = null, ?string &$error = null): bool
     {
         // Fragment.
         $parts = explode('#', $pathString, 2);
@@ -654,7 +654,7 @@ class Url implements UrlInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function parseUrlPath(?UrlInterface $baseUrl = null, string $pathString, ?UrlPathInterface &$path = null, ?string &$error = null): bool
+    private static function parseUrlPath(?UrlInterface $baseUrl, string $pathString, ?UrlPathInterface &$path = null, ?string &$error = null): bool
     {
         // If path is empty and there is a base url, use the path from base url.
         if ($baseUrl !== null && $pathString === '') {

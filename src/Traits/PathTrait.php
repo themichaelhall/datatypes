@@ -395,7 +395,7 @@ trait PathTrait
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function parseDirectoryPart(string $part, callable $partValidator, ?callable $stringDecoder = null, ?array &$directoryParts, ?string &$error = null): bool
+    private static function parseDirectoryPart(string $part, callable $partValidator, ?callable $stringDecoder, ?array &$directoryParts, ?string &$error = null): bool
     {
         if (!$partValidator($part, true, $error)) {
             return false;
