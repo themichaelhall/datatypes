@@ -43,7 +43,7 @@ class Scheme implements SchemeInterface
      */
     public function equals(SchemeInterface $scheme): bool
     {
-        return $this->myType === $scheme->getType();
+        return $this->type === $scheme->getType();
     }
 
     /**
@@ -55,7 +55,7 @@ class Scheme implements SchemeInterface
      */
     public function getDefaultPort(): int
     {
-        return $this->myDefaultPort;
+        return $this->defaultPort;
     }
 
     /**
@@ -67,7 +67,7 @@ class Scheme implements SchemeInterface
      */
     public function getType(): int
     {
-        return $this->myType;
+        return $this->type;
     }
 
     /**
@@ -79,7 +79,7 @@ class Scheme implements SchemeInterface
      */
     public function isHttp(): bool
     {
-        return $this->myType === self::TYPE_HTTP;
+        return $this->type === self::TYPE_HTTP;
     }
 
     /**
@@ -91,7 +91,7 @@ class Scheme implements SchemeInterface
      */
     public function isHttps(): bool
     {
-        return $this->myType === self::TYPE_HTTPS;
+        return $this->type === self::TYPE_HTTPS;
     }
 
     /**
@@ -103,7 +103,7 @@ class Scheme implements SchemeInterface
      */
     public function __toString(): string
     {
-        return $this->myScheme;
+        return $this->scheme;
     }
 
     /**
@@ -117,7 +117,7 @@ class Scheme implements SchemeInterface
      */
     public static function isValid(string $scheme): bool
     {
-        return self::myParse($scheme);
+        return self::doParse($scheme);
     }
 
     /**
@@ -133,7 +133,7 @@ class Scheme implements SchemeInterface
      */
     public static function parse(string $scheme): SchemeInterface
     {
-        if (!self::myParse($scheme, $result, $type, $defaultPort, $error)) {
+        if (!self::doParse($scheme, $result, $type, $defaultPort, $error)) {
             throw new SchemeInvalidArgumentException($error);
         }
 
@@ -151,7 +151,7 @@ class Scheme implements SchemeInterface
      */
     public static function tryParse(string $scheme): ?SchemeInterface
     {
-        if (!self::myParse($scheme, $result, $type, $defaultPort)) {
+        if (!self::doParse($scheme, $result, $type, $defaultPort)) {
             return null;
         }
 
@@ -167,9 +167,9 @@ class Scheme implements SchemeInterface
      */
     private function __construct(string $scheme, int $type, int $defaultPort)
     {
-        $this->myScheme = $scheme;
-        $this->myType = $type;
-        $this->myDefaultPort = $defaultPort;
+        $this->scheme = $scheme;
+        $this->type = $type;
+        $this->defaultPort = $defaultPort;
     }
 
     /**
@@ -183,7 +183,7 @@ class Scheme implements SchemeInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse(string $scheme, ?string &$result = null, ?int &$type = null, ?int &$defaultPort = null, ?string &$error = null): bool
+    private static function doParse(string $scheme, ?string &$result = null, ?int &$type = null, ?int &$defaultPort = null, ?string &$error = null): bool
     {
         if ($scheme === '') {
             $error = 'Scheme "' . $scheme . '" is empty.';
@@ -193,13 +193,13 @@ class Scheme implements SchemeInterface
 
         $result = strtolower($scheme);
 
-        if (!isset(self::$mySchemes[$result])) {
+        if (!isset(self::$schemes[$result])) {
             $error = 'Scheme "' . $scheme . '" is invalid: Scheme must be "http" or "https".';
 
             return false;
         }
 
-        $schemeInfo = self::$mySchemes[$result];
+        $schemeInfo = self::$schemes[$result];
         $type = $schemeInfo[0];
         $defaultPort = $schemeInfo[1];
 
@@ -209,22 +209,22 @@ class Scheme implements SchemeInterface
     /**
      * @var int My default port.
      */
-    private $myDefaultPort;
+    private $defaultPort;
 
     /**
      * @var string My scheme.
      */
-    private $myScheme;
+    private $scheme;
 
     /**
      * @var int My type.
      */
-    private $myType;
+    private $type;
 
     /**
      * @var array The valid schemes.
      */
-    private static $mySchemes = [
+    private static $schemes = [
         'http'  => [self::TYPE_HTTP, 80],
         'https' => [self::TYPE_HTTPS, 443],
     ];

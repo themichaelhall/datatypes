@@ -45,7 +45,7 @@ class UrlPath implements UrlPathInterface
      */
     public function getDirectory(): UrlPathInterface
     {
-        return new self($this->myIsAbsolute, $this->myAboveBaseLevel, $this->myDirectoryParts, null);
+        return new self($this->isAbsolute, $this->aboveBaseLevelCount, $this->directoryParts, null);
     }
 
     /**
@@ -57,8 +57,8 @@ class UrlPath implements UrlPathInterface
      */
     public function getParentDirectory(): ?UrlPathInterface
     {
-        if ($this->myParentDirectory($aboveBaseLevel, $directoryParts)) {
-            return new self($this->myIsAbsolute, $aboveBaseLevel, $directoryParts, null);
+        if ($this->calculateParentDirectory($aboveBaseLevelCount, $directoryParts)) {
+            return new self($this->isAbsolute, $aboveBaseLevelCount, $directoryParts, null);
         }
 
         return null;
@@ -75,11 +75,11 @@ class UrlPath implements UrlPathInterface
      */
     public function toAbsolute(): UrlPathInterface
     {
-        if ($this->myAboveBaseLevel > 0) {
+        if ($this->aboveBaseLevelCount > 0) {
             throw new UrlPathLogicException('Url path "' . $this->__toString() . '" can not be made absolute: Relative path is above base level.');
         }
 
-        return new self(true, $this->myAboveBaseLevel, $this->myDirectoryParts, $this->myFilename);
+        return new self(true, $this->aboveBaseLevelCount, $this->directoryParts, $this->filename);
     }
 
     /**
@@ -91,7 +91,7 @@ class UrlPath implements UrlPathInterface
      */
     public function toRelative(): UrlPathInterface
     {
-        return new self(false, $this->myAboveBaseLevel, $this->myDirectoryParts, $this->myFilename);
+        return new self(false, $this->aboveBaseLevelCount, $this->directoryParts, $this->filename);
     }
 
     /**
@@ -107,7 +107,7 @@ class UrlPath implements UrlPathInterface
      */
     public function withUrlPath(UrlPathInterface $urlPath): UrlPathInterface
     {
-        if (!$this->myCombine($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+        if (!$this->combine($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
             throw new UrlPathLogicException('Url path "' . $this->__toString() . '" can not be combined with url path "' . $urlPath->__toString() . '": ' . $error);
         }
 
@@ -123,7 +123,7 @@ class UrlPath implements UrlPathInterface
      */
     public function __toString(): string
     {
-        return $this->myToString('/', function ($s) {
+        return $this->toString('/', function ($s) {
             return rawurlencode($s);
         });
     }
@@ -139,11 +139,11 @@ class UrlPath implements UrlPathInterface
      */
     public static function isValid(string $urlPath): bool
     {
-        return self::myParse(
+        return self::doParse(
             '/',
             $urlPath,
             function ($p, $d, &$e) {
-                return self::myPartValidator($p, $d, $e);
+                return self::validatePart($p, $d, $e);
             });
     }
 
@@ -160,11 +160,11 @@ class UrlPath implements UrlPathInterface
      */
     public static function parse(string $urlPath): UrlPathInterface
     {
-        if (!self::myParse(
+        if (!self::doParse(
             '/',
             $urlPath,
             function ($p, $d, &$e) {
-                return self::myPartValidator($p, $d, $e);
+                return self::validatePart($p, $d, $e);
             },
             function ($s) {
                 return rawurldecode($s);
@@ -192,11 +192,11 @@ class UrlPath implements UrlPathInterface
      */
     public static function tryParse(string $urlPath): ?UrlPathInterface
     {
-        if (!self::myParse(
+        if (!self::doParse(
             '/',
             $urlPath,
             function ($p, $d, &$e) {
-                return self::myPartValidator($p, $d, $e);
+                return self::validatePart($p, $d, $e);
             },
             function ($s) {
                 return rawurldecode($s);
@@ -222,10 +222,10 @@ class UrlPath implements UrlPathInterface
      */
     private function __construct(bool $isAbsolute, int $aboveBaseLevel, array $directoryParts, string $filename = null)
     {
-        $this->myIsAbsolute = $isAbsolute;
-        $this->myAboveBaseLevel = $aboveBaseLevel;
-        $this->myDirectoryParts = $directoryParts;
-        $this->myFilename = $filename;
+        $this->isAbsolute = $isAbsolute;
+        $this->aboveBaseLevelCount = $aboveBaseLevel;
+        $this->directoryParts = $directoryParts;
+        $this->filename = $filename;
     }
 
     /**
@@ -237,7 +237,7 @@ class UrlPath implements UrlPathInterface
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myPartValidator(string $part, bool $isDirectory, ?string &$error): bool
+    private static function validatePart(string $part, bool $isDirectory, ?string &$error): bool
     {
         if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]%-]/', $part, $matches)) {
             $error = ($isDirectory ? 'Part of directory' : 'Filename') . ' "' . $part . '" contains invalid character "' . $matches[0] . '".';

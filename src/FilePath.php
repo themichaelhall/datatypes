@@ -45,7 +45,7 @@ class FilePath implements FilePathInterface
      */
     public function getDirectory(): FilePathInterface
     {
-        return new self($this->myIsAbsolute, $this->myAboveBaseLevel, $this->myDrive, $this->myDirectoryParts, null);
+        return new self($this->isAbsolute, $this->aboveBaseLevelCount, $this->drive, $this->directoryParts, null);
     }
 
     /**
@@ -57,7 +57,7 @@ class FilePath implements FilePathInterface
      */
     public function getDrive(): ?string
     {
-        return $this->myDrive;
+        return $this->drive;
     }
 
     /**
@@ -69,8 +69,8 @@ class FilePath implements FilePathInterface
      */
     public function getParentDirectory(): ?FilePathInterface
     {
-        if ($this->myParentDirectory($aboveBaseLevel, $directoryParts)) {
-            return new self($this->myIsAbsolute, $aboveBaseLevel, $this->myDrive, $directoryParts, null);
+        if ($this->calculateParentDirectory($aboveBaseLevelCount, $directoryParts)) {
+            return new self($this->isAbsolute, $aboveBaseLevelCount, $this->drive, $directoryParts, null);
         }
 
         return null;
@@ -87,11 +87,11 @@ class FilePath implements FilePathInterface
      */
     public function toAbsolute(): FilePathInterface
     {
-        if ($this->myAboveBaseLevel > 0) {
+        if ($this->aboveBaseLevelCount > 0) {
             throw new FilePathLogicException('File path "' . $this->__toString() . '" can not be made absolute: Relative path is above base level.');
         }
 
-        return new self(true, $this->myAboveBaseLevel, $this->myDrive, $this->myDirectoryParts, $this->myFilename);
+        return new self(true, $this->aboveBaseLevelCount, $this->drive, $this->directoryParts, $this->filename);
     }
 
     /**
@@ -103,7 +103,7 @@ class FilePath implements FilePathInterface
      */
     public function toRelative(): FilePathInterface
     {
-        return new self(false, $this->myAboveBaseLevel, null, $this->myDirectoryParts, $this->myFilename);
+        return new self(false, $this->aboveBaseLevelCount, null, $this->directoryParts, $this->filename);
     }
 
     /**
@@ -119,7 +119,7 @@ class FilePath implements FilePathInterface
      */
     public function withFilePath(FilePathInterface $filePath): FilePathInterface
     {
-        if (!$this->myCombine($filePath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+        if (!$this->combine($filePath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
             throw new FilePathLogicException('File path "' . $this->__toString() . '" can not be combined with file path "' . $filePath->__toString() . '": ' . $error);
         }
 
@@ -135,7 +135,7 @@ class FilePath implements FilePathInterface
      */
     public function __toString(): string
     {
-        return ($this->myDrive !== null ? $this->myDrive . ':' : '') . $this->myToString(DIRECTORY_SEPARATOR);
+        return ($this->drive !== null ? $this->drive . ':' : '') . $this->toString(DIRECTORY_SEPARATOR);
     }
 
     /**
@@ -149,11 +149,11 @@ class FilePath implements FilePathInterface
      */
     public static function isValid(string $filePath): bool
     {
-        return self::myFilePathParse(
+        return self::parseFilePath(
             DIRECTORY_SEPARATOR,
             $filePath,
             function ($p, $d, &$e) {
-                return self::myPartValidator($p, $d, $e);
+                return self::validatePart($p, $d, $e);
             });
     }
 
@@ -170,11 +170,11 @@ class FilePath implements FilePathInterface
      */
     public static function parse(string $filePath): FilePathInterface
     {
-        if (!self::myFilePathParse(
+        if (!self::parseFilePath(
             DIRECTORY_SEPARATOR,
             $filePath,
             function ($p, $d, &$e) {
-                return self::myPartValidator($p, $d, $e);
+                return self::validatePart($p, $d, $e);
             },
             null,
             $isAbsolute,
@@ -201,11 +201,11 @@ class FilePath implements FilePathInterface
      */
     public static function tryParse(string $filePath): ?FilePathInterface
     {
-        if (!self::myFilePathParse(
+        if (!self::parseFilePath(
             DIRECTORY_SEPARATOR,
             $filePath,
             function ($p, $d, &$e) {
-                return self::myPartValidator($p, $d, $e);
+                return self::validatePart($p, $d, $e);
             },
             null,
             $isAbsolute,
@@ -233,11 +233,11 @@ class FilePath implements FilePathInterface
      */
     private function __construct(bool $isAbsolute, int $aboveBaseLevel, ?string $drive = null, array $directoryParts = [], ?string $filename = null)
     {
-        $this->myIsAbsolute = $isAbsolute;
-        $this->myAboveBaseLevel = $aboveBaseLevel;
-        $this->myDrive = $drive;
-        $this->myDirectoryParts = $directoryParts;
-        $this->myFilename = $filename;
+        $this->isAbsolute = $isAbsolute;
+        $this->aboveBaseLevelCount = $aboveBaseLevel;
+        $this->drive = $drive;
+        $this->directoryParts = $directoryParts;
+        $this->filename = $filename;
     }
 
     /**
@@ -256,17 +256,17 @@ class FilePath implements FilePathInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myFilePathParse(string $directorySeparator, string $path, callable $partValidator, callable $stringDecoder = null, ?bool &$isAbsolute = null, ?int &$aboveBaseLevel = null, ?string &$drive = null, ?array &$directoryParts = null, ?string &$filename = null, ?string &$error = null): bool
+    private static function parseFilePath(string $directorySeparator, string $path, callable $partValidator, callable $stringDecoder = null, ?bool &$isAbsolute = null, ?int &$aboveBaseLevel = null, ?string &$drive = null, ?array &$directoryParts = null, ?string &$filename = null, ?string &$error = null): bool
     {
         $drive = null;
 
         // If on Window, try to parse drive.
-        if (self::myIsWindows()) {
+        if (self::isWindows()) {
             $driveAndPath = explode(':', $path, 2);
 
             if (count($driveAndPath) === 2) {
                 $drive = $driveAndPath[0];
-                if (!self::myDriveValidator($drive, $error)) {
+                if (!self::validateDrive($drive, $error)) {
                     return false;
                 }
 
@@ -275,7 +275,7 @@ class FilePath implements FilePathInterface
             }
         }
 
-        $result = self::myParse(
+        $result = self::doParse(
             $directorySeparator,
             DIRECTORY_SEPARATOR !== '\'' ? str_replace('/', DIRECTORY_SEPARATOR, $path) : $path,
             $partValidator,
@@ -306,9 +306,9 @@ class FilePath implements FilePathInterface
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myPartValidator(string $part, bool $isDirectory, ?string &$error): bool
+    private static function validatePart(string $part, bool $isDirectory, ?string &$error): bool
     {
-        if (preg_match(self::myIsWindows() ? '/[\0<>:*?"|]+/' : '/[\0]+/', $part, $matches)) {
+        if (preg_match(self::isWindows() ? '/[\0<>:*?"|]+/' : '/[\0]+/', $part, $matches)) {
             $error = ($isDirectory ? 'Part of directory' : 'Filename') . ' "' . $part . '" contains invalid character "' . $matches[0] . '".';
 
             return false;
@@ -325,7 +325,7 @@ class FilePath implements FilePathInterface
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myDriveValidator(string $drive, ?string &$error): bool
+    private static function validateDrive(string $drive, ?string &$error): bool
     {
         if (!preg_match('/^[a-zA-Z]$/', $drive)) {
             $error = 'Drive "' . $drive . '" is invalid.';
@@ -341,7 +341,7 @@ class FilePath implements FilePathInterface
      *
      * @return bool True if the operating system is windows, false otherwise.
      */
-    private static function myIsWindows(): bool
+    private static function isWindows(): bool
     {
         return strtolower(substr(php_uname('s'), 0, 7)) === 'windows';
     }
@@ -349,5 +349,5 @@ class FilePath implements FilePathInterface
     /**
      * @var string|null My drive or null if no drive is present or supported.
      */
-    private $myDrive;
+    private $drive;
 }

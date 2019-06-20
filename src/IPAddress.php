@@ -41,7 +41,7 @@ class IPAddress implements IPAddressInterface
      */
     public function getParts(): array
     {
-        return $this->myOctets;
+        return $this->octets;
     }
 
     /**
@@ -53,7 +53,7 @@ class IPAddress implements IPAddressInterface
      */
     public function toInteger(): int
     {
-        return ($this->myOctets[0] << 24) + ($this->myOctets[1] << 16) + ($this->myOctets[2] << 8) + $this->myOctets[3];
+        return ($this->octets[0] << 24) + ($this->octets[1] << 16) + ($this->octets[2] << 8) + $this->octets[3];
     }
 
     /**
@@ -86,7 +86,7 @@ class IPAddress implements IPAddressInterface
      */
     public function __toString(): string
     {
-        return implode('.', $this->myOctets);
+        return implode('.', $this->octets);
     }
 
     /**
@@ -122,7 +122,7 @@ class IPAddress implements IPAddressInterface
      */
     public static function fromParts(array $octets): IPAddressInterface
     {
-        if (!self::myValidateOctets($octets, $error)) {
+        if (!self::validateOctets($octets, $error)) {
             throw new IPAddressInvalidArgumentException('Octets are invalid: ' . $error);
         }
 
@@ -140,7 +140,7 @@ class IPAddress implements IPAddressInterface
      */
     public static function isValid(string $ipAddress): bool
     {
-        return self::myParse($ipAddress);
+        return self::doParse($ipAddress);
     }
 
     /**
@@ -156,7 +156,7 @@ class IPAddress implements IPAddressInterface
      */
     public static function parse(string $ipAddress): IPAddressInterface
     {
-        if (!self::myParse($ipAddress, $octets, $error)) {
+        if (!self::doParse($ipAddress, $octets, $error)) {
             throw new IPAddressInvalidArgumentException($error);
         }
 
@@ -174,7 +174,7 @@ class IPAddress implements IPAddressInterface
      */
     public static function tryParse(string $ipAddress): ?IPAddressInterface
     {
-        if (!self::myParse($ipAddress, $octets)) {
+        if (!self::doParse($ipAddress, $octets)) {
             return null;
         }
 
@@ -188,7 +188,7 @@ class IPAddress implements IPAddressInterface
      */
     private function __construct(array $octets)
     {
-        $this->myOctets = $octets;
+        $this->octets = $octets;
     }
 
     /**
@@ -200,7 +200,7 @@ class IPAddress implements IPAddressInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse(string $ipAddress, ?array &$octets = null, ?string &$error = null): bool
+    private static function doParse(string $ipAddress, ?array &$octets = null, ?string &$error = null): bool
     {
         if ($ipAddress === '') {
             $error = 'IP address "' . $ipAddress . '" is empty.';
@@ -219,7 +219,7 @@ class IPAddress implements IPAddressInterface
         // Validate the parts.
         $octets = [];
         foreach ($ipAddressParts as $ipAddressPart) {
-            if (!self::myValidateIpAddressPart($ipAddressPart, $octet, $error)) {
+            if (!self::validateIpAddressPart($ipAddressPart, $octet, $error)) {
                 $error = 'IP address "' . $ipAddress . '" is invalid: ' . $error;
 
                 return false;
@@ -241,7 +241,7 @@ class IPAddress implements IPAddressInterface
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myValidateIpAddressPart(string $ipAddressPart, ?int &$octet, ?string &$error): bool
+    private static function validateIpAddressPart(string $ipAddressPart, ?int &$octet, ?string &$error): bool
     {
         if ($ipAddressPart === '') {
             $error = 'Octet "' . $ipAddressPart . '" is empty.';
@@ -257,7 +257,7 @@ class IPAddress implements IPAddressInterface
 
         $octet = intval($ipAddressPart);
 
-        if (!self::myValidateOctet($octet, $error)) {
+        if (!self::validateOctet($octet, $error)) {
             return false;
         }
 
@@ -274,7 +274,7 @@ class IPAddress implements IPAddressInterface
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myValidateOctets(array $octets, ?string &$error): bool
+    private static function validateOctets(array $octets, ?string &$error): bool
     {
         if (count($octets) !== 4) {
             $error = 'IP address must consist of four octets.';
@@ -287,7 +287,7 @@ class IPAddress implements IPAddressInterface
                 throw new \InvalidArgumentException('$octets is not an array of integers.');
             }
 
-            if (!self::myValidateOctet($octet, $error)) {
+            if (!self::validateOctet($octet, $error)) {
                 return false;
             }
         }
@@ -303,7 +303,7 @@ class IPAddress implements IPAddressInterface
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myValidateOctet(int $octet, ?string &$error): bool
+    private static function validateOctet(int $octet, ?string &$error): bool
     {
         if ($octet < 0) {
             $error = 'Octet ' . $octet . ' is out of range: Minimum value for an octet is 0.';
@@ -323,5 +323,5 @@ class IPAddress implements IPAddressInterface
     /**
      * @var int[] My octets.
      */
-    private $myOctets;
+    private $octets;
 }

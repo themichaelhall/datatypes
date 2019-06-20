@@ -48,12 +48,12 @@ class Host implements HostInterface
      */
     public function getHostname(): HostnameInterface
     {
-        if ($this->myHostname !== null) {
-            return $this->myHostname;
+        if ($this->hostname !== null) {
+            return $this->hostname;
         }
 
         // If no hostname is present, create a standard "in-addr.arpa" hostname from IP address.
-        $ipAddressParts = $this->myIpAddress->getParts();
+        $ipAddressParts = $this->ipAddress->getParts();
 
         return Hostname::fromParts([
             strval($ipAddressParts[3]),
@@ -73,7 +73,7 @@ class Host implements HostInterface
      */
     public function getIPAddress(): ?IPAddressInterface
     {
-        return $this->myIpAddress;
+        return $this->ipAddress;
     }
 
     /**
@@ -85,11 +85,11 @@ class Host implements HostInterface
      */
     public function __toString(): string
     {
-        if ($this->myIpAddress !== null) {
-            return $this->myIpAddress->__toString();
+        if ($this->ipAddress !== null) {
+            return $this->ipAddress->__toString();
         }
 
-        return $this->myHostname->__toString();
+        return $this->hostname->__toString();
     }
 
     /**
@@ -131,7 +131,7 @@ class Host implements HostInterface
      */
     public static function isValid(string $host): bool
     {
-        return self::myParse($host);
+        return self::doParse($host);
     }
 
     /**
@@ -147,7 +147,7 @@ class Host implements HostInterface
      */
     public static function parse(string $host): HostInterface
     {
-        if (!self::myParse($host, $hostname, $ipAddress, $error)) {
+        if (!self::doParse($host, $hostname, $ipAddress, $error)) {
             throw new HostInvalidArgumentException($error);
         }
 
@@ -165,7 +165,7 @@ class Host implements HostInterface
      */
     public static function tryParse(string $host): ?HostInterface
     {
-        if (!self::myParse($host, $hostname, $ipAddress)) {
+        if (!self::doParse($host, $hostname, $ipAddress)) {
             return null;
         }
 
@@ -180,8 +180,8 @@ class Host implements HostInterface
      */
     private function __construct(?HostnameInterface $hostname = null, ?IPAddressInterface $ipAddress = null)
     {
-        $this->myHostname = $hostname;
-        $this->myIpAddress = $ipAddress;
+        $this->hostname = $hostname;
+        $this->ipAddress = $ipAddress;
     }
 
     /**
@@ -194,7 +194,7 @@ class Host implements HostInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse(string $host, ?HostnameInterface &$hostname = null, ?IPAddressInterface &$ipAddress = null, ?string &$error = null): bool
+    private static function doParse(string $host, ?HostnameInterface &$hostname = null, ?IPAddressInterface &$ipAddress = null, ?string &$error = null): bool
     {
         if ($host === '') {
             $error = 'Host "' . $host . '" is empty.';
@@ -220,10 +220,10 @@ class Host implements HostInterface
     /**
      * @var HostnameInterface My hostname.
      */
-    private $myHostname;
+    private $hostname;
 
     /**
      * @var IPAddressInterface My IP address.
      */
-    private $myIpAddress;
+    private $ipAddress;
 }

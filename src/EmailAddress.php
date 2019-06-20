@@ -44,7 +44,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public function getHost(): HostInterface
     {
-        return $this->myHost;
+        return $this->host;
     }
 
     /**
@@ -56,7 +56,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public function getUsername(): string
     {
-        return $this->myUsername;
+        return $this->username;
     }
 
     /**
@@ -70,7 +70,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public function withHost(HostInterface $host): EmailAddressInterface
     {
-        return new self($this->myUsername, $host);
+        return new self($this->username, $host);
     }
 
     /**
@@ -86,11 +86,11 @@ class EmailAddress implements EmailAddressInterface
      */
     public function withUsername(string $username): EmailAddressInterface
     {
-        if (!self::myValidateUsername($username, $error)) {
+        if (!self::validateUsername($username, $error)) {
             throw new EmailAddressInvalidArgumentException($error);
         }
 
-        return new self($username, $this->myHost);
+        return new self($username, $this->host);
     }
 
     /**
@@ -102,7 +102,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public function __toString(): string
     {
-        return $this->myUsername . '@' . ($this->myHost->getIPAddress() !== null ? '[' . $this->myHost->__toString() . ']' : $this->myHost->__toString());
+        return $this->username . '@' . ($this->host->getIPAddress() !== null ? '[' . $this->host->__toString() . ']' : $this->host->__toString());
     }
 
     /**
@@ -119,7 +119,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function fromParts(string $username, HostInterface $host): EmailAddressInterface
     {
-        if (!self::myValidateUsername($username, $error)) {
+        if (!self::validateUsername($username, $error)) {
             throw new EmailAddressInvalidArgumentException($error);
         }
 
@@ -137,7 +137,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function isValid(string $emailAddress): bool
     {
-        return self::myParse($emailAddress);
+        return self::doParse($emailAddress);
     }
 
     /**
@@ -153,7 +153,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function parse(string $emailAddress): EmailAddressInterface
     {
-        if (!self::myParse($emailAddress, $username, $host, $error)) {
+        if (!self::doParse($emailAddress, $username, $host, $error)) {
             throw new EmailAddressInvalidArgumentException($error);
         }
 
@@ -171,7 +171,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function tryParse(string $emailAddress): ?EmailAddressInterface
     {
-        if (!self::myParse($emailAddress, $username, $host)) {
+        if (!self::doParse($emailAddress, $username, $host)) {
             return null;
         }
 
@@ -186,8 +186,8 @@ class EmailAddress implements EmailAddressInterface
      */
     private function __construct(string $username, HostInterface $host)
     {
-        $this->myUsername = $username;
-        $this->myHost = $host;
+        $this->username = $username;
+        $this->host = $host;
     }
 
     /**
@@ -200,7 +200,7 @@ class EmailAddress implements EmailAddressInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParse(string $emailAddress, ?string &$username = null, ?HostInterface &$host = null, ?string &$error = null): bool
+    private static function doParse(string $emailAddress, ?string &$username = null, ?HostInterface &$host = null, ?string &$error = null): bool
     {
         if ($emailAddress === '') {
             $error = 'Email address "" is empty.';
@@ -218,13 +218,13 @@ class EmailAddress implements EmailAddressInterface
         $username = $parts[0];
         $hostname = $parts[1];
 
-        if (!self::myValidateUsername($username, $error)) {
+        if (!self::validateUsername($username, $error)) {
             $error = 'Email address "' . $emailAddress . '" is invalid: ' . $error;
 
             return false;
         }
 
-        if (!self::myParseHostname($hostname, $host, $error)) {
+        if (!self::parseHostname($hostname, $host, $error)) {
             $error = 'Email address "' . $emailAddress . '" is invalid: ' . $error;
 
             return false;
@@ -242,7 +242,7 @@ class EmailAddress implements EmailAddressInterface
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function myParseHostname(string $hostname, ?HostInterface &$host = null, ?string &$error = null): bool
+    private static function parseHostname(string $hostname, ?HostInterface &$host = null, ?string &$error = null): bool
     {
         if (strlen($hostname) > 2 && substr($hostname, 0, 1) === '[' && substr($hostname, -1) === ']') {
             // Hostname is actually an IP address.
@@ -278,7 +278,7 @@ class EmailAddress implements EmailAddressInterface
      *
      * @return bool True if validation was successful, false otherwise.
      */
-    private static function myValidateUsername(string $username, ?string &$error = null): bool
+    private static function validateUsername(string $username, ?string &$error = null): bool
     {
         if ($username === '') {
             $error = 'Username "" is empty.';
@@ -310,10 +310,10 @@ class EmailAddress implements EmailAddressInterface
     /**
      * @var string My username.
      */
-    private $myUsername;
+    private $username;
 
     /**
      * @var HostInterface My host.
      */
-    private $myHost;
+    private $host;
 }
