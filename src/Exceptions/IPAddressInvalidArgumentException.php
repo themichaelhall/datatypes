@@ -8,11 +8,13 @@ declare(strict_types=1);
 
 namespace DataTypes\Exceptions;
 
+use InvalidArgumentException;
+
 /**
  * Exception used when passed invalid argument in IPAddress class.
  *
  * @since 1.0.0
  */
-class IPAddressInvalidArgumentException extends \InvalidArgumentException
+class IPAddressInvalidArgumentException extends InvalidArgumentException
 {
 }

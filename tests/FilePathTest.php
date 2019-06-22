@@ -7,6 +7,7 @@ namespace DataTypes\Tests;
 use DataTypes\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\Exceptions\FilePathLogicException;
 use DataTypes\FilePath;
+use FakePhpUname;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/Helpers/Fakes/FakePhpUname.php';
@@ -148,8 +149,8 @@ class FilePathTest extends TestCase
      */
     public function testPathWithInvalidWindowsCharacterInDirectoryIsInvalidInWindows()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Windows NT');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
         $exceptionMessage = '';
@@ -168,8 +169,8 @@ class FilePathTest extends TestCase
      */
     public function testPathWithInvalidWindowsCharacterInDirectoryIsValidInOther()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Other');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Other');
 
         $DS = DIRECTORY_SEPARATOR;
 
@@ -198,8 +199,8 @@ class FilePathTest extends TestCase
      */
     public function testPathWithInvalidWindowsCharacterInFilenameIsInvalidInWindows()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Windows NT');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
         $exceptionMessage = '';
@@ -218,8 +219,8 @@ class FilePathTest extends TestCase
      */
     public function testPathWithInvalidWindowsCharacterInFilenameIsValidInOther()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Other');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Other');
 
         $DS = DIRECTORY_SEPARATOR;
 
@@ -366,8 +367,8 @@ class FilePathTest extends TestCase
      */
     public function testToRelativeWithDrive()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Windows NT');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
 
@@ -464,8 +465,8 @@ class FilePathTest extends TestCase
      */
     public function testParseWithVolumeInWindows()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Windows NT');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
 
@@ -483,8 +484,8 @@ class FilePathTest extends TestCase
      */
     public function testParseWithLowerCaseVolumeInWindows()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Windows NT');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
 
@@ -502,8 +503,8 @@ class FilePathTest extends TestCase
      */
     public function testParseWithVolumeInOther()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Other');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Other');
 
         $DS = DIRECTORY_SEPARATOR;
 
@@ -521,8 +522,8 @@ class FilePathTest extends TestCase
      */
     public function testParseWithLowerCaseVolumeInOther()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Other');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Other');
 
         $DS = DIRECTORY_SEPARATOR;
 
@@ -540,8 +541,8 @@ class FilePathTest extends TestCase
      */
     public function testParseWithDriveAndRelativePathIsInvalid()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Windows NT');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
         $exceptionMessage = '';
@@ -560,8 +561,8 @@ class FilePathTest extends TestCase
      */
     public function testParseWithInvalidDriveIsInvalid()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Windows NT');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
         $exceptionMessage = '';
@@ -594,8 +595,8 @@ class FilePathTest extends TestCase
      */
     public function testWithFilePathWithDriveInFilePath()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Windows NT');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
 
@@ -634,8 +635,8 @@ class FilePathTest extends TestCase
      */
     public function testHasParentDirectoryWithDriveInWindows()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Windows NT');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
 
@@ -652,8 +653,8 @@ class FilePathTest extends TestCase
      */
     public function testHasParentDirectoryWithDriveInOther()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Other');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Other');
 
         $DS = DIRECTORY_SEPARATOR;
 
@@ -693,8 +694,8 @@ class FilePathTest extends TestCase
      */
     public function testGetParentDirectoryWithDriveInWindows()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Windows NT');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
 
         $DS = DIRECTORY_SEPARATOR;
 
@@ -711,8 +712,8 @@ class FilePathTest extends TestCase
      */
     public function testGetParentDirectoryWithDriveInOther()
     {
-        \FakePhpUname::enable();
-        \FakePhpUname::setOsName('Other');
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Other');
 
         $DS = DIRECTORY_SEPARATOR;
 
@@ -747,6 +748,6 @@ class FilePathTest extends TestCase
     {
         parent::tearDown();
 
-        \FakePhpUname::disable();
+        FakePhpUname::disable();
     }
 }

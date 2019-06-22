@@ -8,11 +8,13 @@ declare(strict_types=1);
 
 namespace DataTypes\Exceptions;
 
+use InvalidArgumentException;
+
 /**
  * Exception used when passed invalid argument in EmailAddress class.
  *
  * @since 1.1.0
  */
-class EmailAddressInvalidArgumentException extends \InvalidArgumentException
+class EmailAddressInvalidArgumentException extends InvalidArgumentException
 {
 }

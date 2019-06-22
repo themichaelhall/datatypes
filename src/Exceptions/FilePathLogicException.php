@@ -8,11 +8,13 @@ declare(strict_types=1);
 
 namespace DataTypes\Exceptions;
 
+use LogicException;
+
 /**
  * Exception used on logic failure in FilePath class.
  *
  * @since 1.0.0
  */
-class FilePathLogicException extends \LogicException
+class FilePathLogicException extends LogicException
 {
 }

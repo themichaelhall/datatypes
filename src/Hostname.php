@@ -10,6 +10,7 @@ namespace DataTypes;
 
 use DataTypes\Exceptions\HostnameInvalidArgumentException;
 use DataTypes\Interfaces\HostnameInterface;
+use InvalidArgumentException;
 
 /**
  * Class representing a hostname.
@@ -112,7 +113,7 @@ class Hostname implements HostnameInterface
      * @param string|null $tld         The top level domain or null if no top-level domain should be included.
      *
      * @throws HostnameInvalidArgumentException If any of the parameters are invalid.
-     * @throws \InvalidArgumentException        If the $domainParts parameter is not an array of strings.
+     * @throws InvalidArgumentException         If the $domainParts parameter is not an array of strings.
      *
      * @return HostnameInterface The hostname instance.
      */
@@ -291,7 +292,7 @@ class Hostname implements HostnameInterface
      * @param string[]    $domainParts The domain parts.
      * @param string|null $error       The error text if validation was not successful, undefined otherwise.
      *
-     * @throws \InvalidArgumentException If the $domainParts parameter is not an array of strings.
+     * @throws InvalidArgumentException If the $domainParts parameter is not an array of strings.
      *
      * @return bool True if validation was successful, false otherwise.
      */
@@ -299,7 +300,7 @@ class Hostname implements HostnameInterface
     {
         foreach ($domainParts as $part) {
             if (!is_string($part)) {
-                throw new \InvalidArgumentException('$domainParts parameter is not an array of strings.');
+                throw new InvalidArgumentException('$domainParts parameter is not an array of strings.');
             }
 
             if (!self::validateDomainPart($part, $error)) {

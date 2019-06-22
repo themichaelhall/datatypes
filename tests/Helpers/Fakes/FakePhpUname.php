@@ -72,6 +72,8 @@ namespace {
 
 namespace DataTypes {
 
+    use FakePhpUname;
+
     /**
      * Fakes the php_uname method.
      *
@@ -81,8 +83,8 @@ namespace DataTypes {
      */
     function php_uname($mode)
     {
-        if (\FakePhpUname::isEnabled()) {
-            return \FakePhpUname::getOsName();
+        if (FakePhpUname::isEnabled()) {
+            return FakePhpUname::getOsName();
         }
 
         return \php_uname($mode);

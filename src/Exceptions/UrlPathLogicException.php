@@ -8,11 +8,13 @@ declare(strict_types=1);
 
 namespace DataTypes\Exceptions;
 
+use LogicException;
+
 /**
  * Exception used on logic failure in UrlPath class.
  *
  * @since 1.0.0
  */
-class UrlPathLogicException extends \LogicException
+class UrlPathLogicException extends LogicException
 {
 }

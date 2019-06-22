@@ -10,6 +10,7 @@ namespace DataTypes;
 
 use DataTypes\Exceptions\IPAddressInvalidArgumentException;
 use DataTypes\Interfaces\IPAddressInterface;
+use InvalidArgumentException;
 
 /**
  * Class representing an IP address.
@@ -115,7 +116,7 @@ class IPAddress implements IPAddressInterface
      *
      * @param int[] $octets The octets.
      *
-     * @throws \InvalidArgumentException         If the octets parameter is not an array of integers.
+     * @throws InvalidArgumentException          If the octets parameter is not an array of integers.
      * @throws IPAddressInvalidArgumentException If the $octets parameter is not a valid array of octets.
      *
      * @return IPAddressInterface The IP address.
@@ -270,7 +271,7 @@ class IPAddress implements IPAddressInterface
      * @param int[]       $octets The array of octets.
      * @param string|null $error  The error text if validation was not successful, undefined otherwise.
      *
-     * @throws \InvalidArgumentException If the octets parameter is not an array of integers.
+     * @throws InvalidArgumentException If the octets parameter is not an array of integers.
      *
      * @return bool True if validation was successful, false otherwise.
      */
@@ -284,7 +285,7 @@ class IPAddress implements IPAddressInterface
 
         foreach ($octets as $octet) {
             if (!is_int($octet)) {
-                throw new \InvalidArgumentException('$octets is not an array of integers.');
+                throw new InvalidArgumentException('$octets is not an array of integers.');
             }
 
             if (!self::validateOctet($octet, $error)) {
