@@ -7,10 +7,8 @@ namespace DataTypes\Tests;
 use DataTypes\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\Exceptions\FilePathLogicException;
 use DataTypes\FilePath;
-use FakePhpUname;
+use DataTypes\Tests\Helpers\Fakes\FakePhpUname;
 use PHPUnit\Framework\TestCase;
-
-require_once __DIR__ . '/Helpers/Fakes/FakePhpUname.php';
 
 /**
  * Test FilePath class.

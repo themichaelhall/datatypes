@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-/** @noinspection PhpIllegalPsrClassPathInspection */
-
-namespace {
+namespace DataTypes\Tests\Helpers\Fakes {
 
     /**
      * Helper for faking php_uname function.
@@ -72,7 +70,7 @@ namespace {
 
 namespace DataTypes {
 
-    use FakePhpUname;
+    use DataTypes\Tests\Helpers\Fakes\FakePhpUname;
 
     /**
      * Fakes the php_uname method.
