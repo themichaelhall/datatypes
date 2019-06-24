@@ -2,7 +2,7 @@
 /**
  * This file is a part of the datatypes package.
  *
- * Read more at https://phpdatatypes.com/
+ * https://github.com/themichaelhall/datatypes
  */
 declare(strict_types=1);
 
