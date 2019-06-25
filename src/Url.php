@@ -92,6 +92,22 @@ class Url implements UrlInterface
     }
 
     /**
+     * Returns the path and query string of the url as a string.
+     *
+     * @since 2.1.0
+     *
+     * @return string the path and query string of the url.
+     */
+    public function getPathAndQueryString(): string
+    {
+        if ($this->queryString !== null) {
+            return $this->path->__toString() . '?' . $this->queryString;
+        }
+
+        return $this->path->__toString();
+    }
+
+    /**
      * Returns the port of the url.
      *
      * @since 1.0.0

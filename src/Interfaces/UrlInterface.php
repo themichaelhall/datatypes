@@ -63,6 +63,15 @@ interface UrlInterface extends DataTypeInterface
     public function getPath(): UrlPathInterface;
 
     /**
+     * Returns the path and query string of the url as a string.
+     *
+     * @since 2.1.0
+     *
+     * @return string the path and query string of the url.
+     */
+    public function getPathAndQueryString(): string;
+
+    /**
      * Returns the port of the url.
      *
      * @since 1.0.0

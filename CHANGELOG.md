@@ -1,4 +1,5 @@
 ## Unreleased
+- Added getPathAndQueryString method to Url class.
 
 ## [2.0.0] - 2017-12-25
 - Added type hints to all data type classes.

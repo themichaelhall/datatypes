@@ -700,4 +700,19 @@ class UrlTest extends TestCase
         self::assertFalse(Url::parse('https://example.com:8080/path/file?query#fragment')->equals(Url::parse('https://example.com:8080/path/file#fragment')));
         self::assertFalse(Url::parse('https://example.com:8080/path/file?query#fragment')->equals(Url::parse('https://example.com:8080/path/file?query#foo')));
     }
+
+    /**
+     * Test getPathAndQueryString method.
+     */
+    public function testGetPathAndQueryString()
+    {
+        self::assertSame('/', Url::parse('http://example.com/')->getPathAndQueryString());
+        self::assertSame('/foo', Url::parse('http://example.com/foo')->getPathAndQueryString());
+        self::assertSame('/?', Url::parse('http://example.com/?')->getPathAndQueryString());
+        self::assertSame('/foo?', Url::parse('http://example.com/foo?')->getPathAndQueryString());
+        self::assertSame('/?bar', Url::parse('http://example.com/?bar')->getPathAndQueryString());
+        self::assertSame('/foo?bar', Url::parse('http://example.com/foo?bar')->getPathAndQueryString());
+        self::assertSame('/?bar=F%7Baz%7D', Url::parse('http://example.com/?bar=F%7Baz%7D')->getPathAndQueryString());
+        self::assertSame('/foo?bar=F%7Baz%7D', Url::parse('http://example.com/foo?bar=F%7Baz%7D')->getPathAndQueryString());
+    }
 }
