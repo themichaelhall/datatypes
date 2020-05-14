@@ -242,7 +242,7 @@ class UrlPath implements UrlPathInterface
      */
     private static function validatePart(string $part, bool $isDirectory, ?string &$error): bool
     {
-        if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*\+,;=:@\[\]%-]/', $part, $matches)) {
+        if (preg_match('/[^0-9a-zA-Z._~!\$&\'()*+,;=:@\[\]%-]/', $part, $matches)) {
             $error = ($isDirectory ? 'Part of directory' : 'Filename') . ' "' . $part . '" contains invalid character "' . $matches[0] . '".';
 
             return false;
