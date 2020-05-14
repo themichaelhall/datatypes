@@ -144,7 +144,8 @@ class UrlPath implements UrlPathInterface
             $urlPath,
             function ($p, $d, &$e) {
                 return self::validatePart($p, $d, $e);
-            });
+            }
+        );
     }
 
     /**
@@ -173,7 +174,8 @@ class UrlPath implements UrlPathInterface
             $aboveBaseLevel,
             $directoryParts,
             $filename,
-            $error)
+            $error
+        )
         ) {
             throw new UrlPathInvalidArgumentException($error = 'Url path "' . $urlPath . '" is invalid: ' . $error);
         }
@@ -204,7 +206,8 @@ class UrlPath implements UrlPathInterface
             $isAbsolute,
             $aboveBaseLevel,
             $directoryParts,
-            $filename)
+            $filename
+        )
         ) {
             return null;
         }

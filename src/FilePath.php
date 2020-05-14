@@ -154,7 +154,8 @@ class FilePath implements FilePathInterface
             $filePath,
             function ($p, $d, &$e) {
                 return self::validatePart($p, $d, $e);
-            });
+            }
+        );
     }
 
     /**
@@ -182,7 +183,8 @@ class FilePath implements FilePathInterface
             $drive,
             $directoryParts,
             $filename,
-            $error)
+            $error
+        )
         ) {
             throw new FilePathInvalidArgumentException('File path "' . $filePath . '" is invalid: ' . $error);
         }
@@ -212,7 +214,8 @@ class FilePath implements FilePathInterface
             $aboveBaseLevel,
             $drive,
             $directoryParts,
-            $filename)
+            $filename
+        )
         ) {
             return null;
         }
