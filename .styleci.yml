@@ -1,9 +1,7 @@
 preset: recommended
 
 disabled:
-   - concat_without_spaces
-   - simplified_null_return
-   - phpdoc_to_comment
+  - concat_without_spaces
 
 enabled:
-   - concat_with_spaces
+  - concat_with_spaces
