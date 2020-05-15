@@ -65,7 +65,7 @@ interface UrlPathInterface extends PathTraitInterface
      * @return UrlPathInterface The url path as a relative path.
      */
     public function toRelative(): self;
-    
+
     /**
      * Returns a copy of the url path with another filename.
      *
