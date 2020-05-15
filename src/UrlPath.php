@@ -65,7 +65,7 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
-     * Returns The url path as an absolute path.
+     * Returns a copy of the url path as an absolute path.
      *
      * @since 1.0.0
      *
@@ -83,7 +83,7 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
-     * Returns the url path as a relative path.
+     * Returns a copy of the url path as a relative path.
      *
      * @since 1.0.0
      *
@@ -112,6 +112,26 @@ class UrlPath implements UrlPathInterface
         }
 
         return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+    }
+
+    /**
+     * Returns a copy of the url path with another filename.
+     *
+     * @since 2.2.0
+     *
+     * @param string $filename The other filename
+     *
+     * @throws UrlPathInvalidArgumentException if the filename if invalid.
+     *
+     * @return UrlPathInterface The new url path.
+     */
+    public function withFilename(string $filename): UrlPathInterface
+    {
+        if (!self::validatePart($filename, false, $error)) {
+            throw new UrlPathInvalidArgumentException($error);
+        }
+
+        return new self($this->isAbsolute, $this->aboveBaseLevelCount, $this->directoryParts, $filename);
     }
 
     /**

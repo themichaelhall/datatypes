@@ -380,4 +380,40 @@ class UrlPathTest extends TestCase
         self::assertFalse(UrlPath::parse('./foo')->equals(UrlPath::parse('./bar')));
         self::assertTrue(UrlPath::parse('../foo')->equals(UrlPath::parse('./../foo')));
     }
+
+    /**
+     * Test withFilename method.
+     */
+    public function testWithFilename()
+    {
+        self::assertSame('', UrlPath::parse('')->withFilename('')->__toString());
+        self::assertSame('foo', UrlPath::parse('')->withFilename('foo')->__toString());
+        self::assertSame('foo', UrlPath::parse('bar')->withFilename('foo')->__toString());
+        self::assertSame('foo/', UrlPath::parse('foo/')->withFilename('')->__toString());
+        self::assertSame('foo/baz', UrlPath::parse('foo/')->withFilename('baz')->__toString());
+        self::assertSame('foo/', UrlPath::parse('foo/bar')->withFilename('')->__toString());
+        self::assertSame('foo/baz', UrlPath::parse('foo/bar')->withFilename('baz')->__toString());
+    }
+
+    /**
+     * Test withFilename method with a directory name.
+     */
+    public function testWithFilenameWithDirectoryName()
+    {
+        self::expectException(UrlPathInvalidArgumentException::class);
+        self::expectExceptionMessage('Filename "bar/baz" contains invalid character "/".');
+
+        UrlPath::parse('foo')->withFilename('bar/baz');
+    }
+
+    /**
+     * Test withFilename method with a invalid character.
+     */
+    public function testWithFilenameWithInvalidCharacter()
+    {
+        self::expectException(UrlPathInvalidArgumentException::class);
+        self::expectExceptionMessage('Filename "bar?baz" contains invalid character "?".');
+
+        UrlPath::parse('foo')->withFilename('bar?baz');
+    }
 }

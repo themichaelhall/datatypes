@@ -77,7 +77,7 @@ class FilePath implements FilePathInterface
     }
 
     /**
-     * Returns the file path as an absolute path.
+     * Returns a copy of the file path as an absolute path.
      *
      * @since 1.0.0
      *
@@ -95,7 +95,7 @@ class FilePath implements FilePathInterface
     }
 
     /**
-     * Returns the file path as a relative path.
+     * Returns a copy of the file path as a relative path.
      *
      * @since 1.0.0
      *
@@ -104,6 +104,26 @@ class FilePath implements FilePathInterface
     public function toRelative(): FilePathInterface
     {
         return new self(false, $this->aboveBaseLevelCount, null, $this->directoryParts, $this->filename);
+    }
+
+    /**
+     * Returns a copy of the file path with another filename.
+     *
+     * @since 2.2.0
+     *
+     * @param string $filename The other filename
+     *
+     * @throws FilePathInvalidArgumentException if the filename if invalid.
+     *
+     * @return FilePathInterface The new file path.
+     */
+    public function withFilename(string $filename): FilePathInterface
+    {
+        if (!self::validatePart($filename, false, $error)) {
+            throw new FilePathInvalidArgumentException($error);
+        }
+
+        return new self($this->isAbsolute, $this->aboveBaseLevelCount, $this->drive, $this->directoryParts, $filename);
     }
 
     /**
@@ -280,7 +300,7 @@ class FilePath implements FilePathInterface
 
         $result = self::doParse(
             $directorySeparator,
-            DIRECTORY_SEPARATOR !== '\'' ? str_replace('/', DIRECTORY_SEPARATOR, $path) : $path,
+            DIRECTORY_SEPARATOR !== '/' ? str_replace('/', DIRECTORY_SEPARATOR, $path) : $path,
             $partValidator,
             $stringDecoder,
             $isAbsolute,
@@ -311,7 +331,7 @@ class FilePath implements FilePathInterface
      */
     private static function validatePart(string $part, bool $isDirectory, ?string &$error): bool
     {
-        if (preg_match(self::isWindows() ? '/[\0<>:*?"|]+/' : '/[\0]+/', $part, $matches)) {
+        if (preg_match(self::isWindows() ? '/[\0<>:*?"|\\/\\\\]+/' : '/[\0\\/]+/', $part, $matches)) {
             $error = ($isDirectory ? 'Part of directory' : 'Filename') . ' "' . $part . '" contains invalid character "' . $matches[0] . '".';
 
             return false;

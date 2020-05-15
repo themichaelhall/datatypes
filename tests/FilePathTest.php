@@ -740,6 +740,46 @@ class FilePathTest extends TestCase
     }
 
     /**
+     * Test withFilename method.
+     */
+    public function testWithFilename()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        self::assertSame('', FilePath::parse('')->withFilename('')->__toString());
+        self::assertSame('foo', FilePath::parse('')->withFilename('foo')->__toString());
+        self::assertSame('foo', FilePath::parse('bar')->withFilename('foo')->__toString());
+        self::assertSame('foo' . $DS, FilePath::parse('foo' . $DS)->withFilename('')->__toString());
+        self::assertSame('foo' . $DS . 'baz', FilePath::parse('foo' . $DS)->withFilename('baz')->__toString());
+        self::assertSame('foo' . $DS, FilePath::parse('foo' . $DS . 'bar')->withFilename('')->__toString());
+        self::assertSame('foo' . $DS . 'baz', FilePath::parse('foo' . $DS . 'bar')->withFilename('baz')->__toString());
+    }
+
+    /**
+     * Test withFilename method with a directory name.
+     */
+    public function testWithFilenameWithDirectoryName()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        self::expectException(FilePathInvalidArgumentException::class);
+        self::expectExceptionMessage('Filename "bar' . $DS . 'baz" contains invalid character "' . $DS . '".');
+
+        FilePath::parse('foo')->withFilename('bar' . $DS . 'baz');
+    }
+
+    /**
+     * Test withFilename method with a invalid character.
+     */
+    public function testWithFilenameWithInvalidCharacter()
+    {
+        self::expectException(FilePathInvalidArgumentException::class);
+        self::expectExceptionMessage("Filename \"bar\0baz\" contains invalid character \"\0\".");
+
+        FilePath::parse('foo')->withFilename("bar\0baz");
+    }
+
+    /**
      * Tear down.
      */
     public function tearDown(): void

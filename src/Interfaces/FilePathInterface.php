@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Interfaces;
 
+use DataTypes\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\Exceptions\FilePathLogicException;
 use DataTypes\Interfaces\Traits\PathTraitInterface;
 
@@ -57,7 +58,7 @@ interface FilePathInterface extends PathTraitInterface
     public function getParentDirectory(): ?self;
 
     /**
-     * Returns the file path as an absolute path.
+     * Returns a copy of the file path as an absolute path.
      *
      * @since 1.0.0
      *
@@ -68,13 +69,26 @@ interface FilePathInterface extends PathTraitInterface
     public function toAbsolute(): self;
 
     /**
-     * Returns the file path as a relative path.
+     * Returns a copy of the file path as a relative path.
      *
      * @since 1.0.0
      *
      * @return FilePathInterface The file path as a relative path.
      */
     public function toRelative(): self;
+
+    /**
+     * Returns a copy of the file path with another filename.
+     *
+     * @since 2.2.0
+     *
+     * @param string $filename The other filename
+     *
+     * @throws FilePathInvalidArgumentException if the filename if invalid.
+     *
+     * @return FilePathInterface The new file path.
+     */
+    public function withFilename(string $filename): self;
 
     /**
      * Returns a copy of the file path combined with another file path.
