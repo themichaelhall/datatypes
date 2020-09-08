@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Interfaces;
 
+use DataTypes\Exceptions\UrlPathInvalidArgumentException;
 use DataTypes\Exceptions\UrlPathLogicException;
 use DataTypes\Interfaces\Traits\PathTraitInterface;
 
@@ -48,7 +49,7 @@ interface UrlPathInterface extends PathTraitInterface
     public function getParentDirectory(): ?self;
 
     /**
-     * Returns the url path as a absolute path.
+     * Returns a copy of the url path as a absolute path.
      *
      * @since 1.0.0
      *
@@ -57,13 +58,26 @@ interface UrlPathInterface extends PathTraitInterface
     public function toAbsolute(): self;
 
     /**
-     * Returns the url path as a relative path.
+     * Returns a copy of the url path as a relative path.
      *
      * @since 1.0.0
      *
      * @return UrlPathInterface The url path as a relative path.
      */
     public function toRelative(): self;
+
+    /**
+     * Returns a copy of the url path with another filename.
+     *
+     * @since 2.2.0
+     *
+     * @param string $filename The other filename
+     *
+     * @throws UrlPathInvalidArgumentException if the filename if invalid.
+     *
+     * @return UrlPathInterface The new url path.
+     */
+    public function withFilename(string $filename): self;
 
     /**
      * Returns a copy of the url path combined with another url path.

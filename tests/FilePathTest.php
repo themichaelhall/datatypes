@@ -740,6 +740,136 @@ class FilePathTest extends TestCase
     }
 
     /**
+     * Test withFilename method.
+     */
+    public function testWithFilename()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        self::assertSame('', FilePath::parse('')->withFilename('')->__toString());
+        self::assertSame('foo', FilePath::parse('')->withFilename('foo')->__toString());
+        self::assertSame('foo', FilePath::parse('bar')->withFilename('foo')->__toString());
+        self::assertSame('foo' . $DS, FilePath::parse('foo' . $DS)->withFilename('')->__toString());
+        self::assertSame('foo' . $DS . 'baz', FilePath::parse('foo' . $DS)->withFilename('baz')->__toString());
+        self::assertSame('foo' . $DS, FilePath::parse('foo' . $DS . 'bar')->withFilename('')->__toString());
+        self::assertSame('foo' . $DS . 'baz', FilePath::parse('foo' . $DS . 'bar')->withFilename('baz')->__toString());
+    }
+
+    /**
+     * Test withFilename method with a directory name.
+     */
+    public function testWithFilenameWithDirectoryName()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        self::expectException(FilePathInvalidArgumentException::class);
+        self::expectExceptionMessage('Filename "bar' . $DS . 'baz" contains invalid character "' . $DS . '".');
+
+        FilePath::parse('foo')->withFilename('bar' . $DS . 'baz');
+    }
+
+    /**
+     * Test withFilename method with a invalid character.
+     */
+    public function testWithFilenameWithInvalidCharacter()
+    {
+        self::expectException(FilePathInvalidArgumentException::class);
+        self::expectExceptionMessage("Filename \"bar\0baz\" contains invalid character \"\0\".");
+
+        FilePath::parse('foo')->withFilename("bar\0baz");
+    }
+
+    /**
+     * Test parseAsDirectory method.
+     */
+    public function testParseAsDirectory()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        self::assertSame('', FilePath::parseAsDirectory('')->__toString());
+        self::assertSame('foo' . $DS, FilePath::parseAsDirectory('foo')->__toString());
+        self::assertSame('foo' . $DS, FilePath::parseAsDirectory('foo' . $DS)->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS, FilePath::parseAsDirectory('foo' . $DS . 'bar')->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS, FilePath::parseAsDirectory('foo' . $DS . 'bar' . $DS)->__toString());
+        self::assertSame($DS, FilePath::parseAsDirectory($DS)->__toString());
+        self::assertSame($DS . 'foo' . $DS, FilePath::parseAsDirectory($DS . 'foo')->__toString());
+        self::assertSame($DS . 'foo' . $DS, FilePath::parseAsDirectory($DS . 'foo' . $DS)->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar' . $DS, FilePath::parseAsDirectory($DS . 'foo' . $DS . 'bar')->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar' . $DS, FilePath::parseAsDirectory($DS . 'foo' . $DS . 'bar' . $DS)->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'baz' . $DS, FilePath::parseAsDirectory($DS . 'foo' . $DS . 'bar' . $DS . '..' . $DS . 'baz')->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'baz' . $DS, FilePath::parseAsDirectory($DS . 'foo' . $DS . 'bar' . $DS . '..' . $DS . 'baz' . $DS)->__toString());
+    }
+
+    /**
+     * Test parseAsDirectory method with a drive in Windows.
+     */
+    public function testParseAsDirectoryWithDriveInWindows()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
+
+        self::assertSame('C:' . $DS, FilePath::parseAsDirectory('C:' . $DS)->__toString());
+        self::assertSame('C:' . $DS . 'foo' . $DS, FilePath::parseAsDirectory('C:' . $DS . 'foo')->__toString());
+        self::assertSame('C:' . $DS . 'foo' . $DS, FilePath::parseAsDirectory('C:' . $DS . 'foo' . $DS)->__toString());
+        self::assertSame('C:' . $DS . 'foo' . $DS . 'bar' . $DS, FilePath::parseAsDirectory('C:' . $DS . 'foo' . $DS . 'bar')->__toString());
+        self::assertSame('C:' . $DS . 'foo' . $DS . 'bar' . $DS, FilePath::parseAsDirectory('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->__toString());
+    }
+
+    /**
+     * Test parseAsDirectory method with invalid characters in filename.
+     */
+    public function testParseAsDirectoryWithInvalidCharactersInFilename()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        self::expectException(FilePathInvalidArgumentException::class);
+        self::expectExceptionMessage('File path "' . $DS . 'foo' . $DS . "\0" . 'bar" is invalid: Filename "' . "\0" . 'bar" contains invalid character "' . "\0" . '".');
+
+        FilePath::parseAsDirectory($DS . 'foo' . $DS . "\0" . 'bar');
+    }
+
+    /**
+     * Test parseAsDirectory method.
+     */
+    public function testTryParseAsDirectory()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        self::assertSame('', FilePath::tryParseAsDirectory('')->__toString());
+        self::assertSame('foo' . $DS, FilePath::tryParseAsDirectory('foo')->__toString());
+        self::assertSame('foo' . $DS, FilePath::tryParseAsDirectory('foo' . $DS)->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS, FilePath::tryParseAsDirectory('foo' . $DS . 'bar')->__toString());
+        self::assertSame('foo' . $DS . 'bar' . $DS, FilePath::tryParseAsDirectory('foo' . $DS . 'bar' . $DS)->__toString());
+        self::assertSame($DS, FilePath::tryParseAsDirectory($DS)->__toString());
+        self::assertSame($DS . 'foo' . $DS, FilePath::tryParseAsDirectory($DS . 'foo')->__toString());
+        self::assertSame($DS . 'foo' . $DS, FilePath::tryParseAsDirectory($DS . 'foo' . $DS)->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar' . $DS, FilePath::tryParseAsDirectory($DS . 'foo' . $DS . 'bar')->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'bar' . $DS, FilePath::tryParseAsDirectory($DS . 'foo' . $DS . 'bar' . $DS)->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'baz' . $DS, FilePath::tryParseAsDirectory($DS . 'foo' . $DS . 'bar' . $DS . '..' . $DS . 'baz')->__toString());
+        self::assertSame($DS . 'foo' . $DS . 'baz' . $DS, FilePath::tryParseAsDirectory($DS . 'foo' . $DS . 'bar' . $DS . '..' . $DS . 'baz' . $DS)->__toString());
+        self::assertNull(FilePath::tryParseAsDirectory($DS . 'foo' . $DS . "\0" . 'bar'));
+    }
+
+    /**
+     * Test tryParseAsDirectory method with a drive in Windows.
+     */
+    public function testTryParseAsDirectoryWithDriveInWindows()
+    {
+        $DS = DIRECTORY_SEPARATOR;
+
+        FakePhpUname::enable();
+        FakePhpUname::setOsName('Windows NT');
+
+        self::assertSame('C:' . $DS, FilePath::tryParseAsDirectory('C:' . $DS)->__toString());
+        self::assertSame('C:' . $DS . 'foo' . $DS, FilePath::tryParseAsDirectory('C:' . $DS . 'foo')->__toString());
+        self::assertSame('C:' . $DS . 'foo' . $DS, FilePath::tryParseAsDirectory('C:' . $DS . 'foo' . $DS)->__toString());
+        self::assertSame('C:' . $DS . 'foo' . $DS . 'bar' . $DS, FilePath::tryParseAsDirectory('C:' . $DS . 'foo' . $DS . 'bar')->__toString());
+        self::assertSame('C:' . $DS . 'foo' . $DS . 'bar' . $DS, FilePath::tryParseAsDirectory('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->__toString());
+    }
+
+    /**
      * Tear down.
      */
     public function tearDown(): void

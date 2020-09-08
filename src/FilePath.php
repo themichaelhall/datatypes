@@ -77,7 +77,7 @@ class FilePath implements FilePathInterface
     }
 
     /**
-     * Returns the file path as an absolute path.
+     * Returns a copy of the file path as an absolute path.
      *
      * @since 1.0.0
      *
@@ -95,7 +95,7 @@ class FilePath implements FilePathInterface
     }
 
     /**
-     * Returns the file path as a relative path.
+     * Returns a copy of the file path as a relative path.
      *
      * @since 1.0.0
      *
@@ -104,6 +104,26 @@ class FilePath implements FilePathInterface
     public function toRelative(): FilePathInterface
     {
         return new self(false, $this->aboveBaseLevelCount, null, $this->directoryParts, $this->filename);
+    }
+
+    /**
+     * Returns a copy of the file path with another filename.
+     *
+     * @since 2.2.0
+     *
+     * @param string $filename The other filename
+     *
+     * @throws FilePathInvalidArgumentException if the filename if invalid.
+     *
+     * @return FilePathInterface The new file path.
+     */
+    public function withFilename(string $filename): FilePathInterface
+    {
+        if (!self::validatePart($filename, false, $error)) {
+            throw new FilePathInvalidArgumentException($error);
+        }
+
+        return new self($this->isAbsolute, $this->aboveBaseLevelCount, $this->drive, $this->directoryParts, $filename);
     }
 
     /**
@@ -193,6 +213,43 @@ class FilePath implements FilePathInterface
     }
 
     /**
+     * Parses a file path as a directory, regardless if the input ends with a directory separator or not.
+     *
+     * @since 2.2.0
+     *
+     * @param string $filePath The file path.
+     *
+     * @throws FilePathInvalidArgumentException If the $filePath parameter is not a valid file path.
+     *
+     * @return FilePathInterface The file path instance.
+     */
+    public static function parseAsDirectory(string $filePath): FilePathInterface
+    {
+        if (!self::parseFilePath(
+            DIRECTORY_SEPARATOR,
+            $filePath,
+            function ($p, $d, &$e) {
+                return self::validatePart($p, $d, $e);
+            },
+            null,
+            $isAbsolute,
+            $aboveBaseLevel,
+            $drive,
+            $directoryParts,
+            $filename,
+            $error
+        )
+        ) {
+            throw new FilePathInvalidArgumentException('File path "' . $filePath . '" is invalid: ' . $error);
+        }
+
+        $result = new self($isAbsolute, $aboveBaseLevel, $drive, $directoryParts, $filename);
+        $result->convertToDirectory();
+
+        return $result;
+    }
+
+    /**
      * Parses a file path.
      *
      * @since 1.0.0
@@ -221,6 +278,40 @@ class FilePath implements FilePathInterface
         }
 
         return new self($isAbsolute, $aboveBaseLevel, $drive, $directoryParts, $filename);
+    }
+
+    /**
+     * Parses a file path as a directory, regardless if the input ends with a directory separator or not.
+     *
+     * @since 2.2.0
+     *
+     * @param string $filePath The file path.
+     *
+     * @return FilePathInterface|null The file path instance if the $filePath parameter is a valid file path, null otherwise.
+     */
+    public static function tryParseAsDirectory(string $filePath): ?FilePathInterface
+    {
+        if (!self::parseFilePath(
+            DIRECTORY_SEPARATOR,
+            $filePath,
+            function ($p, $d, &$e) {
+                return self::validatePart($p, $d, $e);
+            },
+            null,
+            $isAbsolute,
+            $aboveBaseLevel,
+            $drive,
+            $directoryParts,
+            $filename
+        )
+        ) {
+            return null;
+        }
+
+        $result = new self($isAbsolute, $aboveBaseLevel, $drive, $directoryParts, $filename);
+        $result->convertToDirectory();
+
+        return $result;
     }
 
     /**
@@ -280,7 +371,7 @@ class FilePath implements FilePathInterface
 
         $result = self::doParse(
             $directorySeparator,
-            DIRECTORY_SEPARATOR !== '\'' ? str_replace('/', DIRECTORY_SEPARATOR, $path) : $path,
+            DIRECTORY_SEPARATOR !== '/' ? str_replace('/', DIRECTORY_SEPARATOR, $path) : $path,
             $partValidator,
             $stringDecoder,
             $isAbsolute,
@@ -311,7 +402,7 @@ class FilePath implements FilePathInterface
      */
     private static function validatePart(string $part, bool $isDirectory, ?string &$error): bool
     {
-        if (preg_match(self::isWindows() ? '/[\0<>:*?"|]+/' : '/[\0]+/', $part, $matches)) {
+        if (preg_match(self::isWindows() ? '/[\0<>:*?"|\\/\\\\]+/' : '/[\0\\/]+/', $part, $matches)) {
             $error = ($isDirectory ? 'Part of directory' : 'Filename') . ' "' . $part . '" contains invalid character "' . $matches[0] . '".';
 
             return false;
