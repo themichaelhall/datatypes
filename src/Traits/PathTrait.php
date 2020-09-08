@@ -278,6 +278,17 @@ trait PathTrait
     }
 
     /**
+     * Converts this path into a directory if this path is a file.
+     */
+    private function convertToDirectory(): void
+    {
+        if ($this->filename !== null) {
+            $this->directoryParts[] = $this->filename;
+            $this->filename = null;
+        }
+    }
+
+    /**
      * Tries to parse a path and returns the result or error text.
      *
      * @param string        $directorySeparator The directory separator.

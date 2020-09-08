@@ -204,6 +204,44 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
+     * Parses a url path as a directory, regardless if the input ends with a directory separator or not.
+     *
+     * @since 2.2.0
+     *
+     * @param string $urlPath The url path.
+     *
+     * @throws UrlPathInvalidArgumentException If the $urlPath parameter is not a valid url path.
+     *
+     * @return UrlPathInterface The url path instance.
+     */
+    public static function parseAsDirectory(string $urlPath): UrlPathInterface
+    {
+        if (!self::doParse(
+            '/',
+            $urlPath,
+            function ($p, $d, &$e) {
+                return self::validatePart($p, $d, $e);
+            },
+            function ($s) {
+                return rawurldecode($s);
+            },
+            $isAbsolute,
+            $aboveBaseLevel,
+            $directoryParts,
+            $filename,
+            $error
+        )
+        ) {
+            throw new UrlPathInvalidArgumentException($error = 'Url path "' . $urlPath . '" is invalid: ' . $error);
+        }
+
+        $result = new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+        $result->convertToDirectory();
+
+        return $result;
+    }
+
+    /**
      * Parses a url path.
      *
      * @since 1.0.0
@@ -233,6 +271,41 @@ class UrlPath implements UrlPathInterface
         }
 
         return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+    }
+
+    /**
+     * Parses a url path as a directory, regardless if the input ends with a directory separator or not.
+     *
+     * @since 2.2.0
+     *
+     * @param string $urlPath The url path.
+     *
+     * @return UrlPathInterface|null The url path instance if the $urlPath parameter is a valid url path, null otherwise.
+     */
+    public static function tryParseAsDirectory(string $urlPath): ?UrlPathInterface
+    {
+        if (!self::doParse(
+            '/',
+            $urlPath,
+            function ($p, $d, &$e) {
+                return self::validatePart($p, $d, $e);
+            },
+            function ($s) {
+                return rawurldecode($s);
+            },
+            $isAbsolute,
+            $aboveBaseLevel,
+            $directoryParts,
+            $filename
+        )
+        ) {
+            return null;
+        }
+
+        $result = new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+        $result->convertToDirectory();
+
+        return $result;
     }
 
     /**

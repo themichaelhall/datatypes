@@ -416,4 +416,54 @@ class UrlPathTest extends TestCase
 
         UrlPath::parse('foo')->withFilename('bar?baz');
     }
+
+    /**
+     * Test parseAsDirectory method.
+     */
+    public function testParseAsDirectory()
+    {
+        self::assertSame('', UrlPath::parseAsDirectory('')->__toString());
+        self::assertSame('foo/', UrlPath::parseAsDirectory('foo')->__toString());
+        self::assertSame('foo/', UrlPath::parseAsDirectory('foo/')->__toString());
+        self::assertSame('foo/bar/', UrlPath::parseAsDirectory('foo/bar')->__toString());
+        self::assertSame('foo/bar/', UrlPath::parseAsDirectory('foo/bar/')->__toString());
+        self::assertSame('/', UrlPath::parseAsDirectory('/')->__toString());
+        self::assertSame('/foo/', UrlPath::parseAsDirectory('/foo')->__toString());
+        self::assertSame('/foo/', UrlPath::parseAsDirectory('/foo/')->__toString());
+        self::assertSame('/foo/bar/', UrlPath::parseAsDirectory('/foo/bar')->__toString());
+        self::assertSame('/foo/bar/', UrlPath::parseAsDirectory('/foo/bar/')->__toString());
+        self::assertSame('/foo/baz/', UrlPath::parseAsDirectory('/foo/bar/../baz')->__toString());
+        self::assertSame('/foo/baz/', UrlPath::parseAsDirectory('/foo/bar/../baz/')->__toString());
+    }
+
+    /**
+     * Test parseAsDirectory method with invalid characters in filename.
+     */
+    public function testParseAsDirectoryWithInvalidCharactersInFilename()
+    {
+        self::expectException(UrlPathInvalidArgumentException::class);
+        self::expectExceptionMessage('Url path "/foo/?bar" is invalid: Filename "?bar" contains invalid character "?".');
+
+        UrlPath::parseAsDirectory('/foo/?bar');
+    }
+
+    /**
+     * Test tryParseAsDirectory method.
+     */
+    public function testTryParseAsDirectory()
+    {
+        self::assertSame('', UrlPath::tryParseAsDirectory('')->__toString());
+        self::assertSame('foo/', UrlPath::tryParseAsDirectory('foo')->__toString());
+        self::assertSame('foo/', UrlPath::tryParseAsDirectory('foo/')->__toString());
+        self::assertSame('foo/bar/', UrlPath::tryParseAsDirectory('foo/bar')->__toString());
+        self::assertSame('foo/bar/', UrlPath::tryParseAsDirectory('foo/bar/')->__toString());
+        self::assertSame('/', UrlPath::tryParseAsDirectory('/')->__toString());
+        self::assertSame('/foo/', UrlPath::tryParseAsDirectory('/foo')->__toString());
+        self::assertSame('/foo/', UrlPath::tryParseAsDirectory('/foo/')->__toString());
+        self::assertSame('/foo/bar/', UrlPath::tryParseAsDirectory('/foo/bar')->__toString());
+        self::assertSame('/foo/bar/', UrlPath::tryParseAsDirectory('/foo/bar/')->__toString());
+        self::assertSame('/foo/baz/', UrlPath::tryParseAsDirectory('/foo/bar/../baz')->__toString());
+        self::assertSame('/foo/baz/', UrlPath::tryParseAsDirectory('/foo/bar/../baz/')->__toString());
+        self::assertNull(UrlPath::tryParseAsDirectory('/foo/?bar'));
+    }
 }

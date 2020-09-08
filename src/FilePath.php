@@ -213,6 +213,43 @@ class FilePath implements FilePathInterface
     }
 
     /**
+     * Parses a file path as a directory, regardless if the input ends with a directory separator or not.
+     *
+     * @since 2.2.0
+     *
+     * @param string $filePath The file path.
+     *
+     * @throws FilePathInvalidArgumentException If the $filePath parameter is not a valid file path.
+     *
+     * @return FilePathInterface The file path instance.
+     */
+    public static function parseAsDirectory(string $filePath): FilePathInterface
+    {
+        if (!self::parseFilePath(
+            DIRECTORY_SEPARATOR,
+            $filePath,
+            function ($p, $d, &$e) {
+                return self::validatePart($p, $d, $e);
+            },
+            null,
+            $isAbsolute,
+            $aboveBaseLevel,
+            $drive,
+            $directoryParts,
+            $filename,
+            $error
+        )
+        ) {
+            throw new FilePathInvalidArgumentException('File path "' . $filePath . '" is invalid: ' . $error);
+        }
+
+        $result = new self($isAbsolute, $aboveBaseLevel, $drive, $directoryParts, $filename);
+        $result->convertToDirectory();
+
+        return $result;
+    }
+
+    /**
      * Parses a file path.
      *
      * @since 1.0.0
@@ -241,6 +278,40 @@ class FilePath implements FilePathInterface
         }
 
         return new self($isAbsolute, $aboveBaseLevel, $drive, $directoryParts, $filename);
+    }
+
+    /**
+     * Parses a file path as a directory, regardless if the input ends with a directory separator or not.
+     *
+     * @since 2.2.0
+     *
+     * @param string $filePath The file path.
+     *
+     * @return FilePathInterface|null The file path instance if the $filePath parameter is a valid file path, null otherwise.
+     */
+    public static function tryParseAsDirectory(string $filePath): ?FilePathInterface
+    {
+        if (!self::parseFilePath(
+            DIRECTORY_SEPARATOR,
+            $filePath,
+            function ($p, $d, &$e) {
+                return self::validatePart($p, $d, $e);
+            },
+            null,
+            $isAbsolute,
+            $aboveBaseLevel,
+            $drive,
+            $directoryParts,
+            $filename
+        )
+        ) {
+            return null;
+        }
+
+        $result = new self($isAbsolute, $aboveBaseLevel, $drive, $directoryParts, $filename);
+        $result->convertToDirectory();
+
+        return $result;
     }
 
     /**

@@ -1,5 +1,6 @@
 ## Unreleased
 - Added withFilename method to FilePath and UrlPath classes.
+- Added parseAsDirectory and tryParseAsDirectory methods to FilePath and UrlPath classes.
 
 ## [2.1.0] - 2019-06-25
 - Added getPathAndQueryString method to Url class.
