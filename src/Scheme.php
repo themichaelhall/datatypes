@@ -117,7 +117,7 @@ class Scheme implements SchemeInterface
      */
     public static function isValid(string $scheme): bool
     {
-        return self::doParse($scheme);
+        return self::doParse($scheme) !== null;
     }
 
     /**
@@ -133,11 +133,12 @@ class Scheme implements SchemeInterface
      */
     public static function parse(string $scheme): SchemeInterface
     {
-        if (!self::doParse($scheme, $result, $type, $defaultPort, $error)) {
+        $result = self::doParse($scheme, $error);
+        if ($result === null) {
             throw new SchemeInvalidArgumentException($error);
         }
 
-        return new self($result, $type, $defaultPort);
+        return $result;
     }
 
     /**
@@ -151,11 +152,7 @@ class Scheme implements SchemeInterface
      */
     public static function tryParse(string $scheme): ?SchemeInterface
     {
-        if (!self::doParse($scheme, $result, $type, $defaultPort)) {
-            return null;
-        }
-
-        return new self($result, $type, $defaultPort);
+        return self::doParse($scheme);
     }
 
     /**
@@ -175,35 +172,32 @@ class Scheme implements SchemeInterface
     /**
      * Tries to parse a scheme and returns the result or error text.
      *
-     * @param string      $scheme      The scheme.
-     * @param string|null $result      The result if parsing was successful, undefined otherwise.
-     * @param int|null    $type        The type if parsing was successful, undefined otherwise.
-     * @param int|null    $defaultPort The default port if parsing was successful, undefined otherwise.
-     * @param string|null $error       The error text if parsing was not successful, undefined otherwise.
+     * @param string      $str   The scheme to parse.
+     * @param string|null $error The error text if parsing was not successful, undefined otherwise.
      *
-     * @return bool True if parsing was successful, false otherwise.
+     * @return self True if parsing was successful, false otherwise.
      */
-    private static function doParse(string $scheme, ?string &$result = null, ?int &$type = null, ?int &$defaultPort = null, ?string &$error = null): bool
+    private static function doParse(string $str, ?string &$error = null): ?self
     {
-        if ($scheme === '') {
-            $error = 'Scheme "' . $scheme . '" is empty.';
+        if ($str === '') {
+            $error = 'Scheme "' . $str . '" is empty.';
 
-            return false;
+            return null;
         }
 
-        $result = strtolower($scheme);
+        $schemeKey = strtolower($str);
 
-        if (!isset(self::$schemes[$result])) {
-            $error = 'Scheme "' . $scheme . '" is invalid: Scheme must be "http" or "https".';
+        $schemeInfo = self::SCHEMES_INFO[$schemeKey] ?? null;
+        if ($schemeInfo === null) {
+            $error = 'Scheme "' . $str . '" is invalid: Scheme must be "http" or "https".';
 
-            return false;
+            return null;
         }
 
-        $schemeInfo = self::$schemes[$result];
         $type = $schemeInfo[0];
         $defaultPort = $schemeInfo[1];
 
-        return true;
+        return new self($schemeKey, $type, $defaultPort);
     }
 
     /**
@@ -224,7 +218,7 @@ class Scheme implements SchemeInterface
     /**
      * @var array The valid schemes.
      */
-    private static $schemes = [
+    private const SCHEMES_INFO = [
         'http'  => [self::TYPE_HTTP, 80],
         'https' => [self::TYPE_HTTPS, 443],
     ];
