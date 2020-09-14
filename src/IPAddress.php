@@ -141,7 +141,7 @@ class IPAddress implements IPAddressInterface
      */
     public static function isValid(string $ipAddress): bool
     {
-        return self::doParse($ipAddress);
+        return self::doParse($ipAddress) !== null;
     }
 
     /**
@@ -157,11 +157,12 @@ class IPAddress implements IPAddressInterface
      */
     public static function parse(string $ipAddress): IPAddressInterface
     {
-        if (!self::doParse($ipAddress, $octets, $error)) {
+        $result = self::doParse($ipAddress, $error);
+        if ($result === null) {
             throw new IPAddressInvalidArgumentException($error);
         }
 
-        return new self($octets);
+        return $result;
     }
 
     /**
@@ -175,11 +176,7 @@ class IPAddress implements IPAddressInterface
      */
     public static function tryParse(string $ipAddress): ?IPAddressInterface
     {
-        if (!self::doParse($ipAddress, $octets)) {
-            return null;
-        }
-
-        return new self($octets);
+        return self::doParse($ipAddress);
     }
 
     /**
@@ -195,49 +192,46 @@ class IPAddress implements IPAddressInterface
     /**
      * Tries to parse an IP address and returns the result or error text.
      *
-     * @param string      $ipAddress The IP address.
-     * @param int[]|null  $octets    The octets if parsing was successful, undefined otherwise.
-     * @param string|null $error     The error text if parsing was not successful, undefined otherwise.
+     * @param string      $str   The IP address to parse.
+     * @param string|null $error The error text if parsing was not successful, undefined otherwise.
      *
-     * @return bool True if parsing was successful, false otherwise.
+     * @return self|null The IP address if parsing was successful, null otherwise.
      */
-    private static function doParse(string $ipAddress, ?array &$octets = null, ?string &$error = null): bool
+    private static function doParse(string $str, ?string &$error = null): ?self
     {
-        if ($ipAddress === '') {
-            $error = 'IP address "' . $ipAddress . '" is empty.';
+        if ($str === '') {
+            $error = 'IP address "' . $str . '" is empty.';
 
-            return false;
+            return null;
         }
 
-        $ipAddressParts = explode('.', $ipAddress);
+        $ipAddressParts = explode('.', $str);
 
         if (count($ipAddressParts) !== 4) {
-            $error = 'IP address "' . $ipAddress . '" is invalid: IP address must consist of four octets.';
+            $error = 'IP address "' . $str . '" is invalid: IP address must consist of four octets.';
 
-            return false;
+            return null;
         }
 
-        // Validate the parts.
         $octets = [];
         foreach ($ipAddressParts as $ipAddressPart) {
             if (!self::validateIpAddressPart($ipAddressPart, $octet, $error)) {
-                $error = 'IP address "' . $ipAddress . '" is invalid: ' . $error;
+                $error = 'IP address "' . $str . '" is invalid: ' . $error;
 
-                return false;
+                return null;
             }
 
-            // Save the resulting octet.
             $octets[] = $octet;
         }
 
-        return true;
+        return new self($octets);
     }
 
     /**
      * Validates an IP address part.
      *
      * @param string      $ipAddressPart The IP address part.
-     * @param int|null    $octet         The resulting octet.
+     * @param int|null    $octet         The resulting octet if validation was successful, undefined otherwise.
      * @param string|null $error         The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if validation was successful, false otherwise.
