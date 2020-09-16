@@ -86,7 +86,6 @@ class Hostname implements HostnameInterface
             throw new HostnameInvalidArgumentException($error);
         }
 
-        // Normalize top-level domain.
         self::normalizeTld($tld);
 
         return new self($this->domainParts, $tld);
@@ -148,7 +147,7 @@ class Hostname implements HostnameInterface
      */
     public static function isValid(string $hostname): bool
     {
-        return self::doParse($hostname);
+        return self::doParse($hostname) !== null;
     }
 
     /**
@@ -164,11 +163,12 @@ class Hostname implements HostnameInterface
      */
     public static function parse(string $hostname): HostnameInterface
     {
-        if (!self::doParse($hostname, $domainParts, $tld, $error)) {
+        $result = self::doParse($hostname, $error);
+        if ($result === null) {
             throw new HostnameInvalidArgumentException($error);
         }
 
-        return new self($domainParts, $tld);
+        return $result;
     }
 
     /**
@@ -182,11 +182,7 @@ class Hostname implements HostnameInterface
      */
     public static function tryParse(string $hostname): ?HostnameInterface
     {
-        if (!self::doParse($hostname, $domainParts, $tld)) {
-            return null;
-        }
-
-        return new self($domainParts, $tld);
+        return self::doParse($hostname);
     }
 
     /**
@@ -195,7 +191,7 @@ class Hostname implements HostnameInterface
      * @param string[]    $domainParts The domain parts.
      * @param string|null $tld         The top-level domain if top-level domain is present, null otherwise.
      */
-    private function __construct(array $domainParts, ?string $tld = null)
+    private function __construct(array $domainParts, ?string $tld)
     {
         $this->domainParts = $domainParts;
         $this->tld = $tld;
@@ -204,51 +200,51 @@ class Hostname implements HostnameInterface
     /**
      * Tries to parse a hostname and returns the result or error text.
      *
-     * @param string        $hostname    The hostname.
-     * @param string[]|null $domainParts The domain parts if parsing was successful, undefined otherwise.
-     * @param string|null   $tld         The top-level domain if parsing was successful, undefined otherwise.
-     * @param string|null   $error       The error text if parsing was not successful, undefined otherwise.
+     * @param string      $str   The hostname to parse.
+     * @param string|null $error The error text if parsing was not successful, undefined otherwise.
      *
-     * @return bool True if parsing was successful, false otherwise.
+     * @return self|null The hostname if parsing was successful, null otherwise.
      */
-    private static function doParse(string $hostname, ?array &$domainParts = null, ?string &$tld = null, ?string &$error = null): bool
+    private static function doParse(string $str, ?string &$error = null): ?self
     {
-        if ($hostname === '') {
-            $error = 'Hostname "' . $hostname . '" is empty.';
+        if ($str === '') {
+            $error = 'Hostname "' . $str . '" is empty.';
 
-            return false;
+            return null;
         }
 
-        if (strlen($hostname) > 255) {
-            $error = 'Hostname "' . $hostname . '" is too long: Maximum allowed length is 255 characters."';
+        if (strlen($str) > 255) {
+            $error = 'Hostname "' . $str . '" is too long: Maximum allowed length is 255 characters."';
 
-            return false;
+            return null;
         }
 
         $domainParts = explode(
             '.',
-            substr($hostname, -1) === '.' ? substr($hostname, 0, -1) : $hostname // Remove trailing "." from hostname.
+            substr($str, -1) === '.' ? substr($str, 0, -1) : $str // Remove trailing "." from hostname.
         );
 
-        $tld = count($domainParts) > 1 ? array_pop($domainParts) : null;
-        if ($tld !== null) {
-            if (!self::validateTld($tld, $error)) {
-                $error = 'Hostname "' . $hostname . '" is invalid: ' . $error;
-
-                return false;
-            }
+        $tld = null;
+        if (count($domainParts) > 1) {
+            $tld = array_pop($domainParts);
         }
 
         if (!self::validateDomainParts($domainParts, $error)) {
-            $error = 'Hostname "' . $hostname . '" is invalid: ' . $error;
+            $error = 'Hostname "' . $str . '" is invalid: ' . $error;
 
-            return false;
+            return null;
+        }
+
+        if (!self::validateTld($tld, $error)) {
+            $error = 'Hostname "' . $str . '" is invalid: ' . $error;
+
+            return null;
         }
 
         self::normalizeDomainParts($domainParts);
         self::normalizeTld($tld);
 
-        return true;
+        return new self($domainParts, $tld);
     }
 
     /**
@@ -355,18 +351,6 @@ class Hostname implements HostnameInterface
     }
 
     /**
-     * Normalizes a top-level domain.
-     *
-     * @param string|null $tld The top-level domain.
-     */
-    private static function normalizeTld(?string &$tld = null): void
-    {
-        if ($tld !== null) {
-            $tld = strtolower($tld);
-        }
-    }
-
-    /**
      * Normalizes domain parts.
      *
      * @param string[] $domainParts The domain parts.
@@ -376,6 +360,20 @@ class Hostname implements HostnameInterface
         array_walk($domainParts, function (&$part) {
             $part = strtolower($part);
         });
+    }
+
+    /**
+     * Normalizes a top-level domain.
+     *
+     * @param string|null $tld The top-level domain.
+     */
+    private static function normalizeTld(?string &$tld = null): void
+    {
+        if ($tld === null) {
+            return;
+        }
+
+        $tld = strtolower($tld);
     }
 
     /**
