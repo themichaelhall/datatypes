@@ -298,7 +298,10 @@ class FilePath implements FilePathInterface
             }
         }
 
-        $parts = explode(DIRECTORY_SEPARATOR, $str);
+        $parts = explode(
+            DIRECTORY_SEPARATOR,
+            DIRECTORY_SEPARATOR !== '/' ? str_replace('/', DIRECTORY_SEPARATOR, $str) : $str
+        );
 
         $isAbsolute = false;
         $aboveBaseLevel = 0;
