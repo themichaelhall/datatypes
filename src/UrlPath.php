@@ -107,11 +107,18 @@ class UrlPath implements UrlPathInterface
      */
     public function withUrlPath(UrlPathInterface $urlPath): UrlPathInterface
     {
-        if (!$this->combine($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+        $result = new self(
+            $this->isAbsolute,
+            $this->aboveBaseLevelCount,
+            $this->directoryParts,
+            $urlPath->getFilename()
+        );
+
+        if (!$result->combineDirectory($urlPath->isAbsolute(), $urlPath->getDirectoryParts(), $error)) {
             throw new UrlPathLogicException('Url path "' . $this->__toString() . '" can not be combined with url path "' . $urlPath->__toString() . '": ' . $error);
         }
 
-        return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+        return $result;
     }
 
     /**

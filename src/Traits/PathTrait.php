@@ -8,8 +8,6 @@ declare(strict_types=1);
 
 namespace DataTypes\Traits;
 
-use DataTypes\Interfaces\Traits\PathTraitInterface;
-
 /**
  * Trait representing a path.
  *
@@ -178,36 +176,26 @@ trait PathTrait
     }
 
     /**
-     * Tries to combine this path with another path.
+     * Tries to combine this with new directory info.
      *
-     * @param PathTraitInterface $other          The other path.
-     * @param bool|null          $isAbsolute     Whether the path is absolute or relative is combining was successful, undefined otherwise.
-     * @param int|null           $aboveBaseLevel The number of directory parts above base level if combining was successful, undefined otherwise.
-     * @param string[]|null      $directoryParts The directory parts if combining was successful, undefined otherwise.
-     * @param string|null        $filename       The file if combining was not successful, undefined otherwise.
-     * @param string|null        $error          The error text if combining was not successful, undefined otherwise.
+     * @param bool        $isAbsolute     Whether the directory to combine with is absolute or relative.
+     * @param string[]    $directoryParts The directory parts to combine with.
+     * @param string|null $error          The error text if combining was not successful, undefined otherwise.
      *
      * @return bool True if combining was successful, false otherwise.
      */
-    private function combine(PathTraitInterface $other, ?bool &$isAbsolute = null, ?int &$aboveBaseLevel = null, ?array &$directoryParts = null, ?string &$filename = null, ?string &$error = null): bool
+    private function combineDirectory(bool $isAbsolute, array $directoryParts, ?string &$error): bool
     {
-        // If other path is absolute, current path is overridden.
-        if ($other->isAbsolute()) {
-            $isAbsolute = $other->isAbsolute();
-            $aboveBaseLevel = 0;
-            $directoryParts = $other->getDirectoryParts();
-            $filename = $other->getFilename();
+        if ($isAbsolute) {
+            $this->isAbsolute = true;
+            $this->aboveBaseLevelCount = 0;
+            $this->directoryParts = $directoryParts;
 
             return true;
         }
 
-        $isAbsolute = $this->isAbsolute;
-        $aboveBaseLevel = $this->aboveBaseLevelCount;
-        $directoryParts = $this->directoryParts;
-        $filename = $other->getFilename();
-
-        foreach ($other->getDirectoryParts() as $otherDirectoryPart) {
-            if (!$this->combineDirectoryPart($otherDirectoryPart, $aboveBaseLevel, $directoryParts, $error)) {
+        foreach ($directoryParts as $directoryPart) {
+            if (!$this->addDirectoryPart($directoryPart, $error)) {
                 return false;
             }
         }
@@ -216,36 +204,34 @@ trait PathTrait
     }
 
     /**
-     * Tries to combine a directory part with another path.
+     * Tries to add a directory part to this.
      *
-     * @param string        $part                The part.
-     * @param int|null      $aboveBaseLevelCount The number of directory parts above base level if combining was successful, undefined otherwise.
-     * @param string[]|null $directoryParts      The directory parts if combining was successful, undefined otherwise.
-     * @param string|null   $error               The error text if combining was not successful, undefined otherwise.
+     * @param string      $part  The directory part.
+     * @param string|null $error The error text if adding was not successful, undefined otherwise.
      *
-     * @return bool True if combining was successful, false otherwise.
+     * @return bool True if adding was successful, false otherwise.
      */
-    private function combineDirectoryPart(string $part, ?int &$aboveBaseLevelCount = null, ?array &$directoryParts = null, ?string &$error = null): bool
+    private function addDirectoryPart(string $part, ?string &$error): bool
     {
         if ($part === '..') {
-            if (count($directoryParts) === 0) {
+            if (count($this->directoryParts) === 0) {
                 if ($this->isAbsolute) {
                     $error = 'Absolute path is above root level.';
 
                     return false;
                 }
 
-                $aboveBaseLevelCount++;
+                $this->aboveBaseLevelCount++;
 
                 return true;
             }
 
-            array_pop($directoryParts);
+            array_pop($this->directoryParts);
 
             return true;
         }
 
-        $directoryParts[] = $part;
+        $this->directoryParts[] = $part;
 
         return true;
     }

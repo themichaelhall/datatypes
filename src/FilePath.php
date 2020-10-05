@@ -139,11 +139,19 @@ class FilePath implements FilePathInterface
      */
     public function withFilePath(FilePathInterface $filePath): FilePathInterface
     {
-        if (!$this->combine($filePath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+        $result = new self(
+            $this->isAbsolute,
+            $this->aboveBaseLevelCount,
+            $filePath->getDrive() ?: $this->getDrive(),
+            $this->directoryParts,
+            $filePath->getFilename()
+        );
+
+        if (!$result->combineDirectory($filePath->isAbsolute(), $filePath->getDirectoryParts(), $error)) {
             throw new FilePathLogicException('File path "' . $this->__toString() . '" can not be combined with file path "' . $filePath->__toString() . '": ' . $error);
         }
 
-        return new self($isAbsolute, $aboveBaseLevel, $filePath->getDrive() ?: $this->getDrive(), $directoryParts, $filename);
+        return $result;
     }
 
     /**
