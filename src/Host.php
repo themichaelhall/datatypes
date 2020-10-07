@@ -48,20 +48,19 @@ class Host implements HostInterface
      */
     public function getHostname(): HostnameInterface
     {
-        if ($this->hostname !== null) {
-            return $this->hostname;
+        if ($this->hostname === null) {
+            $ipAddressParts = $this->ipAddress->getParts();
+
+            return Hostname::fromParts([
+                strval($ipAddressParts[3]),
+                strval($ipAddressParts[2]),
+                strval($ipAddressParts[1]),
+                strval($ipAddressParts[0]),
+                'in-addr',
+            ], 'arpa');
         }
 
-        // If no hostname is present, create a standard "in-addr.arpa" hostname from IP address.
-        $ipAddressParts = $this->ipAddress->getParts();
-
-        return Hostname::fromParts([
-            strval($ipAddressParts[3]),
-            strval($ipAddressParts[2]),
-            strval($ipAddressParts[1]),
-            strval($ipAddressParts[0]),
-            'in-addr',
-        ], 'arpa');
+        return $this->hostname;
     }
 
     /**
@@ -131,7 +130,7 @@ class Host implements HostInterface
      */
     public static function isValid(string $host): bool
     {
-        return self::doParse($host);
+        return self::doParse($host) !== null;
     }
 
     /**
@@ -147,11 +146,12 @@ class Host implements HostInterface
      */
     public static function parse(string $host): HostInterface
     {
-        if (!self::doParse($host, $hostname, $ipAddress, $error)) {
+        $result = self::doParse($host, $error);
+        if ($result === null) {
             throw new HostInvalidArgumentException($error);
         }
 
-        return new self($hostname, $ipAddress);
+        return $result;
     }
 
     /**
@@ -165,11 +165,7 @@ class Host implements HostInterface
      */
     public static function tryParse(string $host): ?HostInterface
     {
-        if (!self::doParse($host, $hostname, $ipAddress)) {
-            return null;
-        }
-
-        return new self($hostname, $ipAddress);
+        return self::doParse($host);
     }
 
     /**
@@ -178,7 +174,7 @@ class Host implements HostInterface
      * @param HostnameInterface|null  $hostname  The hostname.
      * @param IPAddressInterface|null $ipAddress The IP address.
      */
-    private function __construct(?HostnameInterface $hostname = null, ?IPAddressInterface $ipAddress = null)
+    private function __construct(?HostnameInterface $hostname, ?IPAddressInterface $ipAddress)
     {
         $this->hostname = $hostname;
         $this->ipAddress = $ipAddress;
@@ -187,43 +183,43 @@ class Host implements HostInterface
     /**
      * Tries to parse a host and returns the result or error text.
      *
-     * @param string                  $host      The host.
-     * @param HostnameInterface|null  $hostname  The hostname or null if parsing was successful, undefined otherwise.
-     * @param IPAddressInterface|null $ipAddress The IP address or null if parsing was successful, undefined otherwise.
-     * @param string|null             $error     The error text if parsing was not successful, undefined otherwise.
+     * @param string      $str   The host to parse.
+     * @param string|null $error The error text if parsing was not successful, undefined otherwise.
      *
-     * @return bool True if parsing was successful, false otherwise.
+     * @return self|null The host if parsing was successful, null otherwise.
      */
-    private static function doParse(string $host, ?HostnameInterface &$hostname = null, ?IPAddressInterface &$ipAddress = null, ?string &$error = null): bool
+    private static function doParse(string $str, ?string &$error = null): ?self
     {
-        if ($host === '') {
-            $error = 'Host "' . $host . '" is empty.';
+        if ($str === '') {
+            $error = 'Host "' . $str . '" is empty.';
 
-            return false;
+            return null;
         }
 
-        // Parse host as either a hostname or an IP address.
-        try {
-            $hostname = Hostname::parse($host);
-        } catch (HostnameInvalidArgumentException $e) {
-            $error = 'Host "' . $host . '" is invalid: ' . $e->getMessage();
+        $hostname = null;
+        $ipAddress = null;
 
-            $ipAddress = IPAddress::tryParse($host);
+        try {
+            $hostname = Hostname::parse($str);
+        } catch (HostnameInvalidArgumentException $e) {
+            $error = 'Host "' . $str . '" is invalid: ' . $e->getMessage();
+
+            $ipAddress = IPAddress::tryParse($str);
             if ($ipAddress === null) {
-                return false;
+                return null;
             }
         }
 
-        return true;
+        return new self($hostname, $ipAddress);
     }
 
     /**
-     * @var HostnameInterface My hostname.
+     * @var HostnameInterface|null My hostname.
      */
     private $hostname;
 
     /**
-     * @var IPAddressInterface My IP address.
+     * @var IPAddressInterface|null My IP address.
      */
     private $ipAddress;
 }

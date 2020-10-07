@@ -10,14 +10,13 @@ namespace DataTypes\Interfaces;
 
 use DataTypes\Exceptions\UrlPathInvalidArgumentException;
 use DataTypes\Exceptions\UrlPathLogicException;
-use DataTypes\Interfaces\Traits\PathTraitInterface;
 
 /**
  * Interface for UrlPath class.
  *
  * @since 1.0.0
  */
-interface UrlPathInterface extends PathTraitInterface
+interface UrlPathInterface extends PathInterface
 {
     /**
      * Returns true if the url path equals other url path, false otherwise.

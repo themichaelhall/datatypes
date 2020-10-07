@@ -10,14 +10,13 @@ namespace DataTypes\Interfaces;
 
 use DataTypes\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\Exceptions\FilePathLogicException;
-use DataTypes\Interfaces\Traits\PathTraitInterface;
 
 /**
  * Interface for FilePath class.
  *
  * @since 1.0.0
  */
-interface FilePathInterface extends PathTraitInterface
+interface FilePathInterface extends PathInterface
 {
     /**
      * Returns true if the file path equals other file path, false otherwise.

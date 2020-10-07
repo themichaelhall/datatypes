@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests\Helpers\Fakes {
 
+    use function php_uname;
+
     /**
      * Helper for faking php_uname function.
      */
@@ -12,7 +14,7 @@ namespace DataTypes\Tests\Helpers\Fakes {
         /**
          * Disable fake php_uname.
          */
-        public static function disable()
+        public static function disable(): void
         {
             self::$isEnabled = false;
         }
@@ -20,9 +22,9 @@ namespace DataTypes\Tests\Helpers\Fakes {
         /**
          * Enable fake php_uname.
          */
-        public static function enable()
+        public static function enable(): void
         {
-            self::$osName = 'Other';
+            self::$osName = php_uname('s');
             self::$isEnabled = true;
         }
 
@@ -31,7 +33,7 @@ namespace DataTypes\Tests\Helpers\Fakes {
          *
          * @return string The operating system name.
          */
-        public static function getOsName()
+        public static function getOsName(): string
         {
             return self::$osName;
         }
@@ -41,7 +43,7 @@ namespace DataTypes\Tests\Helpers\Fakes {
          *
          * @return bool True if fake php_uname is enabled, false otherwise.
          */
-        public static function isEnabled()
+        public static function isEnabled(): bool
         {
             return self::$isEnabled;
         }
@@ -51,15 +53,15 @@ namespace DataTypes\Tests\Helpers\Fakes {
          *
          * @param string $osName The operating system name.
          */
-        public static function setOsName($osName)
+        public static function setOsName(string $osName): void
         {
             self::$osName = $osName;
         }
 
         /**
-         * @var string My operating system name.
+         * @var string|null My operating system name.
          */
-        private static $osName = 'Other';
+        private static $osName = null;
 
         /**
          * @var bool True if fake php_uname is enabled, false otherwise.
@@ -79,7 +81,7 @@ namespace DataTypes {
      *
      * @return string The result from either fake or real php_uname.
      */
-    function php_uname($mode)
+    function php_uname(string $mode): string
     {
         if (FakePhpUname::isEnabled()) {
             return FakePhpUname::getOsName();

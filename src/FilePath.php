@@ -139,11 +139,19 @@ class FilePath implements FilePathInterface
      */
     public function withFilePath(FilePathInterface $filePath): FilePathInterface
     {
-        if (!$this->combine($filePath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+        $result = new self(
+            $this->isAbsolute,
+            $this->aboveBaseLevelCount,
+            $filePath->getDrive() ?: $this->getDrive(),
+            $this->directoryParts,
+            $filePath->getFilename()
+        );
+
+        if (!$result->combineDirectory($filePath->isAbsolute(), $filePath->getDirectoryParts(), $error)) {
             throw new FilePathLogicException('File path "' . $this->__toString() . '" can not be combined with file path "' . $filePath->__toString() . '": ' . $error);
         }
 
-        return new self($isAbsolute, $aboveBaseLevel, $filePath->getDrive() ?: $this->getDrive(), $directoryParts, $filename);
+        return $result;
     }
 
     /**
@@ -169,13 +177,7 @@ class FilePath implements FilePathInterface
      */
     public static function isValid(string $filePath): bool
     {
-        return self::parseFilePath(
-            DIRECTORY_SEPARATOR,
-            $filePath,
-            function ($p, $d, &$e) {
-                return self::validatePart($p, $d, $e);
-            }
-        );
+        return self::doParse($filePath) !== null;
     }
 
     /**
@@ -191,25 +193,12 @@ class FilePath implements FilePathInterface
      */
     public static function parse(string $filePath): FilePathInterface
     {
-        if (!self::parseFilePath(
-            DIRECTORY_SEPARATOR,
-            $filePath,
-            function ($p, $d, &$e) {
-                return self::validatePart($p, $d, $e);
-            },
-            null,
-            $isAbsolute,
-            $aboveBaseLevel,
-            $drive,
-            $directoryParts,
-            $filename,
-            $error
-        )
-        ) {
+        $result = self::doParse($filePath, $error);
+        if ($result === null) {
             throw new FilePathInvalidArgumentException('File path "' . $filePath . '" is invalid: ' . $error);
         }
 
-        return new self($isAbsolute, $aboveBaseLevel, $drive, $directoryParts, $filename);
+        return $result;
     }
 
     /**
@@ -225,25 +214,11 @@ class FilePath implements FilePathInterface
      */
     public static function parseAsDirectory(string $filePath): FilePathInterface
     {
-        if (!self::parseFilePath(
-            DIRECTORY_SEPARATOR,
-            $filePath,
-            function ($p, $d, &$e) {
-                return self::validatePart($p, $d, $e);
-            },
-            null,
-            $isAbsolute,
-            $aboveBaseLevel,
-            $drive,
-            $directoryParts,
-            $filename,
-            $error
-        )
-        ) {
+        $result = self::doParse($filePath, $error);
+        if ($result === null) {
             throw new FilePathInvalidArgumentException('File path "' . $filePath . '" is invalid: ' . $error);
         }
 
-        $result = new self($isAbsolute, $aboveBaseLevel, $drive, $directoryParts, $filename);
         $result->convertToDirectory();
 
         return $result;
@@ -260,24 +235,7 @@ class FilePath implements FilePathInterface
      */
     public static function tryParse(string $filePath): ?FilePathInterface
     {
-        if (!self::parseFilePath(
-            DIRECTORY_SEPARATOR,
-            $filePath,
-            function ($p, $d, &$e) {
-                return self::validatePart($p, $d, $e);
-            },
-            null,
-            $isAbsolute,
-            $aboveBaseLevel,
-            $drive,
-            $directoryParts,
-            $filename
-        )
-        ) {
-            return null;
-        }
-
-        return new self($isAbsolute, $aboveBaseLevel, $drive, $directoryParts, $filename);
+        return self::doParse($filePath);
     }
 
     /**
@@ -291,24 +249,11 @@ class FilePath implements FilePathInterface
      */
     public static function tryParseAsDirectory(string $filePath): ?FilePathInterface
     {
-        if (!self::parseFilePath(
-            DIRECTORY_SEPARATOR,
-            $filePath,
-            function ($p, $d, &$e) {
-                return self::validatePart($p, $d, $e);
-            },
-            null,
-            $isAbsolute,
-            $aboveBaseLevel,
-            $drive,
-            $directoryParts,
-            $filename
-        )
-        ) {
+        $result = self::doParse($filePath);
+        if ($result === null) {
             return null;
         }
 
-        $result = new self($isAbsolute, $aboveBaseLevel, $drive, $directoryParts, $filename);
         $result->convertToDirectory();
 
         return $result;
@@ -325,7 +270,7 @@ class FilePath implements FilePathInterface
      * @param string[]    $directoryParts The directory parts.
      * @param string|null $filename       The filename.
      */
-    private function __construct(bool $isAbsolute, int $aboveBaseLevel, ?string $drive = null, array $directoryParts = [], ?string $filename = null)
+    private function __construct(bool $isAbsolute, int $aboveBaseLevel, ?string $drive, array $directoryParts, ?string $filename)
     {
         $this->isAbsolute = $isAbsolute;
         $this->aboveBaseLevelCount = $aboveBaseLevel;
@@ -335,60 +280,53 @@ class FilePath implements FilePathInterface
     }
 
     /**
-     * Tries to parse a file path and returns the result or error text.
+     * Tries to parse a file path and returns the result or null.
      *
-     * @param string        $directorySeparator The directory separator.
-     * @param string        $path               The path.
-     * @param callable      $partValidator      The part validator.
-     * @param callable      $stringDecoder      The string decoding function or null if parts should not be decoded.
-     * @param bool|null     $isAbsolute         Whether the path is absolute or relative is parsing was successful, undefined otherwise.
-     * @param int|null      $aboveBaseLevel     The number of directory parts above base level if parsing was successful, undefined otherwise.
-     * @param string|null   $drive              The drive or null if parsing was successful, undefined otherwise
-     * @param string[]|null $directoryParts     The directory parts if parsing was successful, undefined otherwise.
-     * @param string|null   $filename           The file or null if parsing was not successful, undefined otherwise.
-     * @param string|null   $error              The error text if validation was not successful, undefined otherwise.
+     * @param string      $str   The file path to parse.
+     * @param string|null $error The error text if parsing was not successful, undefined otherwise.
      *
-     * @return bool True if parsing was successful, false otherwise.
+     * @return self|null The file path if parsing was successful, null otherwise.
      */
-    private static function parseFilePath(string $directorySeparator, string $path, callable $partValidator, callable $stringDecoder = null, ?bool &$isAbsolute = null, ?int &$aboveBaseLevel = null, ?string &$drive = null, ?array &$directoryParts = null, ?string &$filename = null, ?string &$error = null): bool
+    private static function doParse(string $str, ?string &$error = null): ?self
     {
         $drive = null;
 
         // If on Window, try to parse drive.
         if (self::isWindows()) {
-            $driveAndPath = explode(':', $path, 2);
+            $driveAndPath = explode(':', $str, 2);
 
             if (count($driveAndPath) === 2) {
                 $drive = $driveAndPath[0];
                 if (!self::validateDrive($drive, $error)) {
-                    return false;
+                    return null;
                 }
 
                 $drive = strtoupper($drive);
-                $path = $driveAndPath[1];
+                $str = $driveAndPath[1];
             }
         }
 
-        $result = self::doParse(
-            $directorySeparator,
-            DIRECTORY_SEPARATOR !== '/' ? str_replace('/', DIRECTORY_SEPARATOR, $path) : $path,
-            $partValidator,
-            $stringDecoder,
-            $isAbsolute,
-            $aboveBaseLevel,
-            $directoryParts,
-            $filename,
-            $error
+        $parts = explode(
+            DIRECTORY_SEPARATOR,
+            DIRECTORY_SEPARATOR !== '/' ? str_replace('/', DIRECTORY_SEPARATOR, $str) : $str
         );
 
-        // File path containing a drive and relative path is invalid.
-        if ($drive !== null && !$isAbsolute) {
-            $error = 'Path can not contain drive "' . $drive . '" and non-absolute path "' . $path . '".';
+        $isAbsolute = false;
+        $aboveBaseLevel = 0;
+        $directoryParts = [];
+        $filename = null;
 
-            return false;
+        if (!self::parseParts($parts, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+            return null;
         }
 
-        return $result;
+        if ($drive !== null && !$isAbsolute) {
+            $error = 'Path can not contain drive "' . $drive . '" and non-absolute path "' . $str . '".';
+
+            return null;
+        }
+
+        return new self($isAbsolute, $aboveBaseLevel, $drive, $directoryParts, $filename);
     }
 
     /**
@@ -428,6 +366,18 @@ class FilePath implements FilePathInterface
         }
 
         return true;
+    }
+
+    /**
+     * Decodes a directory part or a file name. Does nothing for this class.
+     *
+     * @param string $part The directory part or a file name.
+     *
+     * @return string The decoded directory part or file name.
+     */
+    private static function decodePart(string $part): string
+    {
+        return $part;
     }
 
     /**

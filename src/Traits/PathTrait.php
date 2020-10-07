@@ -8,8 +8,6 @@ declare(strict_types=1);
 
 namespace DataTypes\Traits;
 
-use DataTypes\Interfaces\Traits\PathTraitInterface;
-
 /**
  * Trait representing a path.
  *
@@ -178,36 +176,26 @@ trait PathTrait
     }
 
     /**
-     * Tries to combine this path with another path.
+     * Tries to combine this with new directory info.
      *
-     * @param PathTraitInterface $other          The other path.
-     * @param bool|null          $isAbsolute     Whether the path is absolute or relative is combining was successful, undefined otherwise.
-     * @param int|null           $aboveBaseLevel The number of directory parts above base level if combining was successful, undefined otherwise.
-     * @param string[]|null      $directoryParts The directory parts if combining was successful, undefined otherwise.
-     * @param string|null        $filename       The file if combining was not successful, undefined otherwise.
-     * @param string|null        $error          The error text if combining was not successful, undefined otherwise.
+     * @param bool        $isAbsolute     Whether the directory to combine with is absolute or relative.
+     * @param string[]    $directoryParts The directory parts to combine with.
+     * @param string|null $error          The error text if combining was not successful, undefined otherwise.
      *
      * @return bool True if combining was successful, false otherwise.
      */
-    private function combine(PathTraitInterface $other, ?bool &$isAbsolute = null, ?int &$aboveBaseLevel = null, ?array &$directoryParts = null, ?string &$filename = null, ?string &$error = null): bool
+    private function combineDirectory(bool $isAbsolute, array $directoryParts, ?string &$error): bool
     {
-        // If other path is absolute, current path is overridden.
-        if ($other->isAbsolute()) {
-            $isAbsolute = $other->isAbsolute();
-            $aboveBaseLevel = 0;
-            $directoryParts = $other->getDirectoryParts();
-            $filename = $other->getFilename();
+        if ($isAbsolute) {
+            $this->isAbsolute = true;
+            $this->aboveBaseLevelCount = 0;
+            $this->directoryParts = $directoryParts;
 
             return true;
         }
 
-        $isAbsolute = $this->isAbsolute;
-        $aboveBaseLevel = $this->aboveBaseLevelCount;
-        $directoryParts = $this->directoryParts;
-        $filename = $other->getFilename();
-
-        foreach ($other->getDirectoryParts() as $otherDirectoryPart) {
-            if (!$this->combineDirectoryPart($otherDirectoryPart, $aboveBaseLevel, $directoryParts, $error)) {
+        foreach ($directoryParts as $directoryPart) {
+            if (!$this->addDirectoryPart($directoryPart, $error)) {
                 return false;
             }
         }
@@ -216,36 +204,34 @@ trait PathTrait
     }
 
     /**
-     * Tries to combine a directory part with another path.
+     * Tries to add a directory part to this.
      *
-     * @param string        $part                The part.
-     * @param int|null      $aboveBaseLevelCount The number of directory parts above base level if combining was successful, undefined otherwise.
-     * @param string[]|null $directoryParts      The directory parts if combining was successful, undefined otherwise.
-     * @param string|null   $error               The error text if combining was not successful, undefined otherwise.
+     * @param string      $part  The directory part.
+     * @param string|null $error The error text if adding was not successful, undefined otherwise.
      *
-     * @return bool True if combining was successful, false otherwise.
+     * @return bool True if adding was successful, false otherwise.
      */
-    private function combineDirectoryPart(string $part, ?int &$aboveBaseLevelCount = null, ?array &$directoryParts = null, ?string &$error = null): bool
+    private function addDirectoryPart(string $part, ?string &$error): bool
     {
         if ($part === '..') {
-            if (count($directoryParts) === 0) {
+            if (count($this->directoryParts) === 0) {
                 if ($this->isAbsolute) {
                     $error = 'Absolute path is above root level.';
 
                     return false;
                 }
 
-                $aboveBaseLevelCount++;
+                $this->aboveBaseLevelCount++;
 
                 return true;
             }
 
-            array_pop($directoryParts);
+            array_pop($this->directoryParts);
 
             return true;
         }
 
-        $directoryParts[] = $part;
+        $this->directoryParts[] = $part;
 
         return true;
     }
@@ -289,40 +275,34 @@ trait PathTrait
     }
 
     /**
-     * Tries to parse a path and returns the result or error text.
+     * Tries to parse an array of parts and returns the result or null.
      *
-     * @param string        $directorySeparator The directory separator.
-     * @param string        $path               The path.
-     * @param callable      $partValidator      The part validator.
-     * @param callable|null $stringDecoder      The string decoding function or null if parts should not be decoded.
-     * @param bool|null     $isAbsolute         Whether the path is absolute or relative if parsing was successful, undefined otherwise.
-     * @param int|null      $aboveBaseLevel     The number of directory parts above base level if parsing was successful, undefined otherwise.
-     * @param string[]|null $directoryParts     The directory parts if parsing was successful, undefined otherwise.
-     * @param string|null   $filename           The file if parsing was not successful, undefined otherwise.
-     * @param string|null   $error              The error text if validation was not successful, undefined otherwise.
+     * @param string[]    $parts          The parts.
+     * @param bool        $isAbsolute     Whether the path is absolute or relative if parsing was successful, undefined otherwise.
+     * @param int         $aboveBaseLevel The number of directory parts above base level if parsing was successful, undefined otherwise.
+     * @param string[]    $directoryParts The directory parts if parsing was successful, undefined otherwise.
+     * @param string|null $filename       The filename if parsing was not successful, undefined otherwise.
+     * @param string|null $error          The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function doParse(string $directorySeparator, string $path, callable $partValidator, ?callable $stringDecoder = null, ?bool &$isAbsolute = null, ?int &$aboveBaseLevel = null, ?array &$directoryParts = null, ?string &$filename = null, ?string &$error = null): bool
+    private static function parseParts(array $parts, bool &$isAbsolute, int &$aboveBaseLevel, array &$directoryParts, ?string &$filename, ?string &$error = null): bool
     {
-        $parts = explode($directorySeparator, $path);
         $partsCount = count($parts);
 
-        $directoryParts = [];
-        $filename = null;
-        $isAbsolute = false;
-        $aboveBaseLevel = 0;
-        $index = 0;
+        foreach ($parts as $index => $part) {
+            $part = $parts[$index];
 
-        // If the first part is empty and other parts follow, the path begins with directory separator and is therefore absolute.
-        if ($partsCount > 1 && $parts[0] === '') {
-            $isAbsolute = true;
-            $index++;
-        }
+            $isFirstPart = $index === 0;
+            $isLastPart = $index === $partsCount - 1;
 
-        // Go through all parts.
-        for (; $index < $partsCount; $index++) {
-            if (!self::parsePart($parts[$index], $index === $partsCount - 1, $partValidator, $stringDecoder, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+            if ($isFirstPart && $partsCount > 1 && $part === '') {
+                // If the first part is empty and other parts follow, the path begins with directory separator and is therefore absolute.
+                $isAbsolute = true;
+                continue;
+            }
+
+            if (!self::parsePart($part, $isLastPart, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
                 return false;
             }
         }
@@ -331,39 +311,33 @@ trait PathTrait
     }
 
     /**
-     * Tries to parse a part of a path and returns the result or error text.
+     * Tries to parse a part of a path and returns the result or null.
      *
-     * @param string        $part           The part of the path.
-     * @param bool          $isLastPart     True if this is the last part, false otherwise.
-     * @param callable      $partValidator  The part validator.
-     * @param callable|null $stringDecoder  The string decoding function or null if parts should not be decoded.
-     * @param bool|null     $isAbsolute     Whether the path is absolute or relative if parsing was successful, undefined otherwise.
-     * @param int|null      $aboveBaseLevel The number of directory parts above base level if parsing was successful, undefined otherwise.
-     * @param string[]|null $directoryParts The directory parts if parsing was successful, undefined otherwise.
-     * @param string|null   $filename       The file if parsing was not successful, undefined otherwise.
-     * @param string|null   $error          The error text if validation was not successful, undefined otherwise.
+     * @param string      $part           The part of the path.
+     * @param bool        $isLastPart     True if this is the last part, false otherwise.
+     * @param bool        $isAbsolute     Whether the path is absolute or relative.
+     * @param int         $aboveBaseLevel The number of directory parts above base level if parsing was successful, undefined otherwise.
+     * @param string[]    $directoryParts The directory parts if parsing was successful, undefined otherwise.
+     * @param string|null $filename       The file if parsing was not successful, undefined otherwise.
+     * @param string|null $error          The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function parsePart(string $part, bool $isLastPart, callable $partValidator, ?callable $stringDecoder, ?bool $isAbsolute, ?int &$aboveBaseLevel, ?array &$directoryParts = null, ?string &$filename = null, ?string &$error = null): bool
+    private static function parsePart(string $part, bool $isLastPart, bool $isAbsolute, int &$aboveBaseLevel, array &$directoryParts, ?string &$filename, ?string &$error = null): bool
     {
-        // Skip empty and current directory parts.
         if ($part === '' || $part === '.') {
             return true;
         }
 
-        // Handle parent directory-part.
         if ($part === '..') {
             return self::parseParentDirectoryPart($isAbsolute, $aboveBaseLevel, $directoryParts, $error);
         }
 
-        // Handle directory part.
         if (!$isLastPart) {
-            return self::parseDirectoryPart($part, $partValidator, $stringDecoder, $directoryParts, $error);
+            return self::parseDirectoryPart($part, $directoryParts, $error);
         }
 
-        // Handle last (i.e. filename) part.
-        return self::parseFilenamePart($part, $partValidator, $stringDecoder, $filename, $error);
+        return self::parseFilenamePart($part, $filename, $error);
     }
 
     /**
@@ -396,27 +370,21 @@ trait PathTrait
     }
 
     /**
-     * Handles the directory part.
+     * Parses a directory part.
      *
-     * @param string        $part           The file name part.
-     * @param callable      $partValidator  The part validator.
-     * @param callable|null $stringDecoder  The string decoding function or null if parts should not be decoded.
-     * @param array         $directoryParts The directory parts.
-     * @param string|null   $error          The error text if validation was not successful, undefined otherwise.
+     * @param string      $part           The file name part.
+     * @param array       $directoryParts The directory parts.
+     * @param string|null $error          The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function parseDirectoryPart(string $part, callable $partValidator, ?callable $stringDecoder, ?array &$directoryParts, ?string &$error = null): bool
+    private static function parseDirectoryPart(string $part, array &$directoryParts, ?string &$error = null): bool
     {
-        if (!$partValidator($part, true, $error)) {
+        if (!self::validatePart($part, true, $error)) {
             return false;
         }
 
-        if ($stringDecoder !== null) {
-            $part = $stringDecoder($part);
-        }
-
-        $directoryParts[] = $part;
+        $directoryParts[] = self::decodePart($part);
 
         return true;
     }
@@ -424,25 +392,19 @@ trait PathTrait
     /**
      * Handles the file name part.
      *
-     * @param string        $part          The file name part.
-     * @param callable      $partValidator The part validator.
-     * @param callable|null $stringDecoder The string decoding function or null if parts should not be decoded.
-     * @param string|null   $filename      The file if parsing was not successful, undefined otherwise.
-     * @param string|null   $error         The error text if validation was not successful, undefined otherwise.
+     * @param string      $part     The file name part.
+     * @param string|null $filename The file if parsing was not successful, undefined otherwise.
+     * @param string|null $error    The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if parsing was successful, false otherwise.
      */
-    private static function parseFilenamePart(string $part, callable $partValidator, ?callable $stringDecoder = null, ?string &$filename = null, ?string &$error = null): bool
+    private static function parseFilenamePart(string $part, ?string &$filename = null, ?string &$error = null): bool
     {
-        if (!$partValidator($part, false, $error)) {
+        if (!self::validatePart($part, false, $error)) {
             return false;
         }
 
-        if ($stringDecoder !== null) {
-            $part = $stringDecoder($part);
-        }
-
-        $filename = $part;
+        $filename = self::decodePart($part);
 
         return true;
     }

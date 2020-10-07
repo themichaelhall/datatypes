@@ -107,11 +107,18 @@ class UrlPath implements UrlPathInterface
      */
     public function withUrlPath(UrlPathInterface $urlPath): UrlPathInterface
     {
-        if (!$this->combine($urlPath, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+        $result = new self(
+            $this->isAbsolute,
+            $this->aboveBaseLevelCount,
+            $this->directoryParts,
+            $urlPath->getFilename()
+        );
+
+        if (!$result->combineDirectory($urlPath->isAbsolute(), $urlPath->getDirectoryParts(), $error)) {
             throw new UrlPathLogicException('Url path "' . $this->__toString() . '" can not be combined with url path "' . $urlPath->__toString() . '": ' . $error);
         }
 
-        return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+        return $result;
     }
 
     /**
@@ -143,7 +150,7 @@ class UrlPath implements UrlPathInterface
      */
     public function __toString(): string
     {
-        return $this->toString('/', function ($s) {
+        return $this->toString(self::DIRECTORY_SEPARATOR, function ($s) {
             return rawurlencode($s);
         });
     }
@@ -155,17 +162,11 @@ class UrlPath implements UrlPathInterface
      *
      * @param string $urlPath The url path.
      *
-     * @return bool True if the $urlPath parameter is a valid url path, false otherwise.
+     * @return bool True if the $path parameter is a valid url path, false otherwise.
      */
     public static function isValid(string $urlPath): bool
     {
-        return self::doParse(
-            '/',
-            $urlPath,
-            function ($p, $d, &$e) {
-                return self::validatePart($p, $d, $e);
-            }
-        );
+        return self::doParse($urlPath) !== null;
     }
 
     /**
@@ -181,26 +182,12 @@ class UrlPath implements UrlPathInterface
      */
     public static function parse(string $urlPath): UrlPathInterface
     {
-        if (!self::doParse(
-            '/',
-            $urlPath,
-            function ($p, $d, &$e) {
-                return self::validatePart($p, $d, $e);
-            },
-            function ($s) {
-                return rawurldecode($s);
-            },
-            $isAbsolute,
-            $aboveBaseLevel,
-            $directoryParts,
-            $filename,
-            $error
-        )
-        ) {
-            throw new UrlPathInvalidArgumentException($error = 'Url path "' . $urlPath . '" is invalid: ' . $error);
+        $result = self::doParse($urlPath, $error);
+        if ($result === null) {
+            throw new UrlPathInvalidArgumentException('Url path "' . $urlPath . '" is invalid: ' . $error);
         }
 
-        return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+        return $result;
     }
 
     /**
@@ -216,26 +203,11 @@ class UrlPath implements UrlPathInterface
      */
     public static function parseAsDirectory(string $urlPath): UrlPathInterface
     {
-        if (!self::doParse(
-            '/',
-            $urlPath,
-            function ($p, $d, &$e) {
-                return self::validatePart($p, $d, $e);
-            },
-            function ($s) {
-                return rawurldecode($s);
-            },
-            $isAbsolute,
-            $aboveBaseLevel,
-            $directoryParts,
-            $filename,
-            $error
-        )
-        ) {
-            throw new UrlPathInvalidArgumentException($error = 'Url path "' . $urlPath . '" is invalid: ' . $error);
+        $result = self::doParse($urlPath, $error);
+        if ($result === null) {
+            throw new UrlPathInvalidArgumentException('Url path "' . $urlPath . '" is invalid: ' . $error);
         }
 
-        $result = new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
         $result->convertToDirectory();
 
         return $result;
@@ -252,25 +224,7 @@ class UrlPath implements UrlPathInterface
      */
     public static function tryParse(string $urlPath): ?UrlPathInterface
     {
-        if (!self::doParse(
-            '/',
-            $urlPath,
-            function ($p, $d, &$e) {
-                return self::validatePart($p, $d, $e);
-            },
-            function ($s) {
-                return rawurldecode($s);
-            },
-            $isAbsolute,
-            $aboveBaseLevel,
-            $directoryParts,
-            $filename
-        )
-        ) {
-            return null;
-        }
-
-        return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
+        return self::doParse($urlPath);
     }
 
     /**
@@ -284,25 +238,11 @@ class UrlPath implements UrlPathInterface
      */
     public static function tryParseAsDirectory(string $urlPath): ?UrlPathInterface
     {
-        if (!self::doParse(
-            '/',
-            $urlPath,
-            function ($p, $d, &$e) {
-                return self::validatePart($p, $d, $e);
-            },
-            function ($s) {
-                return rawurldecode($s);
-            },
-            $isAbsolute,
-            $aboveBaseLevel,
-            $directoryParts,
-            $filename
-        )
-        ) {
+        $result = self::doParse($urlPath);
+        if ($result === null) {
             return null;
         }
 
-        $result = new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
         $result->convertToDirectory();
 
         return $result;
@@ -316,12 +256,36 @@ class UrlPath implements UrlPathInterface
      * @param string[]    $directoryParts The directory parts.
      * @param string|null $filename       The filename.
      */
-    private function __construct(bool $isAbsolute, int $aboveBaseLevel, array $directoryParts, string $filename = null)
+    private function __construct(bool $isAbsolute, int $aboveBaseLevel, array $directoryParts, ?string $filename)
     {
         $this->isAbsolute = $isAbsolute;
         $this->aboveBaseLevelCount = $aboveBaseLevel;
         $this->directoryParts = $directoryParts;
         $this->filename = $filename;
+    }
+
+    /**
+     * Tries to parse a url path and returns the result or null.
+     *
+     * @param string      $str   The url path to parse.
+     * @param string|null $error The error text if parsing was not successful, undefined otherwise.
+     *
+     * @return self|null The url path if parsing was successful, null otherwise.
+     */
+    private static function doParse(string $str, ?string &$error = null): ?self
+    {
+        $parts = explode(self::DIRECTORY_SEPARATOR, $str);
+
+        $isAbsolute = false;
+        $aboveBaseLevel = 0;
+        $directoryParts = [];
+        $filename = null;
+
+        if (!self::parseParts($parts, $isAbsolute, $aboveBaseLevel, $directoryParts, $filename, $error)) {
+            return null;
+        }
+
+        return new self($isAbsolute, $aboveBaseLevel, $directoryParts, $filename);
     }
 
     /**
@@ -343,4 +307,21 @@ class UrlPath implements UrlPathInterface
 
         return true;
     }
+
+    /**
+     * Decodes a directory part or a file name.
+     *
+     * @param string $part The directory part or a file name.
+     *
+     * @return string The decoded directory part or file name.
+     */
+    private static function decodePart(string $part): string
+    {
+        return rawurldecode($part);
+    }
+
+    /**
+     * @var string My directory separator.
+     */
+    private const DIRECTORY_SEPARATOR = '/';
 }
