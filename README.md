@@ -12,7 +12,7 @@ Data Types is a collection of data types classes for PHP.
 
 ## Requirements
 
-- PHP >= 7.1
+- PHP >= 7.2
 
 ## Install with Composer
 
