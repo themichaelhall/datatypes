@@ -1,3 +1,5 @@
+## Unreleased
+
 ## [2.2.0] - 2020-12-22
 
 - Added withFilename method to FilePath and UrlPath classes.
