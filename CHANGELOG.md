@@ -1,4 +1,4 @@
-## Unreleased
+## [2.2.0] - 2020-12-22
 
 - Added withFilename method to FilePath and UrlPath classes.
 - Added parseAsDirectory and tryParseAsDirectory methods to FilePath and UrlPath classes.
@@ -31,12 +31,9 @@
 
 - First stable revision.
 
+[2.2.0]: https://github.com/themichaelhall/datatypes/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/themichaelhall/datatypes/compare/v2.0.0...v2.1.0
-
 [2.0.0]: https://github.com/themichaelhall/datatypes/compare/v1.2.0...v2.0.0
-
 [1.2.0]: https://github.com/themichaelhall/datatypes/compare/v1.1.0...v1.2.0
-
 [1.1.0]: https://github.com/themichaelhall/datatypes/compare/v1.0.1...v1.1.0
-
 [1.0.1]: https://github.com/themichaelhall/datatypes/compare/v1.0.0...v1.0.1
