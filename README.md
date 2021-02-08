@@ -1,7 +1,6 @@
 # Data Types
 
-[![Build Status](https://travis-ci.org/themichaelhall/datatypes.svg?branch=master)](https://travis-ci.org/themichaelhall/datatypes)
-[![AppVeyor](https://ci.appveyor.com/api/projects/status/github/themichaelhall/datatypes?branch=master&svg=true)](https://ci.appveyor.com/project/themichaelhall/datatypes/branch/master)
+[![Tests](https://github.com/themichaelhall/datatypes/workflows/tests/badge.svg?branch=master)](https://github.com/themichaelhall/datatypes/actions)
 [![codecov.io](https://codecov.io/gh/themichaelhall/datatypes/coverage.svg?branch=master)](https://codecov.io/gh/themichaelhall/datatypes?branch=master)
 [![StyleCI](https://styleci.io/repos/60113501/shield?style=flat&branch=master)](https://styleci.io/repos/60113501)
 [![License](https://poser.pugx.org/datatypes/datatypes/license)](https://packagist.org/packages/datatypes/datatypes)

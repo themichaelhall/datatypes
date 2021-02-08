@@ -1,0 +1,30 @@
+name: tests
+on: [ push ]
+jobs:
+  tests:
+    runs-on: ${{ matrix.operating-system }}
+
+    strategy:
+      matrix:
+        operating-system: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
+        php-versions: [ '7.3', '7.4', '8.0' ]
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: xdebug
+
+      - name: Install dependencies
+        run: composer update --prefer-stable --no-progress
+
+      - name: Run tests
+        run: ./vendor/bin/phpunit --coverage-clover=coverage.xml
+
+      - name: Upload code coverage
+        if: ${{ matrix.operating-system == 'ubuntu-latest' }}
+        run: bash <(curl -s https://codecov.io/bash)
