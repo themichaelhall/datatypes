@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Changed required PHP version to >= 7.3.
+
 ## [2.2.0] - 2020-12-22
 
 - Added withFilename method to FilePath and UrlPath classes.
