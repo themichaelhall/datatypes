@@ -1,3 +1,5 @@
+## Unreleased
+
 ## [2.3.0] - 2021-02-10
 
 - Changed required PHP version to >= 7.3.
