@@ -23,14 +23,14 @@ class Scheme implements SchemeInterface
      *
      * @since 1.0.0
      */
-    const TYPE_HTTP = 1;
+    public const TYPE_HTTP = 1;
 
     /**
      * Scheme type https.
      *
      * @since 1.0.0
      */
-    const TYPE_HTTPS = 2;
+    public const TYPE_HTTPS = 2;
 
     /**
      * Returns true if the scheme equals other scheme, false otherwise.
