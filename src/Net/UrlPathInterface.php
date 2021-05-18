@@ -13,6 +13,7 @@ namespace DataTypes\Net;
 use DataTypes\Core\PathInterface;
 use DataTypes\Exceptions\UrlPathInvalidArgumentException;
 use DataTypes\Exceptions\UrlPathLogicException;
+use DataTypes\Core\PathInterface;
 
 /**
  * Interface for UrlPath class.
