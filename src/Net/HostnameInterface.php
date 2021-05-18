@@ -8,7 +8,9 @@
 
 declare(strict_types=1);
 
-namespace DataTypes\Interfaces;
+namespace DataTypes\Net;
+
+use DataTypes\Core\DataTypeInterface;
 
 /**
  * Interface for Hostname class.

@@ -8,13 +8,11 @@
 
 declare(strict_types=1);
 
-namespace DataTypes;
+namespace DataTypes\Net;
 
 use DataTypes\Exceptions\EmailAddressInvalidArgumentException;
 use DataTypes\Exceptions\HostnameInvalidArgumentException;
 use DataTypes\Exceptions\IPAddressInvalidArgumentException;
-use DataTypes\Interfaces\EmailAddressInterface;
-use DataTypes\Interfaces\HostInterface;
 
 /**
  * Class representing an email address.

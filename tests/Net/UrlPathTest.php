@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataTypes\Tests;
+namespace DataTypes\Tests\Net;
 
 use DataTypes\Exceptions\UrlPathInvalidArgumentException;
 use DataTypes\Exceptions\UrlPathLogicException;
