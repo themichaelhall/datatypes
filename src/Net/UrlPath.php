@@ -8,11 +8,10 @@
 
 declare(strict_types=1);
 
-namespace DataTypes;
+namespace DataTypes\Net;
 
 use DataTypes\Exceptions\UrlPathInvalidArgumentException;
 use DataTypes\Exceptions\UrlPathLogicException;
-use DataTypes\Interfaces\UrlPathInterface;
 use DataTypes\Traits\PathTrait;
 
 /**

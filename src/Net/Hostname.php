@@ -8,10 +8,9 @@
 
 declare(strict_types=1);
 
-namespace DataTypes;
+namespace DataTypes\Net;
 
 use DataTypes\Exceptions\HostnameInvalidArgumentException;
-use DataTypes\Interfaces\HostnameInterface;
 use InvalidArgumentException;
 
 /**

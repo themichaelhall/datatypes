@@ -8,11 +8,10 @@
 
 declare(strict_types=1);
 
-namespace DataTypes;
+namespace DataTypes\System;
 
 use DataTypes\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\Exceptions\FilePathLogicException;
-use DataTypes\Interfaces\FilePathInterface;
 use DataTypes\Traits\PathTrait;
 
 /**

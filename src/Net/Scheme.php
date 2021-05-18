@@ -8,10 +8,9 @@
 
 declare(strict_types=1);
 
-namespace DataTypes;
+namespace DataTypes\Net;
 
 use DataTypes\Exceptions\SchemeInvalidArgumentException;
-use DataTypes\Interfaces\SchemeInterface;
 
 /**
  * Class representing a scheme.

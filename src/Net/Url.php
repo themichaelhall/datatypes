@@ -8,17 +8,13 @@
 
 declare(strict_types=1);
 
-namespace DataTypes;
+namespace DataTypes\Net;
 
 use DataTypes\Exceptions\HostInvalidArgumentException;
 use DataTypes\Exceptions\SchemeInvalidArgumentException;
 use DataTypes\Exceptions\UrlInvalidArgumentException;
 use DataTypes\Exceptions\UrlPathInvalidArgumentException;
 use DataTypes\Exceptions\UrlPathLogicException;
-use DataTypes\Interfaces\HostInterface;
-use DataTypes\Interfaces\SchemeInterface;
-use DataTypes\Interfaces\UrlInterface;
-use DataTypes\Interfaces\UrlPathInterface;
 
 /**
  * Class representing a Url.

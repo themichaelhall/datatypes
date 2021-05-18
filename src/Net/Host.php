@@ -8,13 +8,10 @@
 
 declare(strict_types=1);
 
-namespace DataTypes;
+namespace DataTypes\Net;
 
 use DataTypes\Exceptions\HostInvalidArgumentException;
 use DataTypes\Exceptions\HostnameInvalidArgumentException;
-use DataTypes\Interfaces\HostInterface;
-use DataTypes\Interfaces\HostnameInterface;
-use DataTypes\Interfaces\IPAddressInterface;
 
 /**
  * Class representing a host.

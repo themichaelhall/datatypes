@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataTypes\Tests;
+namespace DataTypes\Tests\System;
 
 use DataTypes\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\Exceptions\FilePathLogicException;
