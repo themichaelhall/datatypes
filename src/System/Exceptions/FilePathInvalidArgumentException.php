@@ -8,15 +8,15 @@
 
 declare(strict_types=1);
 
-namespace DataTypes\Exceptions;
+namespace DataTypes\System\Exceptions;
 
 use InvalidArgumentException;
 
 /**
- * Exception used when passed invalid argument in UrlPath class.
+ * Exception used when passed invalid argument in FilePath class.
  *
  * @since 1.0.0
  */
-class UrlPathInvalidArgumentException extends InvalidArgumentException
+class FilePathInvalidArgumentException extends InvalidArgumentException
 {
 }

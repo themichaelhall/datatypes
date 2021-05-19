@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Net;
 
-use DataTypes\Exceptions\SchemeInvalidArgumentException;
+use DataTypes\Net\Exceptions\SchemeInvalidArgumentException;
 
 /**
  * Class representing a scheme.

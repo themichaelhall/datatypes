@@ -10,9 +10,9 @@ declare(strict_types=1);
 
 namespace DataTypes\Net;
 
-use DataTypes\Exceptions\EmailAddressInvalidArgumentException;
-use DataTypes\Exceptions\HostnameInvalidArgumentException;
-use DataTypes\Exceptions\IPAddressInvalidArgumentException;
+use DataTypes\Net\Exceptions\EmailAddressInvalidArgumentException;
+use DataTypes\Net\Exceptions\HostnameInvalidArgumentException;
+use DataTypes\Net\Exceptions\IPAddressInvalidArgumentException;
 
 /**
  * Class representing an email address.

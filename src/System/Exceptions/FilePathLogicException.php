@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace DataTypes\Exceptions;
+namespace DataTypes\System\Exceptions;
 
 use LogicException;
 

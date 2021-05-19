@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace DataTypes\Net;
 
-use DataTypes\Exceptions\HostInvalidArgumentException;
-use DataTypes\Exceptions\HostnameInvalidArgumentException;
+use DataTypes\Net\Exceptions\HostInvalidArgumentException;
+use DataTypes\Net\Exceptions\HostnameInvalidArgumentException;
 
 /**
  * Class representing a host.

@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace DataTypes\System;
 
 use DataTypes\Core\PathInterface;
-use DataTypes\Exceptions\FilePathInvalidArgumentException;
-use DataTypes\Exceptions\FilePathLogicException;
+use DataTypes\System\Exceptions\FilePathInvalidArgumentException;
+use DataTypes\System\Exceptions\FilePathLogicException;
 
 /**
  * Interface for FilePath class.

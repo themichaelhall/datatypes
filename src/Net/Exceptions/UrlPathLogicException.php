@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace DataTypes\Exceptions;
+namespace DataTypes\Net\Exceptions;
 
 use LogicException;
 

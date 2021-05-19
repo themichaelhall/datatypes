@@ -8,15 +8,15 @@
 
 declare(strict_types=1);
 
-namespace DataTypes\Exceptions;
+namespace DataTypes\Net\Exceptions;
 
 use InvalidArgumentException;
 
 /**
- * Exception used when passed invalid argument in Hostname class.
+ * Exception used when passed invalid argument in IPAddress class.
  *
  * @since 1.0.0
  */
-class HostnameInvalidArgumentException extends InvalidArgumentException
+class IPAddressInvalidArgumentException extends InvalidArgumentException
 {
 }

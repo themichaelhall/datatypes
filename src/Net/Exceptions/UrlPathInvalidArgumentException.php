@@ -8,15 +8,15 @@
 
 declare(strict_types=1);
 
-namespace DataTypes\Exceptions;
+namespace DataTypes\Net\Exceptions;
 
 use InvalidArgumentException;
 
 /**
- * Exception used when passed invalid argument in FilePath class.
+ * Exception used when passed invalid argument in UrlPath class.
  *
  * @since 1.0.0
  */
-class FilePathInvalidArgumentException extends InvalidArgumentException
+class UrlPathInvalidArgumentException extends InvalidArgumentException
 {
 }

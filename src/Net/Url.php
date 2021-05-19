@@ -10,11 +10,11 @@ declare(strict_types=1);
 
 namespace DataTypes\Net;
 
-use DataTypes\Exceptions\HostInvalidArgumentException;
-use DataTypes\Exceptions\SchemeInvalidArgumentException;
-use DataTypes\Exceptions\UrlInvalidArgumentException;
-use DataTypes\Exceptions\UrlPathInvalidArgumentException;
-use DataTypes\Exceptions\UrlPathLogicException;
+use DataTypes\Net\Exceptions\HostInvalidArgumentException;
+use DataTypes\Net\Exceptions\SchemeInvalidArgumentException;
+use DataTypes\Net\Exceptions\UrlInvalidArgumentException;
+use DataTypes\Net\Exceptions\UrlPathInvalidArgumentException;
+use DataTypes\Net\Exceptions\UrlPathLogicException;
 
 /**
  * Class representing a Url.

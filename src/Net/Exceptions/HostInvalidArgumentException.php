@@ -8,15 +8,15 @@
 
 declare(strict_types=1);
 
-namespace DataTypes\Exceptions;
+namespace DataTypes\Net\Exceptions;
 
 use InvalidArgumentException;
 
 /**
- * Exception used when passed invalid argument in Scheme class.
+ * Exception used when passed invalid argument in Host class.
  *
  * @since 1.0.0
  */
-class SchemeInvalidArgumentException extends InvalidArgumentException
+class HostInvalidArgumentException extends InvalidArgumentException
 {
 }

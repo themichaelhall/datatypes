@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace DataTypes\Net;
 
 use DataTypes\Core\PathInterface;
-use DataTypes\Exceptions\UrlPathInvalidArgumentException;
-use DataTypes\Exceptions\UrlPathLogicException;
+use DataTypes\Net\Exceptions\UrlPathInvalidArgumentException;
+use DataTypes\Net\Exceptions\UrlPathLogicException;
 
 /**
  * Interface for UrlPath class.
