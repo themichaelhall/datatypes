@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests\System\Exceptions;
 
-use DataTypes\Exceptions\FilePathLogicException;
+use DataTypes\System\Exceptions\FilePathLogicException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 

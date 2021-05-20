@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests\System;
 
-use DataTypes\Exceptions\FilePathInvalidArgumentException;
-use DataTypes\Exceptions\FilePathLogicException;
-use DataTypes\FilePath;
+use DataTypes\System\Exceptions\FilePathInvalidArgumentException;
+use DataTypes\System\Exceptions\FilePathLogicException;
+use DataTypes\System\FilePath;
 use DataTypes\Tests\Helpers\Fakes\FakePhpUname;
 use PHPUnit\Framework\TestCase;
 

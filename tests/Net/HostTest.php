@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests\Net;
 
-use DataTypes\Exceptions\HostInvalidArgumentException;
-use DataTypes\Host;
-use DataTypes\Hostname;
-use DataTypes\IPAddress;
+use DataTypes\Net\Exceptions\HostInvalidArgumentException;
+use DataTypes\Net\Host;
+use DataTypes\Net\Hostname;
+use DataTypes\Net\IPAddress;
 use PHPUnit\Framework\TestCase;
 
 /**

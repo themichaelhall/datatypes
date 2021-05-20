@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests\Net;
 
-use DataTypes\EmailAddress;
-use DataTypes\Exceptions\EmailAddressInvalidArgumentException;
-use DataTypes\Host;
-use DataTypes\Hostname;
-use DataTypes\IPAddress;
+use DataTypes\Net\EmailAddress;
+use DataTypes\Net\Exceptions\EmailAddressInvalidArgumentException;
+use DataTypes\Net\Host;
+use DataTypes\Net\Hostname;
+use DataTypes\Net\IPAddress;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

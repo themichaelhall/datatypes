@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests\Net;
 
-use DataTypes\Exceptions\SchemeInvalidArgumentException;
-use DataTypes\Scheme;
+use DataTypes\Net\Exceptions\SchemeInvalidArgumentException;
+use DataTypes\Net\Scheme;
 use PHPUnit\Framework\TestCase;
 
 /**

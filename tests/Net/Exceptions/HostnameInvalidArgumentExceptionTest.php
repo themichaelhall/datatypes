@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests\Net\Exceptions;
 
-use DataTypes\Exceptions\HostnameInvalidArgumentException;
+use DataTypes\Net\Exceptions\HostnameInvalidArgumentException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests\Net\Exceptions;
 
-use DataTypes\Exceptions\UrlPathLogicException;
+use DataTypes\Net\Exceptions\UrlPathLogicException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 

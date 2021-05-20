@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests\Net;
 
-use DataTypes\Exceptions\UrlInvalidArgumentException;
-use DataTypes\Exceptions\UrlPathLogicException;
-use DataTypes\Host;
-use DataTypes\Scheme;
-use DataTypes\Url;
-use DataTypes\UrlPath;
+use DataTypes\Net\Exceptions\UrlInvalidArgumentException;
+use DataTypes\Net\Exceptions\UrlPathLogicException;
+use DataTypes\Net\Host;
+use DataTypes\Net\Scheme;
+use DataTypes\Net\Url;
+use DataTypes\Net\UrlPath;
 use PHPUnit\Framework\TestCase;
 
 /**

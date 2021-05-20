@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests\System\Exceptions;
 
-use DataTypes\Exceptions\FilePathInvalidArgumentException;
+use DataTypes\System\Exceptions\FilePathInvalidArgumentException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

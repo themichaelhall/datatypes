@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests\Net;
 
-use DataTypes\Exceptions\IPAddressInvalidArgumentException;
-use DataTypes\IPAddress;
+use DataTypes\Net\Exceptions\IPAddressInvalidArgumentException;
+use DataTypes\Net\IPAddress;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
