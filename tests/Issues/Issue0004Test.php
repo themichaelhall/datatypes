@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DataTypes\Tests\Issues;
 
-use DataTypes\Exceptions\UrlInvalidArgumentException;
-use DataTypes\Url;
+use DataTypes\Net\Exceptions\UrlInvalidArgumentException;
+use DataTypes\Net\Url;
 use PHPUnit\Framework\TestCase;
 
 /**

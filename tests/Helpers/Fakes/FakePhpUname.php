@@ -70,7 +70,7 @@ namespace DataTypes\Tests\Helpers\Fakes {
     }
 }
 
-namespace DataTypes {
+namespace DataTypes\System {
 
     use DataTypes\Tests\Helpers\Fakes\FakePhpUname;
 
