@@ -31,5 +31,10 @@
     "psr-4": {
       "DataTypes\\Tests\\": "tests"
     }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-develop": "2.4-dev"
+    }
   }
 }
