@@ -24,10 +24,13 @@ $ composer require datatypes/datatypes
 ```php
 <?php
 
+use DataTypes\Net\EmailAddress;
+use DataTypes\Net\Url;
+
 require __DIR__ . '/vendor/autoload.php';
 
 // Parse a url.
-$url = \DataTypes\Url::parse('https://www.example.com/foo/bar');
+$url = Url::parse('https://www.example.com/foo/bar');
 
 // Prints "https".
 echo $url->getScheme();
@@ -42,17 +45,17 @@ echo $path;
 echo $path->getDirectory();
 
 // Parse an email address.
-$email = \DataTypes\EmailAddress::parse('foo.bar@example.com');
+$email = EmailAddress::parse('foo.bar@example.com');
 
 // Prints "example.com".
 echo $email->getHost();
 
 // Returns false.
-\DataTypes\Url::isValid('foo');
+Url::isValid('foo');
 // Returns null.
-\DataTypes\Url::tryParse('foo');
-// Throws \DataTypes\Exceptions\UrlInvalidArgumentException.
-\DataTypes\Url::parse('foo');
+Url::tryParse('foo');
+// Throws \DataTypes\Net\Exceptions\UrlInvalidArgumentException.
+Url::parse('foo');
 ```
 
 ## License
