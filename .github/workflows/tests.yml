@@ -19,33 +19,16 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          coverage: none
-
-      - name: Install dependencies
-        run: composer update --prefer-stable --no-progress
-
-      - name: Run tests
-        run: ./vendor/bin/phpunit
-
-  code-cov:
-    name: Code coverage
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v2
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: latest
           coverage: xdebug
 
       - name: Install dependencies
         run: composer update --prefer-stable --no-progress
 
-      - name: Run tests with code coverage
+      - name: Run unit tests
         run: ./vendor/bin/phpunit --coverage-clover=coverage.xml
 
-      - name: Upload code coverage
-        run: bash <(curl -s https://codecov.io/bash)
+      - name: Check code coverage
+        uses: themichaelhall/check-code-coverage@v1
+        with:
+          report: coverage.xml
+          required-percentage: 100
