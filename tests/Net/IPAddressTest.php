@@ -196,18 +196,9 @@ class IPAddressTest extends TestCase
         self::assertSame(0, IPAddress::parse('0.0.0.0')->toInteger());
         self::assertSame(203569230, IPAddress::parse('12.34.56.78')->toInteger());
         self::assertSame(2147483647, IPAddress::parse('127.255.255.255')->toInteger());
-
-        if (PHP_INT_MAX > 2147483647) {
-            // > 32 bit.
-            self::assertSame(2147483648, IPAddress::parse('128.0.0.0')->toInteger());
-            self::assertSame(3232235521, IPAddress::parse('192.168.0.1')->toInteger());
-            self::assertSame(4294967295, IPAddress::parse('255.255.255.255')->toInteger());
-        } else {
-            // 32 bit.
-            self::assertSame(intval(-2147483648), IPAddress::parse('128.0.0.0')->toInteger());
-            self::assertSame(-1062731775, IPAddress::parse('192.168.0.1')->toInteger());
-            self::assertSame(-1, IPAddress::parse('255.255.255.255')->toInteger());
-        }
+        self::assertSame(2147483648, IPAddress::parse('128.0.0.0')->toInteger());
+        self::assertSame(3232235521, IPAddress::parse('192.168.0.1')->toInteger());
+        self::assertSame(4294967295, IPAddress::parse('255.255.255.255')->toInteger());
     }
 
     /**
@@ -218,15 +209,11 @@ class IPAddressTest extends TestCase
         self::assertSame('0.0.0.0', IPAddress::fromInteger(0)->__toString());
         self::assertSame('12.34.56.78', IPAddress::fromInteger(203569230)->__toString());
         self::assertSame('127.255.255.255', IPAddress::fromInteger(2147483647)->__toString());
-        self::assertSame('128.0.0.0', IPAddress::fromInteger(intval(-2147483648))->__toString());
+        self::assertSame('128.0.0.0', IPAddress::fromInteger(-2147483648)->__toString());
         self::assertSame('192.168.0.1', IPAddress::fromInteger(-1062731775)->__toString());
         self::assertSame('255.255.255.255', IPAddress::fromInteger(-1)->__toString());
-
-        if (PHP_INT_MAX > 2147483647) {
-            // > 32 bit.
-            self::assertSame('128.0.0.0', IPAddress::fromInteger(2147483648)->__toString());
-            self::assertSame('192.168.0.1', IPAddress::fromInteger(3232235521)->__toString());
-            self::assertSame('255.255.255.255', IPAddress::fromInteger(4294967295)->__toString());
-        }
+        self::assertSame('128.0.0.0', IPAddress::fromInteger(2147483648)->__toString());
+        self::assertSame('192.168.0.1', IPAddress::fromInteger(3232235521)->__toString());
+        self::assertSame('255.255.255.255', IPAddress::fromInteger(4294967295)->__toString());
     }
 }

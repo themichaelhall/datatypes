@@ -567,9 +567,9 @@ class UrlTest extends TestCase
         self::assertSame('https://domain.com/foo?bar', Url::parse('https://domain.com/foo')->withQueryString('bar')->__toString());
         self::assertSame('https://domain.com/foo?baz', Url::parse('https://domain.com/foo?bar')->withQueryString('baz')->__toString());
         self::assertSame('https://domain.com/foo?baz#fragment', Url::parse('https://domain.com/foo?bar#fragment')->withQueryString('baz')->__toString());
-        self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo')->withQueryString(null)->__toString());
-        self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo?bar')->withQueryString(null)->__toString());
-        self::assertSame('https://domain.com/foo#fragment', Url::parse('https://domain.com/foo?bar#fragment')->withQueryString(null)->__toString());
+        self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo')->withQueryString()->__toString());
+        self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo?bar')->withQueryString()->__toString());
+        self::assertSame('https://domain.com/foo#fragment', Url::parse('https://domain.com/foo?bar#fragment')->withQueryString()->__toString());
     }
 
     /**
@@ -591,9 +591,9 @@ class UrlTest extends TestCase
         self::assertSame('https://domain.com/foo#bar', Url::parse('https://domain.com/foo')->withFragment('bar')->__toString());
         self::assertSame('https://domain.com/foo#baz', Url::parse('https://domain.com/foo#bar')->withFragment('baz')->__toString());
         self::assertSame('https://domain.com/foo?bar#baz', Url::parse('https://domain.com/foo?bar#fragment')->withFragment('baz')->__toString());
-        self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo')->withFragment(null)->__toString());
-        self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo#bar')->withFragment(null)->__toString());
-        self::assertSame('https://domain.com/foo?bar', Url::parse('https://domain.com/foo?bar#fragment')->withFragment(null)->__toString());
+        self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo')->withFragment()->__toString());
+        self::assertSame('https://domain.com/foo', Url::parse('https://domain.com/foo#bar')->withFragment()->__toString());
+        self::assertSame('https://domain.com/foo?bar', Url::parse('https://domain.com/foo?bar#fragment')->withFragment()->__toString());
     }
 
     /**
