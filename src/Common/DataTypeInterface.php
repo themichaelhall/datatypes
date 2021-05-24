@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace DataTypes\Core;
+namespace DataTypes\Common;
 
 /**
  * Main interface for all data types.

@@ -1,6 +1,6 @@
 ## Unreleased
 
-- Moved all classes and interfaces to DataTypes/Core, DataTypes/Net and DataTypes/System namespaces. Other DataTypes namespaces are deprecated.
+- Moved all classes and interfaces to DataTypes/Common, DataTypes/Net and DataTypes/System namespaces. Other DataTypes namespaces are deprecated.
 
 ## [2.3.0] - 2021-02-10
 

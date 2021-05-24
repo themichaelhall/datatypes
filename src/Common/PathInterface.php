@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace DataTypes\Core;
+namespace DataTypes\Common;
 
 /**
  * Interface for paths.

@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Net;
 
-use DataTypes\Core\PathInterface;
+use DataTypes\Common\PathInterface;
 use DataTypes\Net\Exceptions\UrlPathInvalidArgumentException;
 use DataTypes\Net\Exceptions\UrlPathLogicException;
 

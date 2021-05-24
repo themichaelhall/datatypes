@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Net;
 
-use DataTypes\Core\DataTypeInterface;
+use DataTypes\Common\DataTypeInterface;
 
 /**
  * Interface for IPAddress class.

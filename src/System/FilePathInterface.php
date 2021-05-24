@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace DataTypes\System;
 
-use DataTypes\Core\PathInterface;
+use DataTypes\Common\PathInterface;
 use DataTypes\System\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\System\Exceptions\FilePathLogicException;
 

@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace {
 
-    class_alias(DataTypes\Core\DataTypeInterface::class, 'DataTypes\\Interfaces\\DataTypeInterface');
-    class_alias(DataTypes\Core\PathInterface::class, 'DataTypes\\Interfaces\\PathInterface');
+    class_alias(DataTypes\Common\DataTypeInterface::class, 'DataTypes\\Interfaces\\DataTypeInterface');
+    class_alias(DataTypes\Common\PathInterface::class, 'DataTypes\\Interfaces\\PathInterface');
     class_alias(DataTypes\Net\EmailAddress::class, 'DataTypes\\EmailAddress');
     class_alias(DataTypes\Net\EmailAddressInterface::class, 'DataTypes\\Interfaces\\EmailAddressInterface');
     class_alias(DataTypes\Net\Exceptions\EmailAddressInvalidArgumentException::class, 'DataTypes\\Exceptions\\EmailAddressInvalidArgumentException');
@@ -105,13 +105,13 @@ namespace DataTypes {
 namespace DataTypes\Interfaces {
 
     if (false) {
-        /** @deprecated Use \DataTypes\Core\DataTypeInterface instead. */
-        interface DataTypeInterface extends \DataTypes\Core\DataTypeInterface
+        /** @deprecated Use \DataTypes\Common\DataTypeInterface instead. */
+        interface DataTypeInterface extends \DataTypes\Common\DataTypeInterface
         {
         }
 
-        /** @deprecated Use \DataTypes\Core\PathInterface instead. */
-        interface PathInterface extends \DataTypes\Core\PathInterface
+        /** @deprecated Use \DataTypes\Common\PathInterface instead. */
+        interface PathInterface extends \DataTypes\Common\PathInterface
         {
         }
 
