@@ -14,7 +14,6 @@ namespace DataTypes\Common;
  * Interface for paths.
  *
  * @deprecated
- *
  * @since 2.2.0
  */
 interface PathInterface extends DataTypeInterface
