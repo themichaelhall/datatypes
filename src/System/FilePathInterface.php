@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace DataTypes\System;
 
-use DataTypes\Common\PathInterface;
+use DataTypes\Common\DataTypeInterface;
 use DataTypes\System\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\System\Exceptions\FilePathLogicException;
 
@@ -19,7 +19,7 @@ use DataTypes\System\Exceptions\FilePathLogicException;
  *
  * @since 1.0.0
  */
-interface FilePathInterface extends PathInterface
+interface FilePathInterface extends DataTypeInterface
 {
     /**
      * Returns true if the file path equals other file path, false otherwise.
@@ -33,6 +33,15 @@ interface FilePathInterface extends PathInterface
     public function equals(self $filePath): bool;
 
     /**
+     * Returns the depth of the file path.
+     *
+     * @since 1.0.0
+     *
+     * @return int The depth of the file path.
+     */
+    public function getDepth(): int;
+
+    /**
      * Returns the directory of the file path.
      *
      * @since 1.0.0
@@ -40,6 +49,15 @@ interface FilePathInterface extends PathInterface
      * @return FilePathInterface The directory of the file path.
      */
     public function getDirectory(): self;
+
+    /**
+     * Returns the directory parts.
+     *
+     * @since 1.0.0
+     *
+     * @return string[] The directory parts.
+     */
+    public function getDirectoryParts(): array;
 
     /**
      * Returns the drive of the file path or null if no drive is present or supported.
@@ -51,6 +69,15 @@ interface FilePathInterface extends PathInterface
     public function getDrive(): ?string;
 
     /**
+     * Returns the filename or null if the file path is a directory.
+     *
+     * @since 1.0.0
+     *
+     * @return string|null The filename or null if the file path is a directory.
+     */
+    public function getFilename(): ?string;
+
+    /**
      * Returns the parent directory of the file path or null if file path does not have a parent directory.
      *
      * @since 1.0.0
@@ -58,6 +85,51 @@ interface FilePathInterface extends PathInterface
      * @return FilePathInterface|null The parent directory of the file path or null if file path does not have a parent directory.
      */
     public function getParentDirectory(): ?self;
+
+    /**
+     * Returns true if file path has a parent directory, false otherwise.
+     *
+     * @since 1.0.0
+     *
+     * @return bool True if file path has a parent directory, false otherwise.
+     */
+    public function hasParentDirectory(): bool;
+
+    /**
+     * Returns true if file path is absolute, false otherwise.
+     *
+     * @since 1.0.0
+     *
+     * @return bool True if file path is absolute, false otherwise.
+     */
+    public function isAbsolute(): bool;
+
+    /**
+     * Returns true if file path is a directory, false otherwise.
+     *
+     * @since 1.0.0
+     *
+     * @return bool True if file path is a directory, false otherwise.
+     */
+    public function isDirectory(): bool;
+
+    /**
+     * Returns true if file path is a file, false otherwise.
+     *
+     * @since 1.0.0
+     *
+     * @return bool True if file path is a file, false otherwise.
+     */
+    public function isFile(): bool;
+
+    /**
+     * Returns true if file path is relative, false otherwise.
+     *
+     * @since 1.0.0
+     *
+     * @return bool True if file path is relative, false otherwise.
+     */
+    public function isRelative(): bool;
 
     /**
      * Returns a copy of the file path as an absolute path.
