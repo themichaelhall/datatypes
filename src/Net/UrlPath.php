@@ -91,11 +91,15 @@ class UrlPath implements UrlPathInterface
      */
     public function getParentDirectory(): ?UrlPathInterface
     {
-        if ($this->calculateParentDirectory($aboveBaseLevelCount, $directoryParts)) {
-            return new self($this->isAbsolute, $aboveBaseLevelCount, $directoryParts, null);
+        if (!$this->hasParentDirectory()) {
+            return null;
         }
 
-        return null;
+        if (count($this->directoryParts) === 0) {
+            return new self($this->isAbsolute, $this->aboveBaseLevelCount + 1, $this->directoryParts, null);
+        }
+
+        return new self($this->isAbsolute, $this->aboveBaseLevelCount, array_slice($this->directoryParts, 0, -1), null);
     }
 
     /**
@@ -244,11 +248,24 @@ class UrlPath implements UrlPathInterface
      */
     public function __toString(): string
     {
-        $stringEncoder = function ($s) {
-            return rawurlencode($s);
-        };
+        $parts = [];
 
-        return $this->directoryToString(self::DIRECTORY_SEPARATOR, $stringEncoder) . $this->filenameToString($stringEncoder);
+        if ($this->aboveBaseLevelCount > 0) {
+            $parts = array_fill(0, $this->aboveBaseLevelCount, '..');
+        }
+
+        if ($this->isAbsolute) {
+            $parts[] = '';
+        }
+
+        $parts = array_merge($parts, $this->directoryParts);
+        $parts[] = $this->filename ?? '';
+
+        $parts = array_map(function (string $part): string {
+            return rawurlencode($part);
+        }, $parts);
+
+        return implode(self::DIRECTORY_SEPARATOR, $parts);
     }
 
     /**
@@ -361,51 +378,6 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
-     * Returns the directory as a string.
-     *
-     * @param string        $directorySeparator The directory separator.
-     * @param callable|null $stringEncoder      The string encoding function or null if parts should not be encoded.
-     *
-     * @return string The directory as a string.
-     */
-    private function directoryToString(string $directorySeparator, ?callable $stringEncoder = null): string
-    {
-        $result = '';
-
-        if ($this->aboveBaseLevelCount > 0) {
-            $result .= str_repeat('..' . $directorySeparator, $this->aboveBaseLevelCount);
-        }
-
-        if ($this->isAbsolute) {
-            $result .= $directorySeparator;
-        }
-
-        $result .= implode($directorySeparator, array_map($stringEncoder, $this->directoryParts));
-
-        if (count($this->directoryParts) > 0) {
-            $result .= $directorySeparator;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Returns the filename as a string.
-     *
-     * @param callable|null $stringEncoder The string encoding function or null if parts should not be encoded.
-     *
-     * @return string The filename as a string.
-     */
-    private function filenameToString(?callable $stringEncoder = null): string
-    {
-        if ($this->filename === null) {
-            return '';
-        }
-
-        return $stringEncoder($this->filename);
-    }
-
-    /**
      * Tries to combine this with new directory info.
      *
      * @param bool        $isAbsolute     Whether the directory to combine with is absolute or relative.
@@ -462,33 +434,6 @@ class UrlPath implements UrlPathInterface
         }
 
         $this->directoryParts[] = $part;
-
-        return true;
-    }
-
-    /**
-     * Tries to calculate the parent directory for this path and return the result.
-     *
-     * @param int|null      $aboveBaseLevelCount The number of directory parts above base level if parsing was successful, undefined otherwise.
-     * @param string[]|null $directoryParts      The directory parts if parsing was successful, undefined otherwise.
-     *
-     * @return bool True if this path has a parent directory, false otherwise.
-     */
-    private function calculateParentDirectory(?int &$aboveBaseLevelCount = null, ?array &$directoryParts = null): bool
-    {
-        if (count($this->directoryParts) > 0) {
-            $aboveBaseLevelCount = $this->aboveBaseLevelCount;
-            $directoryParts = array_slice($this->directoryParts, 0, -1);
-
-            return true;
-        }
-
-        if ($this->isAbsolute) {
-            return false;
-        }
-
-        $aboveBaseLevelCount = $this->aboveBaseLevelCount + 1;
-        $directoryParts = $this->directoryParts;
 
         return true;
     }
@@ -614,7 +559,7 @@ class UrlPath implements UrlPathInterface
             return false;
         }
 
-        $directoryParts[] = self::decodePart($part);
+        $directoryParts[] = rawurldecode($part);
 
         return true;
     }
@@ -634,7 +579,7 @@ class UrlPath implements UrlPathInterface
             return false;
         }
 
-        $filename = self::decodePart($part);
+        $filename = rawurldecode($part);
 
         return true;
     }
@@ -681,18 +626,6 @@ class UrlPath implements UrlPathInterface
         }
 
         return true;
-    }
-
-    /**
-     * Decodes a directory part or a file name.
-     *
-     * @param string $part The directory part or a file name.
-     *
-     * @return string The decoded directory part or file name.
-     */
-    private static function decodePart(string $part): string
-    {
-        return rawurldecode($part);
     }
 
     /**

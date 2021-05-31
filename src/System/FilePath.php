@@ -103,11 +103,15 @@ class FilePath implements FilePathInterface
      */
     public function getParentDirectory(): ?FilePathInterface
     {
-        if ($this->calculateParentDirectory($aboveBaseLevelCount, $directoryParts)) {
-            return new self($this->isAbsolute, $aboveBaseLevelCount, $this->drive, $directoryParts, null);
+        if (!$this->hasParentDirectory()) {
+            return null;
         }
 
-        return null;
+        if (count($this->directoryParts) === 0) {
+            return new self($this->isAbsolute, $this->aboveBaseLevelCount + 1, $this->drive, $this->directoryParts, null);
+        }
+
+        return new self($this->isAbsolute, $this->aboveBaseLevelCount, $this->drive, array_slice($this->directoryParts, 0, -1), null);
     }
 
     /**
@@ -257,7 +261,20 @@ class FilePath implements FilePathInterface
      */
     public function __toString(): string
     {
-        return ($this->drive !== null ? $this->drive . ':' : '') . $this->directoryToString(DIRECTORY_SEPARATOR) . $this->filenameToString();
+        $parts = [];
+
+        if ($this->aboveBaseLevelCount > 0) {
+            $parts = array_fill(0, $this->aboveBaseLevelCount, '..');
+        }
+
+        if ($this->isAbsolute) {
+            $parts[] = '';
+        }
+
+        $parts = array_merge($parts, $this->directoryParts);
+        $parts[] = $this->filename ?? '';
+
+        return ($this->drive !== null ? $this->drive . ':' : '') . implode(DIRECTORY_SEPARATOR, $parts);
     }
 
     /**
@@ -374,51 +391,6 @@ class FilePath implements FilePathInterface
     }
 
     /**
-     * Returns the directory as a string.
-     *
-     * @param string        $directorySeparator The directory separator.
-     * @param callable|null $stringEncoder      The string encoding function or null if parts should not be encoded.
-     *
-     * @return string The directory as a string.
-     */
-    private function directoryToString(string $directorySeparator, ?callable $stringEncoder = null): string
-    {
-        $result = '';
-
-        if ($this->aboveBaseLevelCount > 0) {
-            $result .= str_repeat('..' . $directorySeparator, $this->aboveBaseLevelCount);
-        }
-
-        if ($this->isAbsolute) {
-            $result .= $directorySeparator;
-        }
-
-        $result .= implode($directorySeparator, $this->directoryParts);
-
-        if (count($this->directoryParts) > 0) {
-            $result .= $directorySeparator;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Returns the filename as a string.
-     *
-     * @param callable|null $stringEncoder The string encoding function or null if parts should not be encoded.
-     *
-     * @return string The filename as a string.
-     */
-    private function filenameToString(?callable $stringEncoder = null): string
-    {
-        if ($this->filename === null) {
-            return '';
-        }
-
-        return $this->filename;
-    }
-
-    /**
      * Tries to combine this with new directory info.
      *
      * @param bool        $isAbsolute     Whether the directory to combine with is absolute or relative.
@@ -475,33 +447,6 @@ class FilePath implements FilePathInterface
         }
 
         $this->directoryParts[] = $part;
-
-        return true;
-    }
-
-    /**
-     * Tries to calculate the parent directory for this path and return the result.
-     *
-     * @param int|null      $aboveBaseLevelCount The number of directory parts above base level if parsing was successful, undefined otherwise.
-     * @param string[]|null $directoryParts      The directory parts if parsing was successful, undefined otherwise.
-     *
-     * @return bool True if this path has a parent directory, false otherwise.
-     */
-    private function calculateParentDirectory(?int &$aboveBaseLevelCount = null, ?array &$directoryParts = null): bool
-    {
-        if (count($this->directoryParts) > 0) {
-            $aboveBaseLevelCount = $this->aboveBaseLevelCount;
-            $directoryParts = array_slice($this->directoryParts, 0, -1);
-
-            return true;
-        }
-
-        if ($this->isAbsolute) {
-            return false;
-        }
-
-        $aboveBaseLevelCount = $this->aboveBaseLevelCount + 1;
-        $directoryParts = $this->directoryParts;
 
         return true;
     }
@@ -627,7 +572,7 @@ class FilePath implements FilePathInterface
             return false;
         }
 
-        $directoryParts[] = self::decodePart($part);
+        $directoryParts[] = $part;
 
         return true;
     }
@@ -647,7 +592,7 @@ class FilePath implements FilePathInterface
             return false;
         }
 
-        $filename = self::decodePart($part);
+        $filename = $part;
 
         return true;
     }
@@ -739,18 +684,6 @@ class FilePath implements FilePathInterface
         }
 
         return true;
-    }
-
-    /**
-     * Decodes a directory part or a file name. Does nothing for this class.
-     *
-     * @param string $part The directory part or a file name.
-     *
-     * @return string The decoded directory part or file name.
-     */
-    private static function decodePart(string $part): string
-    {
-        return $part;
     }
 
     /**
