@@ -477,7 +477,7 @@ class UrlPath implements UrlPathInterface
                 }
 
                 if ($isAbsolute) {
-                    $error = "Absolute path is above root level.";
+                    $error = 'Absolute path is above root level.';
 
                     return false;
                 }
