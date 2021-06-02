@@ -442,7 +442,7 @@ class UrlPathTest extends TestCase
     public function testParseAsDirectoryWithInvalidCharactersInFilename()
     {
         self::expectException(UrlPathInvalidArgumentException::class);
-        self::expectExceptionMessage('Url path "/foo/?bar" is invalid: Filename "?bar" contains invalid character "?".');
+        self::expectExceptionMessage('Url path "/foo/?bar" is invalid: Part of directory "?bar" contains invalid character "?".');
 
         UrlPath::parseAsDirectory('/foo/?bar');
     }

@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Net;
 
-use DataTypes\Common\PathInterface;
+use DataTypes\Common\DataTypeInterface;
 use DataTypes\Net\Exceptions\UrlPathInvalidArgumentException;
 use DataTypes\Net\Exceptions\UrlPathLogicException;
 
@@ -19,7 +19,7 @@ use DataTypes\Net\Exceptions\UrlPathLogicException;
  *
  * @since 1.0.0
  */
-interface UrlPathInterface extends PathInterface
+interface UrlPathInterface extends DataTypeInterface
 {
     /**
      * Returns true if the url path equals other url path, false otherwise.
@@ -33,6 +33,15 @@ interface UrlPathInterface extends PathInterface
     public function equals(self $urlPath): bool;
 
     /**
+     * Returns the depth of the url path.
+     *
+     * @since 1.0.0
+     *
+     * @return int The depth of the url path.
+     */
+    public function getDepth(): int;
+
+    /**
      * Returns the directory of the url path.
      *
      * @since 1.0.0
@@ -42,6 +51,24 @@ interface UrlPathInterface extends PathInterface
     public function getDirectory(): self;
 
     /**
+     * Returns the directory parts.
+     *
+     * @since 1.0.0
+     *
+     * @return string[] The directory parts.
+     */
+    public function getDirectoryParts(): array;
+
+    /**
+     * Returns the filename or null if the path is a directory.
+     *
+     * @since 1.0.0
+     *
+     * @return string|null The filename or null if the path is a directory.
+     */
+    public function getFilename(): ?string;
+
+    /**
      * Returns the parent directory of the url path or null if url path does not have a parent directory.
      *
      * @since 1.0.0
@@ -49,6 +76,51 @@ interface UrlPathInterface extends PathInterface
      * @return UrlPathInterface|null The parent directory of the url path or null if url path does not have a parent directory.
      */
     public function getParentDirectory(): ?self;
+
+    /**
+     * Returns true if url path has a parent directory, false otherwise.
+     *
+     * @since 1.0.0
+     *
+     * @return bool True if url path has a parent directory, false otherwise.
+     */
+    public function hasParentDirectory(): bool;
+
+    /**
+     * Returns true if url path is absolute, false otherwise.
+     *
+     * @since 1.0.0
+     *
+     * @return bool True if url path is absolute, false otherwise.
+     */
+    public function isAbsolute(): bool;
+
+    /**
+     * Returns true if url path is a directory, false otherwise.
+     *
+     * @since 1.0.0
+     *
+     * @return bool True if url path is a directory, false otherwise.
+     */
+    public function isDirectory(): bool;
+
+    /**
+     * Returns true if url path is a file, false otherwise.
+     *
+     * @since 1.0.0
+     *
+     * @return bool True if url path is a file, false otherwise.
+     */
+    public function isFile(): bool;
+
+    /**
+     * Returns true if url path is relative, false otherwise.
+     *
+     * @since 1.0.0
+     *
+     * @return bool True if url path is relative, false otherwise.
+     */
+    public function isRelative(): bool;
 
     /**
      * Returns a copy of the url path as a absolute path.

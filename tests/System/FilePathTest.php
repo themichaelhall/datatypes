@@ -808,7 +808,7 @@ class FilePathTest extends TestCase
         $DS = DIRECTORY_SEPARATOR;
 
         self::expectException(FilePathInvalidArgumentException::class);
-        self::expectExceptionMessage('File path "' . $DS . 'foo' . $DS . "\0" . 'bar" is invalid: Filename "' . "\0" . 'bar" contains invalid character "' . "\0" . '".');
+        self::expectExceptionMessage('File path "' . $DS . 'foo' . $DS . "\0" . 'bar" is invalid: Part of directory "' . "\0" . 'bar" contains invalid character "' . "\0" . '".');
 
         FilePath::parseAsDirectory($DS . 'foo' . $DS . "\0" . 'bar');
     }
