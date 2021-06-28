@@ -24,7 +24,7 @@
       "DataTypes\\": "src"
     },
     "files": [
-      "src/deprecated.php"
+      "deprecated.php"
     ]
   },
   "autoload-dev": {
