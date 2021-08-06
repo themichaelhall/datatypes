@@ -407,7 +407,7 @@ class UrlPathTest extends TestCase
     }
 
     /**
-     * Test withFilename method with a invalid character.
+     * Test withFilename method with an invalid character.
      */
     public function testWithFilenameWithInvalidCharacter()
     {

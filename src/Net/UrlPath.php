@@ -199,7 +199,7 @@ class UrlPath implements UrlPathInterface
      *
      * @param string $filename The other filename
      *
-     * @throws UrlPathInvalidArgumentException if the filename if invalid.
+     * @throws UrlPathInvalidArgumentException if the filename is invalid.
      *
      * @return UrlPathInterface The new url path.
      */

@@ -158,7 +158,7 @@ interface FilePathInterface extends DataTypeInterface
      *
      * @param string $filename The other filename
      *
-     * @throws FilePathInvalidArgumentException if the filename if invalid.
+     * @throws FilePathInvalidArgumentException if the filename is invalid.
      *
      * @return FilePathInterface The new file path.
      */

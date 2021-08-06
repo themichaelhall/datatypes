@@ -118,7 +118,7 @@ class IPAddress implements IPAddressInterface
      * @param int[] $octets The octets.
      *
      * @throws InvalidArgumentException          If the octets parameter is not an array of integers.
-     * @throws IPAddressInvalidArgumentException If the $octets parameter is not a valid array of octets.
+     * @throws IPAddressInvalidArgumentException If the octets parameter is not a valid array of octets.
      *
      * @return IPAddressInterface The IP address.
      */

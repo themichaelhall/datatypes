@@ -252,7 +252,7 @@ class Hostname implements HostnameInterface
      * Validates a top-level domain.
      *
      * @param string|null $tld   The top-level domain.
-     * @param string|null $error The The error text if validation was not successful, undefined otherwise.
+     * @param string|null $error The error text if validation was not successful, undefined otherwise.
      *
      * @return bool True if validation was successful, false otherwise.
      */

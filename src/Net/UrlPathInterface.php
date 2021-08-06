@@ -123,11 +123,11 @@ interface UrlPathInterface extends DataTypeInterface
     public function isRelative(): bool;
 
     /**
-     * Returns a copy of the url path as a absolute path.
+     * Returns a copy of the url path as an absolute path.
      *
      * @since 1.0.0
      *
-     * @return UrlPathInterface The url path as a absolute path.
+     * @return UrlPathInterface The url path as an absolute path.
      */
     public function toAbsolute(): self;
 
@@ -147,7 +147,7 @@ interface UrlPathInterface extends DataTypeInterface
      *
      * @param string $filename The other filename
      *
-     * @throws UrlPathInvalidArgumentException if the filename if invalid.
+     * @throws UrlPathInvalidArgumentException if the filename is invalid.
      *
      * @return UrlPathInterface The new url path.
      */

@@ -753,7 +753,7 @@ class FilePathTest extends TestCase
     }
 
     /**
-     * Test withFilename method with a invalid character.
+     * Test withFilename method with an invalid character.
      */
     public function testWithFilenameWithInvalidCharacter()
     {
@@ -851,6 +851,9 @@ class FilePathTest extends TestCase
         self::assertSame('C:' . $DS . 'foo' . $DS . 'bar' . $DS, FilePath::tryParseAsDirectory('C:' . $DS . 'foo' . $DS . 'bar' . $DS)->__toString());
     }
 
+    /**
+     * Set up.
+     */
     public function setUp(): void
     {
         parent::setUp();
