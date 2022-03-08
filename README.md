@@ -10,7 +10,7 @@ Data Types is a collection of data types classes for PHP.
 
 ## Requirements
 
-- PHP >= 7.3
+- PHP >= 8.0
 
 ## Install with Composer
 
