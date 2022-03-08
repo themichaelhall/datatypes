@@ -176,7 +176,7 @@ class Scheme implements SchemeInterface
      * @param string      $str   The scheme to parse.
      * @param string|null $error The error text if parsing was not successful, undefined otherwise.
      *
-     * @return self True if parsing was successful, false otherwise.
+     * @return Scheme|null The result if parsing was successful, null otherwise.
      */
     private static function doParse(string $str, ?string &$error = null): ?self
     {

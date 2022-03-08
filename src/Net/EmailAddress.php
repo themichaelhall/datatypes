@@ -166,9 +166,9 @@ class EmailAddress implements EmailAddressInterface
      *
      * @since 1.1.0
      *
-     * @param string|null $emailAddress The email address.
+     * @param string $emailAddress The email address.
      *
-     * @return EmailAddressInterface The EmailAddress instance if the $emailAddress parameter is a valid email address, false otherwise.
+     * @return EmailAddressInterface|null The EmailAddress instance if the $emailAddress parameter is a valid email address, false otherwise.
      */
     public static function tryParse(string $emailAddress): ?EmailAddressInterface
     {
@@ -238,7 +238,7 @@ class EmailAddress implements EmailAddressInterface
      */
     private static function parseHostname(string $hostname, ?string &$error = null): ?HostInterface
     {
-        if (strlen($hostname) > 2 && substr($hostname, 0, 1) === '[' && substr($hostname, -1) === ']') {
+        if (strlen($hostname) > 2 && str_starts_with($hostname, '[') && str_ends_with($hostname, ']')) {
             // Hostname is actually an IP address.
             $ipAddress = substr($hostname, 1, -1);
 
@@ -280,7 +280,7 @@ class EmailAddress implements EmailAddressInterface
             return false;
         }
 
-        if (strpos($username, '..') !== false) {
+        if (str_contains($username, '..')) {
             $error = 'Username "' . $username . '" contains "..".';
 
             return false;

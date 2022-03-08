@@ -451,7 +451,7 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
-     * Normalizes directory parts, i.e. handles parts that is any of "", ".", "..".
+     * Normalizes directory parts, i.e. handles parts that are any of "", ".", "..".
      *
      * @param bool        $isAbsolute     True if parts represents an absolute path, false otherwise.
      * @param string[]    $parts          The directory parts.

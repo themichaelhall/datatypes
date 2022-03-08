@@ -272,7 +272,7 @@ class Url implements UrlInterface
      *
      * @return UrlInterface The url.
      */
-    public static function fromParts(SchemeInterface $scheme, HostInterface $host, ?int $port = null, UrlPathInterface $path = null, ?string $queryString = null, ?string $fragment = null)
+    public static function fromParts(SchemeInterface $scheme, HostInterface $host, ?int $port = null, UrlPathInterface $path = null, ?string $queryString = null, ?string $fragment = null): UrlInterface
     {
         if ($port === null) {
             $port = $scheme->getDefaultPort();
@@ -317,7 +317,7 @@ class Url implements UrlInterface
     {
         try {
             return self::doParse($baseUrl, $url) !== null;
-        } catch (UrlPathLogicException $exception) {
+        } catch (UrlPathLogicException) {
             return false;
         }
     }
@@ -393,7 +393,7 @@ class Url implements UrlInterface
     {
         try {
             return self::doParse($baseUrl, $url);
-        } catch (UrlPathLogicException $exception) {
+        } catch (UrlPathLogicException) {
             return null;
         }
     }
@@ -437,7 +437,7 @@ class Url implements UrlInterface
 
         self::splitUrlString($str, $schemeString, $authorityString, $pathString);
 
-        $scheme = $baseUrl !== null ? $baseUrl->getScheme() : null;
+        $scheme = $baseUrl?->getScheme();
 
         if (!self::parseScheme($schemeString, $scheme, $error)) {
             $error = 'Url "' . $str . '" is invalid: ' . $error;
@@ -445,8 +445,8 @@ class Url implements UrlInterface
             return null;
         }
 
-        $host = $baseUrl !== null ? $baseUrl->getHost() : null;
-        $port = $baseUrl !== null ? $baseUrl->getPort() : null;
+        $host = $baseUrl?->getHost();
+        $port = $baseUrl?->getPort();
 
         if (!self::parseAuthority($authorityString, $host, $port, $error)) {
             $error = 'Url "' . $str . '" is invalid: ' . $error;
@@ -458,9 +458,9 @@ class Url implements UrlInterface
             $port = $scheme->getDefaultPort();
         }
 
-        $path = $baseUrl !== null ? $baseUrl->getPath() : null;
-        $queryString = $baseUrl !== null ? $baseUrl->getQueryString() : null;
-        $fragment = $baseUrl !== null ? $baseUrl->getFragment() : null;
+        $path = $baseUrl?->getPath();
+        $queryString = $baseUrl?->getQueryString();
+        $fragment = $baseUrl?->getFragment();
 
         if (!self::parsePath($pathString, $path, $queryString, $fragment, $error)) {
             $error = 'Url "' . $str . '" is invalid: ' . $error;
@@ -497,7 +497,7 @@ class Url implements UrlInterface
             return;
         }
 
-        if (substr($urlString, 0, 2) === '//') {
+        if (str_starts_with($urlString, '//')) {
             // Relative url beginning with "//".
             $parts = explode('/', substr($urlString, 2), 2);
             $authorityString = $parts[0];

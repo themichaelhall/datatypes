@@ -222,7 +222,7 @@ class Hostname implements HostnameInterface
 
         $domainParts = explode(
             '.',
-            substr($str, -1) === '.' ? substr($str, 0, -1) : $str // Remove trailing "." from hostname.
+            str_ends_with($str, '.') ? substr($str, 0, -1) : $str // Remove trailing "." from hostname.
         );
 
         $tld = null;
@@ -336,13 +336,13 @@ class Hostname implements HostnameInterface
             return false;
         }
 
-        if (substr($domainPart, 0, 1) === '-') {
+        if (str_starts_with($domainPart, '-')) {
             $error = 'Part of domain "' . $domainPart . '" begins with "-".';
 
             return false;
         }
 
-        if (substr($domainPart, -1) === '-') {
+        if (str_ends_with($domainPart, '-')) {
             $error = 'Part of domain "' . $domainPart . '" ends with "-".';
 
             return false;
