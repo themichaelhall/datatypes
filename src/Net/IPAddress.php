@@ -317,7 +317,7 @@ class IPAddress implements IPAddressInterface
     }
 
     /**
-     * @var int[] My octets.
+     * @var int[] The octets.
      */
-    private $octets;
+    private array $octets;
 }

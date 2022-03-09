@@ -302,12 +302,12 @@ class EmailAddress implements EmailAddressInterface
     }
 
     /**
-     * @var string My username.
+     * @var string The username.
      */
-    private $username;
+    private string $username;
 
     /**
-     * @var HostInterface My host.
+     * @var HostInterface The host.
      */
-    private $host;
+    private HostInterface $host;
 }

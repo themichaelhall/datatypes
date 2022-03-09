@@ -780,32 +780,32 @@ class Url implements UrlInterface
     }
 
     /**
-     * @var SchemeInterface My scheme.
+     * @var SchemeInterface The scheme.
      */
-    private $scheme;
+    private SchemeInterface $scheme;
 
     /**
-     * @var HostInterface My host.
+     * @var HostInterface The host.
      */
-    private $host;
+    private HostInterface $host;
 
     /**
-     * @var int My port.
+     * @var int The port.
      */
-    private $port;
+    private int $port;
 
     /**
-     * @var UrlPathInterface My path.
+     * @var UrlPathInterface The path.
      */
-    private $path;
+    private UrlPathInterface $path;
 
     /**
-     * @var string|null My query string.
+     * @var string|null The query string.
      */
-    private $queryString;
+    private ?string $queryString;
 
     /**
-     * @var string|null My fragment.
+     * @var string|null The fragment.
      */
-    private $fragment;
+    private ?string $fragment;
 }

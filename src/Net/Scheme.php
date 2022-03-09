@@ -202,19 +202,19 @@ class Scheme implements SchemeInterface
     }
 
     /**
-     * @var int My default port.
+     * @var int The default port.
      */
-    private $defaultPort;
+    private int $defaultPort;
 
     /**
-     * @var string My scheme.
+     * @var string The scheme.
      */
-    private $scheme;
+    private string $scheme;
 
     /**
-     * @var int My type.
+     * @var int The type.
      */
-    private $type;
+    private int $type;
 
     /**
      * @var array The valid schemes.

@@ -59,14 +59,14 @@ namespace DataTypes\Tests\Helpers\Fakes {
         }
 
         /**
-         * @var string|null My operating system name.
+         * @var string|null The operating system name.
          */
-        private static $osName = null;
+        private static ?string $osName = null;
 
         /**
          * @var bool True if fake php_uname is enabled, false otherwise.
          */
-        private static $isEnabled = false;
+        private static bool $isEnabled = false;
     }
 }
 

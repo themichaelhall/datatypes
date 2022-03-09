@@ -213,12 +213,12 @@ class Host implements HostInterface
     }
 
     /**
-     * @var HostnameInterface|null My hostname.
+     * @var HostnameInterface|null The hostname.
      */
-    private $hostname;
+    private ?HostnameInterface $hostname;
 
     /**
-     * @var IPAddressInterface|null My IP address.
+     * @var IPAddressInterface|null The IP address.
      */
-    private $ipAddress;
+    private ?IPAddressInterface $ipAddress;
 }

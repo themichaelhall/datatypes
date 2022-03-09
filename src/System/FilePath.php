@@ -584,27 +584,27 @@ class FilePath implements FilePathInterface
     }
 
     /**
-     * @var string|null My drive or null if no drive is present or supported.
+     * @var string|null The drive or null if no drive is present or supported.
      */
-    private $drive;
+    private ?string $drive;
 
     /**
-     * @var int My number of directory parts above base level.
+     * @var int The number of directory parts above base level.
      */
-    private $aboveBaseLevelCount;
+    private int $aboveBaseLevelCount;
 
     /**
-     * @var string[] My directory parts.
+     * @var string[] The directory parts.
      */
-    private $directoryParts;
+    private array $directoryParts;
 
     /**
-     * @var string|null My filename.
+     * @var string|null The filename.
      */
-    private $filename;
+    private ?string $filename;
 
     /**
      * @var bool True if path is absolute, false otherwise.
      */
-    private $isAbsolute;
+    private bool $isAbsolute;
 }

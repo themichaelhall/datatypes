@@ -378,12 +378,12 @@ class Hostname implements HostnameInterface
     }
 
     /**
-     * @var string[] My domain parts.
+     * @var string[] The domain parts.
      */
-    private $domainParts;
+    private array $domainParts;
 
     /**
-     * @var string|null My top-level domain if this hostname has a top-level domain, null otherwise.
+     * @var string|null The top-level domain if this hostname has a top-level domain, null otherwise.
      */
-    private $tld;
+    private ?string $tld;
 }

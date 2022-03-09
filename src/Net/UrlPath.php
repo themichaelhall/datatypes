@@ -516,27 +516,27 @@ class UrlPath implements UrlPathInterface
     }
 
     /**
-     * @var int My number of directory parts above base level.
+     * @var int The number of directory parts above base level.
      */
-    private $aboveBaseLevelCount;
+    private int $aboveBaseLevelCount;
 
     /**
-     * @var string[] My directory parts.
+     * @var string[] The directory parts.
      */
-    private $directoryParts;
+    private array $directoryParts;
 
     /**
-     * @var string|null My filename.
+     * @var string|null The filename.
      */
-    private $filename;
+    private ?string $filename;
 
     /**
      * @var bool True if path is absolute, false otherwise.
      */
-    private $isAbsolute;
+    private bool $isAbsolute;
 
     /**
-     * @var string My directory separator.
+     * @var string The directory separator.
      */
     private const DIRECTORY_SEPARATOR = '/';
 }
