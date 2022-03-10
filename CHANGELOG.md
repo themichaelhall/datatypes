@@ -1,6 +1,7 @@
 ## Unreleased
 
 - Changed required PHP version to >= 8.0.
+- Removed deprecated namespaces and classes.
 
 ## [2.4.0] - 2021-09-01
 

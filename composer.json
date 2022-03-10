@@ -22,10 +22,7 @@
   "autoload": {
     "psr-4": {
       "DataTypes\\": "src"
-    },
-    "files": [
-      "deprecated.php"
-    ]
+    }
   },
   "autoload-dev": {
     "psr-4": {
