@@ -10,12 +10,14 @@ declare(strict_types=1);
 
 namespace DataTypes\Common;
 
+use Stringable;
+
 /**
  * Main interface for all data types.
  *
  * @since 1.0.0
  */
-interface DataTypeInterface
+interface DataTypeInterface extends Stringable
 {
     /**
      * Returns the data type as a string.
