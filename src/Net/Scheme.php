@@ -112,13 +112,13 @@ class Scheme implements SchemeInterface
      *
      * @since 1.0.0
      *
-     * @param string $scheme The scheme.
+     * @param string $string The scheme.
      *
-     * @return bool True if the $scheme parameter is a valid scheme, false otherwise.
+     * @return bool True if the scheme parameter is a valid scheme, false otherwise.
      */
-    public static function isValid(string $scheme): bool
+    public static function isValid(string $string): bool
     {
-        return self::doParse($scheme) !== null;
+        return self::doParse($string) !== null;
     }
 
     /**
@@ -126,15 +126,15 @@ class Scheme implements SchemeInterface
      *
      * @since 1.0.0
      *
-     * @param string $scheme The scheme.
+     * @param string $string The scheme.
      *
-     * @throws SchemeInvalidArgumentException If the $scheme parameter is not a valid scheme.
+     * @throws SchemeInvalidArgumentException If the scheme parameter is not a valid scheme.
      *
      * @return SchemeInterface The Scheme instance.
      */
-    public static function parse(string $scheme): SchemeInterface
+    public static function parse(string $string): SchemeInterface
     {
-        $result = self::doParse($scheme, $error);
+        $result = self::doParse($string, $error);
         if ($result === null) {
             throw new SchemeInvalidArgumentException($error);
         }
@@ -147,13 +147,13 @@ class Scheme implements SchemeInterface
      *
      * @since 1.0.0
      *
-     * @param string $scheme The scheme.
+     * @param string $string The scheme.
      *
-     * @return SchemeInterface|null The Scheme instance if the $scheme parameter is a valid scheme, null otherwise.
+     * @return SchemeInterface|null The Scheme instance if the scheme parameter is a valid scheme, null otherwise.
      */
-    public static function tryParse(string $scheme): ?SchemeInterface
+    public static function tryParse(string $string): ?SchemeInterface
     {
-        return self::doParse($scheme);
+        return self::doParse($string);
     }
 
     /**

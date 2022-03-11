@@ -123,13 +123,13 @@ class Host implements HostInterface
      *
      * @since 1.0.0
      *
-     * @param string $host The host.
+     * @param string $string The host.
      *
-     * @return bool True if the $host parameter is a valid host, false otherwise.
+     * @return bool True if the host parameter is a valid host, false otherwise.
      */
-    public static function isValid(string $host): bool
+    public static function isValid(string $string): bool
     {
-        return self::doParse($host) !== null;
+        return self::doParse($string) !== null;
     }
 
     /**
@@ -137,15 +137,15 @@ class Host implements HostInterface
      *
      * @since 1.0.0
      *
-     * @param string $host The host.
+     * @param string $string The host.
      *
-     * @throws HostInvalidArgumentException If the $host parameter is not a valid host.
+     * @throws HostInvalidArgumentException If the host parameter is not a valid host.
      *
      * @return HostInterface The Host instance.
      */
-    public static function parse(string $host): HostInterface
+    public static function parse(string $string): HostInterface
     {
-        $result = self::doParse($host, $error);
+        $result = self::doParse($string, $error);
         if ($result === null) {
             throw new HostInvalidArgumentException($error);
         }
@@ -158,13 +158,13 @@ class Host implements HostInterface
      *
      * @since 1.0.0
      *
-     * @param string $host The host.
+     * @param string $string The host.
      *
-     * @return HostInterface|null The Host instance if the $host parameter is a valid host, null otherwise.
+     * @return HostInterface|null The Host instance if the host parameter is a valid host, null otherwise.
      */
-    public static function tryParse(string $host): ?HostInterface
+    public static function tryParse(string $string): ?HostInterface
     {
-        return self::doParse($host);
+        return self::doParse($string);
     }
 
     /**

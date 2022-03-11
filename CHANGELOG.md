@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Added ParsableDataTypeInterface.
 - Changed required PHP version to >= 8.0.
 - Removed deprecated namespaces and classes.
 

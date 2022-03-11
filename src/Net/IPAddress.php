@@ -136,13 +136,13 @@ class IPAddress implements IPAddressInterface
      *
      * @since 1.0.0
      *
-     * @param string $ipAddress The IP address.
+     * @param string $string The IP address.
      *
-     * @return bool True if the $ipAddress parameter is a valid IP address, false otherwise.
+     * @return bool True if the IP address parameter is a valid IP address, false otherwise.
      */
-    public static function isValid(string $ipAddress): bool
+    public static function isValid(string $string): bool
     {
-        return self::doParse($ipAddress) !== null;
+        return self::doParse($string) !== null;
     }
 
     /**
@@ -150,15 +150,15 @@ class IPAddress implements IPAddressInterface
      *
      * @since 1.0.0
      *
-     * @param string $ipAddress The IP address.
+     * @param string $string The IP address.
      *
-     * @throws IPAddressInvalidArgumentException If the $ipAddress parameter is not a valid IP address.
+     * @throws IPAddressInvalidArgumentException If the IP address parameter is not a valid IP address.
      *
      * @return IPAddressInterface The IPAddress instance.
      */
-    public static function parse(string $ipAddress): IPAddressInterface
+    public static function parse(string $string): IPAddressInterface
     {
-        $result = self::doParse($ipAddress, $error);
+        $result = self::doParse($string, $error);
         if ($result === null) {
             throw new IPAddressInvalidArgumentException($error);
         }
@@ -171,13 +171,13 @@ class IPAddress implements IPAddressInterface
      *
      * @since 1.0.0
      *
-     * @param string $ipAddress The IP address.
+     * @param string $string The IP address.
      *
-     * @return IPAddressInterface|null The IPAddress instance if the $ipAddress parameter is a valid IP address, null otherwise.
+     * @return IPAddressInterface|null The IPAddress instance if the IP address parameter is a valid IP address, null otherwise.
      */
-    public static function tryParse(string $ipAddress): ?IPAddressInterface
+    public static function tryParse(string $string): ?IPAddressInterface
     {
-        return self::doParse($ipAddress);
+        return self::doParse($string);
     }
 
     /**

@@ -10,14 +10,14 @@ declare(strict_types=1);
 
 namespace DataTypes\Net;
 
-use DataTypes\Common\DataTypeInterface;
+use DataTypes\Common\ParsableDataTypeInterface;
 
 /**
  * Interface for EmailAddress class.
  *
  * @since 1.1.0
  */
-interface EmailAddressInterface extends DataTypeInterface
+interface EmailAddressInterface extends ParsableDataTypeInterface
 {
     /**
      * Returns true if the email address equals other email address, false otherwise.

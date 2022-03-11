@@ -131,13 +131,13 @@ class EmailAddress implements EmailAddressInterface
      *
      * @since 1.1.0
      *
-     * @param string $emailAddress The email address.
+     * @param string $string The email address.
      *
-     * @return bool True if the $emailAddress parameter is a valid email address, false otherwise.
+     * @return bool True if the email address parameter is a valid email address, false otherwise.
      */
-    public static function isValid(string $emailAddress): bool
+    public static function isValid(string $string): bool
     {
-        return self::doParse($emailAddress) !== null;
+        return self::doParse($string) !== null;
     }
 
     /**
@@ -145,15 +145,15 @@ class EmailAddress implements EmailAddressInterface
      *
      * @since 1.1.0
      *
-     * @param string $emailAddress The email address.
+     * @param string $string The email address.
      *
-     * @throws EmailAddressInvalidArgumentException If the $emailAddress parameter is not a valid email address.
+     * @throws EmailAddressInvalidArgumentException If the email address parameter is not a valid email address.
      *
      * @return EmailAddressInterface The EmailAddress instance.
      */
-    public static function parse(string $emailAddress): EmailAddressInterface
+    public static function parse(string $string): EmailAddressInterface
     {
-        $result = self::doParse($emailAddress, $error);
+        $result = self::doParse($string, $error);
         if ($result === null) {
             throw new EmailAddressInvalidArgumentException($error);
         }
@@ -166,13 +166,13 @@ class EmailAddress implements EmailAddressInterface
      *
      * @since 1.1.0
      *
-     * @param string $emailAddress The email address.
+     * @param string $string The email address.
      *
-     * @return EmailAddressInterface|null The EmailAddress instance if the $emailAddress parameter is a valid email address, false otherwise.
+     * @return EmailAddressInterface|null The EmailAddress instance if the email address parameter is a valid email address, false otherwise.
      */
-    public static function tryParse(string $emailAddress): ?EmailAddressInterface
+    public static function tryParse(string $string): ?EmailAddressInterface
     {
-        return self::doParse($emailAddress);
+        return self::doParse($string);
     }
 
     /**

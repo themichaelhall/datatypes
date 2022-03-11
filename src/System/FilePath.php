@@ -284,13 +284,13 @@ class FilePath implements FilePathInterface
      *
      * @since 1.0.0
      *
-     * @param string $filePath The file path.
+     * @param string $string The file path.
      *
-     * @return bool True if the $filePath parameter is a valid file path, false otherwise.
+     * @return bool True if the file Path parameter is a valid file path, false otherwise.
      */
-    public static function isValid(string $filePath): bool
+    public static function isValid(string $string): bool
     {
-        return self::doParse($filePath, false) !== null;
+        return self::doParse($string, false) !== null;
     }
 
     /**
@@ -298,17 +298,17 @@ class FilePath implements FilePathInterface
      *
      * @since 1.0.0
      *
-     * @param string $filePath The file path.
+     * @param string $string The file path.
      *
-     * @throws FilePathInvalidArgumentException If the $filePath parameter is not a valid file path.
+     * @throws FilePathInvalidArgumentException If the file path parameter is not a valid file path.
      *
      * @return FilePathInterface The file path instance.
      */
-    public static function parse(string $filePath): FilePathInterface
+    public static function parse(string $string): FilePathInterface
     {
-        $result = self::doParse($filePath, false, $error);
+        $result = self::doParse($string, false, $error);
         if ($result === null) {
-            throw new FilePathInvalidArgumentException('File path "' . $filePath . '" is invalid: ' . $error);
+            throw new FilePathInvalidArgumentException('File path "' . $string . '" is invalid: ' . $error);
         }
 
         return $result;
@@ -319,17 +319,17 @@ class FilePath implements FilePathInterface
      *
      * @since 2.2.0
      *
-     * @param string $filePath The file path.
+     * @param string $string The file path.
      *
-     * @throws FilePathInvalidArgumentException If the $filePath parameter is not a valid file path.
+     * @throws FilePathInvalidArgumentException If the file path parameter is not a valid file path.
      *
      * @return FilePathInterface The file path instance.
      */
-    public static function parseAsDirectory(string $filePath): FilePathInterface
+    public static function parseAsDirectory(string $string): FilePathInterface
     {
-        $result = self::doParse($filePath, true, $error);
+        $result = self::doParse($string, true, $error);
         if ($result === null) {
-            throw new FilePathInvalidArgumentException('File path "' . $filePath . '" is invalid: ' . $error);
+            throw new FilePathInvalidArgumentException('File path "' . $string . '" is invalid: ' . $error);
         }
 
         return $result;
@@ -340,13 +340,13 @@ class FilePath implements FilePathInterface
      *
      * @since 1.0.0
      *
-     * @param string $filePath The file path.
+     * @param string $string The file path.
      *
-     * @return FilePathInterface|null The file path instance if the $filePath parameter is a valid file path, null otherwise.
+     * @return FilePathInterface|null The file path instance if the file path parameter is a valid file path, null otherwise.
      */
-    public static function tryParse(string $filePath): ?FilePathInterface
+    public static function tryParse(string $string): ?FilePathInterface
     {
-        return self::doParse($filePath, false);
+        return self::doParse($string, false);
     }
 
     /**
@@ -354,13 +354,13 @@ class FilePath implements FilePathInterface
      *
      * @since 2.2.0
      *
-     * @param string $filePath The file path.
+     * @param string $string The file path.
      *
-     * @return FilePathInterface|null The file path instance if the $filePath parameter is a valid file path, null otherwise.
+     * @return FilePathInterface|null The file path instance if the file path parameter is a valid file path, null otherwise.
      */
-    public static function tryParseAsDirectory(string $filePath): ?FilePathInterface
+    public static function tryParseAsDirectory(string $string): ?FilePathInterface
     {
-        $result = self::doParse($filePath, true);
+        $result = self::doParse($string, true);
         if ($result === null) {
             return null;
         }

@@ -10,14 +10,14 @@ declare(strict_types=1);
 
 namespace DataTypes\Net;
 
-use DataTypes\Common\DataTypeInterface;
+use DataTypes\Common\ParsableDataTypeInterface;
 
 /**
  * Interface for IPAddress class.
  *
  * @since 1.0.0
  */
-interface IPAddressInterface extends DataTypeInterface
+interface IPAddressInterface extends ParsableDataTypeInterface
 {
     /**
      * Returns true if the IP address equals other IP address, false otherwise.

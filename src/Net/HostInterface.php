@@ -10,14 +10,14 @@ declare(strict_types=1);
 
 namespace DataTypes\Net;
 
-use DataTypes\Common\DataTypeInterface;
+use DataTypes\Common\ParsableDataTypeInterface;
 
 /**
  * Interface for Host class.
  *
  * @since 1.0.0
  */
-interface HostInterface extends DataTypeInterface
+interface HostInterface extends ParsableDataTypeInterface
 {
     /**
      * Returns true if the host equals other host, false otherwise.

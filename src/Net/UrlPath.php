@@ -275,13 +275,13 @@ class UrlPath implements UrlPathInterface
      *
      * @since 1.0.0
      *
-     * @param string $urlPath The url path.
+     * @param string $string The url path.
      *
-     * @return bool True if the $path parameter is a valid url path, false otherwise.
+     * @return bool True if the url path parameter is a valid url path, false otherwise.
      */
-    public static function isValid(string $urlPath): bool
+    public static function isValid(string $string): bool
     {
-        return self::doParse($urlPath, false) !== null;
+        return self::doParse($string, false) !== null;
     }
 
     /**
@@ -289,17 +289,17 @@ class UrlPath implements UrlPathInterface
      *
      * @since 1.0.0
      *
-     * @param string $urlPath The url path.
+     * @param string $string The url path.
      *
-     * @throws UrlPathInvalidArgumentException If the $urlPath parameter is not a valid url path.
+     * @throws UrlPathInvalidArgumentException If the url path parameter is not a valid url path.
      *
      * @return UrlPathInterface The url path instance.
      */
-    public static function parse(string $urlPath): UrlPathInterface
+    public static function parse(string $string): UrlPathInterface
     {
-        $result = self::doParse($urlPath, false, $error);
+        $result = self::doParse($string, false, $error);
         if ($result === null) {
-            throw new UrlPathInvalidArgumentException('Url path "' . $urlPath . '" is invalid: ' . $error);
+            throw new UrlPathInvalidArgumentException('Url path "' . $string . '" is invalid: ' . $error);
         }
 
         return $result;
@@ -310,17 +310,17 @@ class UrlPath implements UrlPathInterface
      *
      * @since 2.2.0
      *
-     * @param string $urlPath The url path.
+     * @param string $string The url path.
      *
-     * @throws UrlPathInvalidArgumentException If the $urlPath parameter is not a valid url path.
+     * @throws UrlPathInvalidArgumentException If the url path parameter is not a valid url path.
      *
      * @return UrlPathInterface The url path instance.
      */
-    public static function parseAsDirectory(string $urlPath): UrlPathInterface
+    public static function parseAsDirectory(string $string): UrlPathInterface
     {
-        $result = self::doParse($urlPath, true, $error);
+        $result = self::doParse($string, true, $error);
         if ($result === null) {
-            throw new UrlPathInvalidArgumentException('Url path "' . $urlPath . '" is invalid: ' . $error);
+            throw new UrlPathInvalidArgumentException('Url path "' . $string . '" is invalid: ' . $error);
         }
 
         return $result;
@@ -331,13 +331,13 @@ class UrlPath implements UrlPathInterface
      *
      * @since 1.0.0
      *
-     * @param string $urlPath The url path.
+     * @param string $string The url path.
      *
-     * @return UrlPathInterface|null The url path instance if the $urlPath parameter is a valid url path, null otherwise.
+     * @return UrlPathInterface|null The url path instance if the url path parameter is a valid url path, null otherwise.
      */
-    public static function tryParse(string $urlPath): ?UrlPathInterface
+    public static function tryParse(string $string): ?UrlPathInterface
     {
-        return self::doParse($urlPath, false);
+        return self::doParse($string, false);
     }
 
     /**
@@ -345,13 +345,13 @@ class UrlPath implements UrlPathInterface
      *
      * @since 2.2.0
      *
-     * @param string $urlPath The url path.
+     * @param string $string The url path.
      *
-     * @return UrlPathInterface|null The url path instance if the $urlPath parameter is a valid url path, null otherwise.
+     * @return UrlPathInterface|null The url path instance if the url path parameter is a valid url path, null otherwise.
      */
-    public static function tryParseAsDirectory(string $urlPath): ?UrlPathInterface
+    public static function tryParseAsDirectory(string $string): ?UrlPathInterface
     {
-        $result = self::doParse($urlPath, true);
+        $result = self::doParse($string, true);
         if ($result === null) {
             return null;
         }

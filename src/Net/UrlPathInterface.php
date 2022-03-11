@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace DataTypes\Net;
 
-use DataTypes\Common\DataTypeInterface;
+use DataTypes\Common\ParsableDataTypeInterface;
 use DataTypes\Net\Exceptions\UrlPathInvalidArgumentException;
 use DataTypes\Net\Exceptions\UrlPathLogicException;
 
@@ -19,7 +19,7 @@ use DataTypes\Net\Exceptions\UrlPathLogicException;
  *
  * @since 1.0.0
  */
-interface UrlPathInterface extends DataTypeInterface
+interface UrlPathInterface extends ParsableDataTypeInterface
 {
     /**
      * Returns true if the url path equals other url path, false otherwise.

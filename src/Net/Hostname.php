@@ -142,13 +142,13 @@ class Hostname implements HostnameInterface
      *
      * @since 1.0.0
      *
-     * @param string $hostname The hostname.
+     * @param string $string The hostname.
      *
-     * @return bool True if the $hostname parameter is a valid hostname, false otherwise.
+     * @return bool True if the hostname parameter is a valid hostname, false otherwise.
      */
-    public static function isValid(string $hostname): bool
+    public static function isValid(string $string): bool
     {
-        return self::doParse($hostname) !== null;
+        return self::doParse($string) !== null;
     }
 
     /**
@@ -156,15 +156,15 @@ class Hostname implements HostnameInterface
      *
      * @since 1.0.0
      *
-     * @param string $hostname The hostname.
+     * @param string $string The hostname.
      *
-     * @throws HostnameInvalidArgumentException If the $hostname parameter is not a valid hostname.
+     * @throws HostnameInvalidArgumentException If the hostname parameter is not a valid hostname.
      *
      * @return HostnameInterface The Hostname instance.
      */
-    public static function parse(string $hostname): HostnameInterface
+    public static function parse(string $string): HostnameInterface
     {
-        $result = self::doParse($hostname, $error);
+        $result = self::doParse($string, $error);
         if ($result === null) {
             throw new HostnameInvalidArgumentException($error);
         }
@@ -177,13 +177,13 @@ class Hostname implements HostnameInterface
      *
      * @since 1.0.0
      *
-     * @param string $hostname The hostname.
+     * @param string $string The hostname.
      *
-     * @return HostnameInterface|null The Hostname instance if the $hostname parameter is a valid hostname, null otherwise.
+     * @return HostnameInterface|null The Hostname instance if the hostname parameter is a valid hostname, null otherwise.
      */
-    public static function tryParse(string $hostname): ?HostnameInterface
+    public static function tryParse(string $string): ?HostnameInterface
     {
-        return self::doParse($hostname);
+        return self::doParse($string);
     }
 
     /**

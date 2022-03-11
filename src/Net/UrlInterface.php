@@ -10,14 +10,14 @@ declare(strict_types=1);
 
 namespace DataTypes\Net;
 
-use DataTypes\Common\DataTypeInterface;
+use DataTypes\Common\ParsableDataTypeInterface;
 
 /**
  * Interface for Url class.
  *
  * @since 1.0.0
  */
-interface UrlInterface extends DataTypeInterface
+interface UrlInterface extends ParsableDataTypeInterface
 {
     /**
      * Returns true if the url equals other url, false otherwise.

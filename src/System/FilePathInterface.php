@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace DataTypes\System;
 
-use DataTypes\Common\DataTypeInterface;
+use DataTypes\Common\ParsableDataTypeInterface;
 use DataTypes\System\Exceptions\FilePathInvalidArgumentException;
 use DataTypes\System\Exceptions\FilePathLogicException;
 
@@ -19,7 +19,7 @@ use DataTypes\System\Exceptions\FilePathLogicException;
  *
  * @since 1.0.0
  */
-interface FilePathInterface extends DataTypeInterface
+interface FilePathInterface extends ParsableDataTypeInterface
 {
     /**
      * Returns true if the file path equals other file path, false otherwise.

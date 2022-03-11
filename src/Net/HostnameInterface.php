@@ -10,14 +10,14 @@ declare(strict_types=1);
 
 namespace DataTypes\Net;
 
-use DataTypes\Common\DataTypeInterface;
+use DataTypes\Common\ParsableDataTypeInterface;
 
 /**
  * Interface for Hostname class.
  *
  * @since 1.0.0
  */
-interface HostnameInterface extends DataTypeInterface
+interface HostnameInterface extends ParsableDataTypeInterface
 {
     /**
      * Returns true if the hostname equals other hostname, false otherwise.

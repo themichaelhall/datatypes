@@ -294,13 +294,13 @@ class Url implements UrlInterface
      *
      * @since 1.0.0
      *
-     * @param string $url The url.
+     * @param string $string The url.
      *
-     * @return bool True if the $url parameter is a valid url, false otherwise.
+     * @return bool True if the url parameter is a valid url, false otherwise.
      */
-    public static function isValid(string $url): bool
+    public static function isValid(string $string): bool
     {
-        return self::doParse(null, $url) !== null;
+        return self::doParse(null, $string) !== null;
     }
 
     /**
@@ -308,15 +308,15 @@ class Url implements UrlInterface
      *
      * @since 1.0.0
      *
-     * @param string       $url     The url.
+     * @param string       $string  The url.
      * @param UrlInterface $baseUrl The base url.
      *
-     * @return bool True if the $url parameter is a valid url, false otherwise.
+     * @return bool True if the url parameter is a valid url, false otherwise.
      */
-    public static function isValidRelative(string $url, UrlInterface $baseUrl): bool
+    public static function isValidRelative(string $string, UrlInterface $baseUrl): bool
     {
         try {
-            return self::doParse($baseUrl, $url) !== null;
+            return self::doParse($baseUrl, $string) !== null;
         } catch (UrlPathLogicException) {
             return false;
         }
@@ -327,15 +327,15 @@ class Url implements UrlInterface
      *
      * @since 1.0.0
      *
-     * @param string $url The url.
+     * @param string $string The url.
      *
-     * @throws UrlInvalidArgumentException If the $url parameter is not a valid url.
+     * @throws UrlInvalidArgumentException If the url parameter is not a valid url.
      *
      * @return UrlInterface The Url instance.
      */
-    public static function parse(string $url): UrlInterface
+    public static function parse(string $string): UrlInterface
     {
-        $result = self::doParse(null, $url, $error);
+        $result = self::doParse(null, $string, $error);
         if ($result === null) {
             throw new UrlInvalidArgumentException($error);
         }
@@ -348,16 +348,16 @@ class Url implements UrlInterface
      *
      * @since 1.0.0
      *
-     * @param string       $url     The url
+     * @param string       $string  The url
      * @param UrlInterface $baseUrl The base url.
      *
-     * @throws UrlInvalidArgumentException If the $url parameter is not a valid relative url.
+     * @throws UrlInvalidArgumentException If the url parameter is not a valid relative url.
      *
      * @return UrlInterface The Url instance.
      */
-    public static function parseRelative(string $url, UrlInterface $baseUrl): UrlInterface
+    public static function parseRelative(string $string, UrlInterface $baseUrl): UrlInterface
     {
-        $result = self::doParse($baseUrl, $url, $error);
+        $result = self::doParse($baseUrl, $string, $error);
         if ($result === null) {
             throw new UrlInvalidArgumentException($error);
         }
@@ -370,13 +370,13 @@ class Url implements UrlInterface
      *
      * @since 1.0.0
      *
-     * @param string $url The url.
+     * @param string $string The url.
      *
-     * @return UrlInterface|null The Url instance if the $url parameter is a valid url, null otherwise.
+     * @return UrlInterface|null The Url instance if the url parameter is a valid url, null otherwise.
      */
-    public static function tryParse(string $url): ?UrlInterface
+    public static function tryParse(string $string): ?UrlInterface
     {
-        return self::doParse(null, $url);
+        return self::doParse(null, $string);
     }
 
     /**
@@ -384,15 +384,15 @@ class Url implements UrlInterface
      *
      * @since 1.0.0
      *
-     * @param string       $url     The url.
+     * @param string       $string  The url.
      * @param UrlInterface $baseUrl The base url.
      *
-     * @return UrlInterface|null The Url instance if the $url parameter is a valid url, null otherwise.
+     * @return UrlInterface|null The Url instance if the url parameter is a valid url, null otherwise.
      */
-    public static function tryParseRelative(string $url, UrlInterface $baseUrl): ?UrlInterface
+    public static function tryParseRelative(string $string, UrlInterface $baseUrl): ?UrlInterface
     {
         try {
-            return self::doParse($baseUrl, $url);
+            return self::doParse($baseUrl, $string);
         } catch (UrlPathLogicException) {
             return null;
         }
