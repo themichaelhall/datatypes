@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 namespace DataTypes\Tests\Helpers\Fakes {
-
     use function php_uname;
 
     /**
@@ -71,7 +70,6 @@ namespace DataTypes\Tests\Helpers\Fakes {
 }
 
 namespace DataTypes\System {
-
     use DataTypes\Tests\Helpers\Fakes\FakePhpUname;
 
     /**
