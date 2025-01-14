@@ -1,7 +1,6 @@
 # Data Types
 
 [![Tests](https://github.com/themichaelhall/datatypes/workflows/tests/badge.svg?branch=master)](https://github.com/themichaelhall/datatypes/actions)
-[![StyleCI](https://styleci.io/repos/60113501/shield?style=flat&branch=master)](https://styleci.io/repos/60113501)
 [![License](https://poser.pugx.org/datatypes/datatypes/license)](https://packagist.org/packages/datatypes/datatypes)
 [![Latest Stable Version](https://poser.pugx.org/datatypes/datatypes/v/stable)](https://packagist.org/packages/datatypes/datatypes)
 [![Total Downloads](https://poser.pugx.org/datatypes/datatypes/downloads)](https://packagist.org/packages/datatypes/datatypes)
