@@ -272,7 +272,7 @@ class Url implements UrlInterface
      *
      * @return UrlInterface The url.
      */
-    public static function fromParts(SchemeInterface $scheme, HostInterface $host, ?int $port = null, UrlPathInterface $path = null, ?string $queryString = null, ?string $fragment = null): UrlInterface
+    public static function fromParts(SchemeInterface $scheme, HostInterface $host, ?int $port = null, ?UrlPathInterface $path = null, ?string $queryString = null, ?string $fragment = null): UrlInterface
     {
         if ($port === null) {
             $port = $scheme->getDefaultPort();
