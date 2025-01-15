@@ -280,6 +280,18 @@ class EmailAddress implements EmailAddressInterface
             return false;
         }
 
+        if (str_starts_with($username, '.')) {
+            $error = 'Username "' . $username . '" starts with ".".';
+
+            return false;
+        }
+
+        if (str_ends_with($username, '.')) {
+            $error = 'Username "' . $username . '" ends with ".".';
+
+            return false;
+        }
+
         if (str_contains($username, '..')) {
             $error = 'Username "' . $username . '" contains "..".';
 

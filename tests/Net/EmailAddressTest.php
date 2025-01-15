@@ -116,6 +116,28 @@ class EmailAddressTest extends TestCase
     }
 
     /**
+     * Test that EmailAddress with username starting with a dot is invalid.
+     */
+    public function testEmailAddressWithUsernameStartingWithDotIsInvalid()
+    {
+        self::expectException(EmailAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Email address ".foo@example.com" is invalid: Username ".foo" starts with ".".');
+
+        EmailAddress::parse('.foo@example.com');
+    }
+
+    /**
+     * Test that EmailAddress with username ending with a dot is invalid.
+     */
+    public function testEmailAddressWithUsernameEndingWithDotIsInvalid()
+    {
+        self::expectException(EmailAddressInvalidArgumentException::class);
+        self::expectExceptionMessage('Email address "foo.@example.com" is invalid: Username "foo." ends with ".".');
+
+        EmailAddress::parse('foo.@example.com');
+    }
+
+    /**
      * Test parse EmailAddress with IP address.
      */
     public function testParseWithIpAddress()
