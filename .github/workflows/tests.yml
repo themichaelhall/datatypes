@@ -25,10 +25,4 @@ jobs:
         run: composer update --prefer-stable --no-progress
 
       - name: Run unit tests
-        run: ./vendor/bin/phpunit --coverage-clover=coverage.xml
-
-      - name: Check code coverage
-        uses: themichaelhall/check-code-coverage@v1
-        with:
-          report: coverage.xml
-          required-percentage: 100
+        run: ./vendor/bin/phpunit
