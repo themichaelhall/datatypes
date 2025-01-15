@@ -1,4 +1,4 @@
-## Unreleased
+## [3.1.0] - 2025-01-15
 
 - Implicitly marked parameter as nullable in Url class.
 - Fixed EmailAddress so local part can not start or end with a dot.
@@ -50,6 +50,7 @@
 
 - First stable revision.
 
+[3.1.0]: https://github.com/themichaelhall/datatypes/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/themichaelhall/datatypes/compare/v2.4.0...v3.0.0
 [2.4.0]: https://github.com/themichaelhall/datatypes/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/themichaelhall/datatypes/compare/v2.2.0...v2.3.0
